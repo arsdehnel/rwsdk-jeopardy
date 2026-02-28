@@ -1,0 +1,10 @@
+@import "./board.less";
+@import "./category.less";
+@import "./clue.less";
+@import "./question-overlay.less";
+
+body {
+	padding: 0;
+	margin: 0;
+	background-color: black;
+}

@@ -1,23 +1,18 @@
+'use client';
 import Clue from './clue';
 
-const Category = ({ category }: { category: { title: string; clues: any[] } }) => {
-	const values = [200, 400, 600, 800, 1000];
-
-	const toTitleCase = (str: string) => {
-		return str
-			.split(' ')
-			.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-			.join(' ');
-	};
-
-	const title = toTitleCase(category.title);
-
+const Category = ({
+	category,
+	selectQuestion,
+}: {
+	category: { title: string; clues: any[] };
+	selectQuestion: (question: object) => void;
+}) => {
 	return (
 		<div className="jeopardy-category">
-			<h2>{title}</h2>
-			{values.map((value, index) => {
-				const clue = category.clues[index];
-				return <Clue key={clue.id} value={value} {...clue} />;
+			<h2>{category.title}</h2>
+			{category.clues.map(clue => {
+				return <Clue key={clue.id} value={clue.value} selectQuestion={selectQuestion} {...clue} />;
 			})}
 		</div>
 	);
