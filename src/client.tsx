@@ -1,4 +1,4 @@
-import { initClient, initClientNavigation } from "rwsdk/client";
+import { initClient, initClientNavigation } from 'rwsdk/client';
 
 // RedwoodSDK uses RSC RPC to emulate client side navigation.
 // https://docs.rwsdk.com/guides/frontend/client-side-nav/
