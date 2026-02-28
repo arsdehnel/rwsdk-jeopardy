@@ -1,12 +1,19 @@
 'use client';
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
-import getCategories from '@/categories';
-import Category from '../components/category';
-import QuestionOverlay from '../components/question-overlay';
+import type { RequestInfo } from 'rwsdk/worker';
 
-function Board() {
+import Board from '@/app/components/board';
+import QuestionOverlay from '@/app/components/question-overlay';
+import getCategories from '@/categories';
+
+export default function Game({ params }: RequestInfo) {
 	const [selectedQuestion, setSelectedQuestion] = useSyncedState({}, 'selectedQuestion');
 	const [questionState, setQuestionState] = useSyncedState('initial', 'questionState');
+
+	const gameId = params.gameId;
+	if (!gameId) {
+		return <p>Game ID not provided</p>;
+	}
 
 	const selectQuestion = (question: object) => {
 		setSelectedQuestion(question);
@@ -17,13 +24,7 @@ function Board() {
 	return (
 		<>
 			<QuestionOverlay selectedQuestion={selectedQuestion} setQuestionState={setQuestionState} questionState={questionState} />
-			<div className="jeopardy-board">
-				{categories.map(category => (
-					<Category key={category.id} category={category} selectQuestion={selectQuestion} />
-				))}
-			</div>
+			<Board categories={categories} selectQuestion={selectQuestion} />
 		</>
 	);
 }
-
-export default Board;
