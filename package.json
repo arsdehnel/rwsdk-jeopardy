@@ -1,47 +1,59 @@
 {
-  "name": "@redwoodjs/starter",
-  "version": "1.0.0",
-  "description": "A bare-bones RedwoodSDK starter",
-  "main": "index.js",
-  "type": "module",
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "private": true,
-  "scripts": {
-    "build": "vite build",
-    "dev": "vite dev",
-    "dev:init": "rw-scripts dev-init",
-    "preview": "vite preview",
-    "worker:run": "rw-scripts worker-run",
-    "clean": "npm run clean:vite",
-    "clean:vite": "rm -rf ./node_modules/.vite",
-    "release": "rw-scripts ensure-deploy-env && npm run clean && npm run build && wrangler deploy",
-    "generate": "rw-scripts ensure-env && wrangler types --include-runtime false",
-    "check": "npm run generate && npm run types",
-    "types": "tsc"
-  },
-  "dependencies": {
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "react-server-dom-webpack": "19.2.4",
-    "rwsdk": "1.0.0-beta.55"
-  },
-  "devDependencies": {
-    "@cloudflare/vite-plugin": "1.25.1",
-    "@cloudflare/workers-types": "4.20260218.0",
-    "@types/node": "~24.10.0",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "typescript": "5.9.3",
-    "vite": "7.3.1",
-    "wrangler": "4.66.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "sharp",
-      "workerd"
-    ]
-  }
+	"name": "@redwoodjs/starter",
+	"version": "1.0.0",
+	"description": "A bare-bones RedwoodSDK starter",
+	"main": "index.js",
+	"type": "module",
+	"keywords": [],
+	"author": "",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"build": "vite build",
+		"dev": "vite dev",
+		"dev:init": "rw-scripts dev-init",
+		"preview": "vite preview",
+		"worker:run": "rw-scripts worker-run",
+		"clean": "npm run clean:vite",
+		"clean:vite": "rm -rf ./node_modules/.vite",
+		"release": "rw-scripts ensure-deploy-env && npm run clean && npm run build && wrangler deploy",
+		"generate": "rw-scripts ensure-env && wrangler types --include-runtime false",
+		"biome:check": "biome check",
+		"biome:fix": "biome check --write .",
+		"check": "npm run generate && npm run types",
+		"type-check": "tsc",
+		"prepare": "husky"
+	},
+	"dependencies": {
+		"react": "19.2.4",
+		"react-dom": "19.2.4",
+		"react-server-dom-webpack": "19.2.4",
+		"rwsdk": "1.0.0-beta.55"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.13",
+		"@cloudflare/vite-plugin": "1.25.1",
+		"@cloudflare/workers-types": "4.20260218.0",
+		"@commitlint/cli": "^20.4.1",
+		"@commitlint/config-conventional": "^20.4.1",
+		"@semantic-release/changelog": "^6.0.3",
+		"@semantic-release/commit-analyzer": "^13.0.1",
+		"@semantic-release/git": "^10.0.1",
+		"@semantic-release/release-notes-generator": "^14.1.0",
+		"@types/node": "~24.10.0",
+		"@types/react": "19.2.14",
+		"@types/react-dom": "19.2.3",
+		"conventional-changelog-conventionalcommits": "^9.1.0",
+		"husky": "^9.1.7",
+		"typescript": "5.9.3",
+		"vite": "7.3.1",
+		"wrangler": "4.66.0"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"esbuild",
+			"sharp",
+			"workerd"
+		]
+	}
 }
