@@ -162,8 +162,10 @@ const categories = [
 	},
 ];
 
-export default categories.map(category => ({
-	...category,
-	clues: category.clues.map(clue => ({ ...clue, id: randomUUID() })),
-	id: randomUUID(),
-}));
+export default function getCategories() {
+	return categories.map(category => ({
+		...category,
+		clues: category.clues.map(clue => ({ ...clue, id: randomUUID() })),
+		id: randomUUID(),
+	}));
+}

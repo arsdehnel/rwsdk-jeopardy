@@ -1,7 +1,9 @@
-import categories from '@/categories';
+// import categories from '@/categories';
+import getCategories from '@/categories';
 import Category from '../components/category';
 
 function Board() {
+	const categories = getCategories();
 	return (
 		<div className="jeopardy-board">
 			{categories.map(category => (
