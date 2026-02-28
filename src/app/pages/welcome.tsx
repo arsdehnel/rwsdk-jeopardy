@@ -13,6 +13,8 @@ export const Welcome = () => {
 				<p className={styles.subtitle}>You’ve just installed the starter project. Here’s what to do next.</p>
 			</header>
 
+			<a href="/board">Go to board</a>
+
 			<div>
 				<p>Count: {count}</p>
 				<button type="submit" onClick={() => setCount(count + 1)} className={styles.button}>
@@ -20,34 +22,6 @@ export const Welcome = () => {
 					Increment
 				</button>
 			</div>
-
-			<main>
-				<section className={styles.section}>
-					<h2 className={styles.sectionTitle}>Next steps</h2>
-					<ol className={styles.list}>
-						<li>
-							Read the{' '}
-							<a
-								href="https://docs.rwsdk.com/getting-started/quick-start/"
-								target="_blank"
-								rel="noreferrer"
-								className={styles.link}
-							>
-								Quick Start
-							</a>{' '}
-							to learn the basics.
-						</li>
-						<li>
-							Explore React Server Components and Server Functions in the{' '}
-							<a href="https://docs.rwsdk.com/" target="_blank" rel="noreferrer" className={styles.link}>
-								Docs
-							</a>
-							.
-						</li>
-						<li>Join the community to ask questions and share what you’re building.</li>
-					</ol>
-				</section>
-			</main>
 		</div>
 	);
 };

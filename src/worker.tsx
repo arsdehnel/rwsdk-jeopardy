@@ -6,6 +6,7 @@ import { defineApp } from 'rwsdk/worker';
 import { Document } from '@/app/document';
 import { setCommonHeaders } from '@/app/headers';
 import { Home } from '@/app/pages/home';
+import Board from './app/pages/board';
 
 export type AppContext = {};
 export { SyncedStateServer };
@@ -17,5 +18,5 @@ export default defineApp([
 		// setup ctx here
 		ctx;
 	},
-	render(Document, [route('/', Home)]),
+	render(Document, [route('/', Home), route('/board', Board)]),
 ]);
