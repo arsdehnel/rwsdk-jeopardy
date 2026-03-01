@@ -8,7 +8,7 @@ import QuestionOverlay from '@/app/components/question-overlay';
 import getCategories from '@/categories';
 
 export type Connection = {
-	id: number;
+	id: string;
 	name: string;
 	role: 'host' | 'player' | 'display';
 };
@@ -19,7 +19,7 @@ export type Connections = {
 	members: Connection[];
 };
 
-export default function Game({ params }: RequestInfo) {
+export default function Game({ params, ctx }: RequestInfo) {
 	const [selectedQuestion, setSelectedQuestion] = useSyncedState({}, 'selectedQuestion');
 	const [questionState, setQuestionState] = useSyncedState('initial', 'questionState');
 	const [gameState, setGameState] = useSyncedState('setup', 'gameState');
@@ -43,6 +43,16 @@ export default function Game({ params }: RequestInfo) {
 		}
 	};
 
+	const unregisterConnection = (connectionId: string) => {
+		if (connections.host?.id === connectionId) {
+			setConnections({ ...connections, host: undefined });
+		} else if (connections.scoreboard?.id === connectionId) {
+			setConnections({ ...connections, scoreboard: undefined });
+		} else {
+			setConnections({ ...connections, members: connections.members.filter(member => member.id !== connectionId) });
+		}
+	};
+
 	const selectQuestion = (question: object) => {
 		setSelectedQuestion(question);
 		setQuestionState('question');
@@ -53,7 +63,15 @@ export default function Game({ params }: RequestInfo) {
 			<>
 				<h1>Game Setup</h1>
 				<p>Waiting for players to join...</p>
-				<MemberSelect connections={connections} registerConnection={registerConnection} />
+				{ctx.session?.cookieId && <p>Your session ID: {ctx.session.cookieId}</p>}
+				{ctx.session?.cookieId && (
+					<MemberSelect
+						connections={connections}
+						registerConnection={registerConnection}
+						unregisterConnection={unregisterConnection}
+						sessionId={ctx.session?.cookieId}
+					/>
+				)}
 				<button type="button" onClick={() => setGameState('active')}>
 					Start Game
 				</button>
