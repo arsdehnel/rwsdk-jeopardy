@@ -6,6 +6,11 @@ import Board from '@/app/components/board';
 import MemberSelect from '@/app/components/member-select';
 import QuestionOverlay from '@/app/components/question-overlay';
 import getCategories from '@/categories';
+import getRoleFromConnections from '@/utils/get-role-from-connections';
+import Buzzer from '../components/buzzer';
+import HostQuestionDisplay from '../components/host-question-display';
+import QuestionSelect from '../components/question-select';
+import Scoreboard from '../components/scoreboard';
 
 export type Connection = {
 	id: string;
@@ -23,6 +28,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 	const [selectedQuestion, setSelectedQuestion] = useSyncedState({}, 'selectedQuestion');
 	const [questionState, setQuestionState] = useSyncedState('initial', 'questionState');
 	const [gameState, setGameState] = useSyncedState('setup', 'gameState');
+	const [buzzedInPlayer, setBuzzedInPlayer] = useSyncedState<string | null>(null, 'buzzedInPlayer');
 	const [connections, setConnections] = useSyncedState<Connections>(
 		{ host: undefined, scoreboard: undefined, members: [] },
 		'connections',
@@ -58,6 +64,13 @@ export default function Game({ params, ctx }: RequestInfo) {
 		setQuestionState('question');
 	};
 
+	const questionAnsweredCorrectly = (player: string | null, question: any) => {
+		// In a real app, this would update the player's score in the database
+		setBuzzedInPlayer(null);
+		setQuestionState('initial');
+	};
+
+	const role = getRoleFromConnections(connections, ctx.session?.cookieId || '');
 	if (gameState === 'setup') {
 		return (
 			<>
@@ -72,18 +85,75 @@ export default function Game({ params, ctx }: RequestInfo) {
 						sessionId={ctx.session?.cookieId}
 					/>
 				)}
-				<button type="button" onClick={() => setGameState('active')}>
-					Start Game
-				</button>
+				{role === 'host' && (
+					<button type="button" onClick={() => setGameState('active')}>
+						Start Game
+					</button>
+				)}
 			</>
 		);
 	}
 
+	if (gameState === 'end') {
+		return (
+			<>
+				<h1>Game Over</h1>
+				<Scoreboard connections={connections} setGameState={setGameState} />
+			</>
+		);
+	}
+
+	if (!role) {
+		return (
+			<p>
+				You are not registered in this game but the game has started, please contact the host and have them revert it back to
+				setup stage.
+			</p>
+		);
+	}
+
 	const categories = getCategories();
+
+	// game mode active
+	if (role === 'display') {
+		return (
+			<>
+				<p>Role: Display</p>
+				<Scoreboard connections={connections} setGameState={setGameState} />
+				<QuestionOverlay selectedQuestion={selectedQuestion} setQuestionState={setQuestionState} questionState={questionState} />
+				<Board categories={categories} selectQuestion={selectQuestion} />
+			</>
+		);
+	}
+
+	if (role === 'host') {
+		return (
+			<>
+				<p>Role: Host</p>
+				<Scoreboard connections={connections} setGameState={setGameState} />
+				{questionState === 'initial' ? (
+					<p>Player choosing question...</p>
+				) : (
+					<HostQuestionDisplay
+						selectedQuestion={selectedQuestion}
+						setQuestionState={setQuestionState}
+						buzzedInPlayer={buzzedInPlayer}
+						setBuzzedInPlayer={setBuzzedInPlayer}
+						questionAnsweredCorrectly={questionAnsweredCorrectly}
+					/>
+				)}
+			</>
+		);
+	}
+
 	return (
 		<>
-			<QuestionOverlay selectedQuestion={selectedQuestion} setQuestionState={setQuestionState} questionState={questionState} />
-			<Board categories={categories} selectQuestion={selectQuestion} />
+			<p>Role: Player</p>
+			{questionState === 'initial' ? (
+				<QuestionSelect selectQuestion={selectQuestion} categories={categories} />
+			) : (
+				<Buzzer setBuzzedInPlayer={setBuzzedInPlayer} buzzedInPlayer={buzzedInPlayer} sessionId={ctx.session?.cookieId} />
+			)}
 		</>
 	);
 }
