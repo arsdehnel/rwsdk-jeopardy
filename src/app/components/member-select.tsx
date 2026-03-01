@@ -1,6 +1,7 @@
 'use client';
 
 import type { Connection, Connections } from '@/app/pages/game';
+import getRoleFromConnections from '@/utils/get-role-from-connections';
 
 export default function MemberSelect({
 	connections,
@@ -13,14 +14,7 @@ export default function MemberSelect({
 	unregisterConnection: (connectionId: string) => void;
 	sessionId: string;
 }) {
-	let role: 'host' | 'player' | 'display' | undefined;
-	if (connections.host?.id === sessionId) {
-		role = 'host';
-	} else if (connections.scoreboard?.id === sessionId) {
-		role = 'display';
-	} else if (connections.members.some(member => member.id === sessionId)) {
-		role = 'player';
-	}
+	const role = getRoleFromConnections(connections, sessionId);
 
 	if (role) {
 		return (
@@ -65,7 +59,7 @@ export default function MemberSelect({
 					registerConnection({ id: sessionId, name: `Display ${connections.members.length + 1}`, role: 'display' });
 				}}
 			>
-				Show gameboard on this device
+				Use this device as display
 			</button>
 			<div>
 				<pre>{JSON.stringify(connections, null, 4)}</pre>
