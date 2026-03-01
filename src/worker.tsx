@@ -6,6 +6,7 @@ import { defineApp } from 'rwsdk/worker';
 import { Document } from '@/app/document';
 import { setCommonHeaders } from '@/app/headers';
 import { Home } from '@/app/pages/home';
+import sessionMiddleware from './app/middleware/session';
 import Game from './app/pages/game';
 
 export type AppContext = {};
@@ -14,9 +15,6 @@ export { SyncedStateServer };
 export default defineApp([
 	...syncedStateRoutes(() => env.SYNCED_STATE_SERVER),
 	setCommonHeaders(),
-	({ ctx }) => {
-		// setup ctx here
-		ctx;
-	},
+	sessionMiddleware,
 	render(Document, [route('/', Home), route('/games/:gameId', Game)]),
 ]);
