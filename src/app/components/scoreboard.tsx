@@ -1,6 +1,6 @@
 'use client';
 
-import type { Connection, Connections } from '../pages/game';
+import type { Connection, Connections } from '@/types';
 
 export default function Scoreboard({ connections }: { connections: Connections }) {
 	return (

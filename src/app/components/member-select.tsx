@@ -1,6 +1,6 @@
 'use client';
 
-import type { Connection, Connections } from '@/app/pages/game';
+import type { Connection, Connections } from '@/types';
 import getRoleFromConnections from '@/utils/get-role-from-connections';
 
 export default function MemberSelect({

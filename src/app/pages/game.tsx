@@ -3,26 +3,15 @@ import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import type { RequestInfo } from 'rwsdk/worker';
 
 import Board from '@/app/components/board';
-import MemberSelect from '@/app/components/member-select';
 import QuestionOverlay from '@/app/components/question-overlay';
 import getCategories from '@/categories';
+import type { Connection, Connections } from '@/types';
 import getRoleFromConnections from '@/utils/get-role-from-connections';
+import SetupView from '@/views/setup';
 import Buzzer from '../components/buzzer';
 import HostQuestionDisplay from '../components/host-question-display';
 import QuestionSelect from '../components/question-select';
 import Scoreboard from '../components/scoreboard';
-
-export type Connection = {
-	id: string;
-	name: string;
-	role: 'host' | 'player' | 'display';
-};
-
-export type Connections = {
-	host: Connection | undefined;
-	scoreboard: Connection | undefined;
-	members: Connection[];
-};
 
 export default function Game({ params, ctx }: RequestInfo) {
 	const [selectedQuestion, setSelectedQuestion] = useSyncedState({}, 'selectedQuestion');
@@ -73,24 +62,14 @@ export default function Game({ params, ctx }: RequestInfo) {
 	const role = getRoleFromConnections(connections, ctx.session?.cookieId || '');
 	if (gameState === 'setup') {
 		return (
-			<>
-				<h1>Game Setup</h1>
-				<p>Waiting for players to join...</p>
-				{ctx.session?.cookieId && <p>Your session ID: {ctx.session.cookieId}</p>}
-				{ctx.session?.cookieId && (
-					<MemberSelect
-						connections={connections}
-						registerConnection={registerConnection}
-						unregisterConnection={unregisterConnection}
-						sessionId={ctx.session?.cookieId}
-					/>
-				)}
-				{role === 'host' && (
-					<button type="button" onClick={() => setGameState('active')}>
-						Start Game
-					</button>
-				)}
-			</>
+			<SetupView
+				connections={connections}
+				registerConnection={registerConnection}
+				unregisterConnection={unregisterConnection}
+				sessionId={ctx.session?.cookieId || ''}
+				role={role || ''}
+				setGameState={setGameState}
+			/>
 		);
 	}
 
