@@ -1,20 +1,16 @@
 'use client';
 
-export default function Scoreboard({ connections, setGameState }: { connections: any; setGameState: (state: string) => void }) {
+import type { Connection, Connections } from '@/types';
+
+export default function Scoreboard({ connections }: { connections: Connections }) {
 	return (
 		<div className="jeopardy-scoreboard">
 			<h2>Scoreboard</h2>
 			<ul>
-				{connections.members.map((member: any) => (
+				{connections.members.map((member: Connection) => (
 					<li key={member.id}>{member.name}</li>
 				))}
 			</ul>
-			<button type="button" onClick={() => setGameState('setup')}>
-				Back to Setup
-			</button>
-			<button type="button" onClick={() => setGameState('end')}>
-				End Game
-			</button>
 		</div>
 	);
 }

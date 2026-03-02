@@ -1,11 +1,12 @@
 'use client';
+import type { TCategory } from '@/types';
 import Category from './category';
 
-export default function Board({ categories, selectQuestion }: { categories: any[]; selectQuestion: (question: object) => void }) {
+export default function Board({ categories }: { categories: TCategory[] }) {
 	return (
 		<div className="jeopardy-board">
 			{categories.map(category => (
-				<Category key={category.id} category={category} selectQuestion={selectQuestion} />
+				<Category key={category.id} category={category} />
 			))}
 		</div>
 	);

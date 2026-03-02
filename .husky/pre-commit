@@ -1,1 +1,3 @@
 pnpm generate
+pnpm biome:check
+pnpm type-check
