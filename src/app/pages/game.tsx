@@ -98,7 +98,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 		return (
 			<>
 				<h1>Game Over</h1>
-				<Scoreboard connections={connections} setGameState={setGameState} />
+				<Scoreboard connections={connections} />
 			</>
 		);
 	}
@@ -119,7 +119,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 		return (
 			<>
 				<p>Role: Display</p>
-				<Scoreboard connections={connections} setGameState={setGameState} />
+				<Scoreboard connections={connections} />
 				<QuestionOverlay selectedQuestion={selectedQuestion} setQuestionState={setQuestionState} questionState={questionState} />
 				<Board categories={categories} selectQuestion={selectQuestion} />
 			</>
@@ -130,7 +130,13 @@ export default function Game({ params, ctx }: RequestInfo) {
 		return (
 			<>
 				<p>Role: Host</p>
-				<Scoreboard connections={connections} setGameState={setGameState} />
+				<Scoreboard connections={connections} />
+				<button type="button" onClick={() => setGameState('setup')}>
+					Back to Setup
+				</button>
+				<button type="button" onClick={() => setGameState('end')}>
+					End Game
+				</button>
 				{questionState === 'initial' ? (
 					<p>Player choosing question...</p>
 				) : (
