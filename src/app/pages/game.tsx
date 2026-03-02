@@ -120,7 +120,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 			<>
 				<p>Role: Display</p>
 				<Scoreboard connections={connections} />
-				<QuestionOverlay selectedQuestion={selectedQuestion} setQuestionState={setQuestionState} questionState={questionState} />
+				<QuestionOverlay selectedQuestion={selectedQuestion} questionState={questionState} />
 				<Board categories={categories} />
 			</>
 		);
