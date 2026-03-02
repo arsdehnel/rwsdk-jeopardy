@@ -6,7 +6,7 @@ export default function getRoleFromConnections(
 ): 'host' | 'player' | 'display' | undefined {
 	if (connections.host?.id === sessionId) {
 		return 'host';
-	} else if (connections.scoreboard?.id === sessionId) {
+	} else if (connections.display?.id === sessionId) {
 		return 'display';
 	} else if (connections.members.some(member => member.id === sessionId)) {
 		return 'player';

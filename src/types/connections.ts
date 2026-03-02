@@ -6,6 +6,6 @@ export type Connection = {
 
 export type Connections = {
 	host: Connection | undefined;
-	scoreboard: Connection | undefined;
+	display: Connection | undefined;
 	members: Connection[];
 };

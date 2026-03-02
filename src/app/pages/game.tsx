@@ -18,7 +18,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 	const [gameState, setGameState] = useSyncedState('setup', 'gameState');
 	const [buzzedInPlayer, setBuzzedInPlayer] = useSyncedState<string | null>(null, 'buzzedInPlayer');
 	const [connections, setConnections] = useSyncedState<Connections>(
-		{ host: undefined, scoreboard: undefined, members: [] },
+		{ host: undefined, display: undefined, members: [] },
 		'connections',
 	);
 
@@ -31,7 +31,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 		if (connection.role === 'host') {
 			setConnections({ ...connections, host: connection });
 		} else if (connection.role === 'display') {
-			setConnections({ ...connections, scoreboard: connection });
+			setConnections({ ...connections, display: connection });
 		} else {
 			setConnections({ ...connections, members: [...connections.members, connection] });
 		}
@@ -40,8 +40,8 @@ export default function Game({ params, ctx }: RequestInfo) {
 	const unregisterConnection = (connectionId: string) => {
 		if (connections.host?.id === connectionId) {
 			setConnections({ ...connections, host: undefined });
-		} else if (connections.scoreboard?.id === connectionId) {
-			setConnections({ ...connections, scoreboard: undefined });
+		} else if (connections.display?.id === connectionId) {
+			setConnections({ ...connections, display: undefined });
 		} else {
 			setConnections({ ...connections, members: connections.members.filter(member => member.id !== connectionId) });
 		}
