@@ -1,5 +1,7 @@
 'use client';
 
+import type { Clue } from '@/types';
+
 export default function HostQuestionDisplay({
 	selectedQuestion,
 	setQuestionState,
@@ -7,18 +9,18 @@ export default function HostQuestionDisplay({
 	setBuzzedInPlayer,
 	questionAnsweredCorrectly,
 }: {
-	selectedQuestion: any;
-	setQuestionState: any;
+	selectedQuestion: Clue;
+	setQuestionState: (questionState: string) => void;
 	buzzedInPlayer: string | null;
 	setBuzzedInPlayer: (player: string | null) => void;
-	questionAnsweredCorrectly: (player: string | null, question: any) => void;
+	questionAnsweredCorrectly: (player: string | null, clue: Clue) => void;
 }) {
 	return (
 		<div>
 			<h2>Question</h2>
-			<p>{selectedQuestion.question}</p>
+			<p>{selectedQuestion.clue}</p>
 			<h2>Answer</h2>
-			<p>{selectedQuestion.answer}</p>
+			<p>{selectedQuestion.response}</p>
 			<button
 				type="button"
 				className="jeopardy-question-overlay-button"

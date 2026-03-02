@@ -9,7 +9,6 @@ import { Home } from '@/app/pages/home';
 import sessionMiddleware from './app/middleware/session';
 import Game from './app/pages/game';
 
-export type AppContext = {};
 export { SyncedStateServer };
 
 export default defineApp([

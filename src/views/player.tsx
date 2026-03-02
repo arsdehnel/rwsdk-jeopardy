@@ -1,18 +1,19 @@
 'use client';
 import Buzzer from '@/app/components/buzzer';
 import QuestionSelect from '@/app/components/question-select';
+import type { Clue, TCategory } from '@/types';
 
 export default function PlayerView({
 	questionState,
-	selectQuestion,
+	selectClue,
 	categories,
 	buzzedInPlayer,
 	sessionId,
 	setBuzzedInPlayer,
 }: {
 	questionState: string;
-	selectQuestion: (question: object) => void;
-	categories: object[];
+	selectClue: (clue: Clue) => void;
+	categories: TCategory[];
 	buzzedInPlayer: string | null;
 	sessionId: string;
 	setBuzzedInPlayer: (player: string | null) => void;
@@ -21,7 +22,7 @@ export default function PlayerView({
 		<>
 			<p>Role: Player</p>
 			{questionState === 'initial' ? (
-				<QuestionSelect selectQuestion={selectQuestion} categories={categories} />
+				<QuestionSelect selectClue={selectClue} categories={categories} />
 			) : (
 				<Buzzer setBuzzedInPlayer={setBuzzedInPlayer} buzzedInPlayer={buzzedInPlayer} sessionId={sessionId} />
 			)}

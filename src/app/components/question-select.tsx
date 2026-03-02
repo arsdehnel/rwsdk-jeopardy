@@ -1,11 +1,13 @@
 'use client';
 
+import type { Clue, TCategory } from '@/types';
+
 export default function QuestionSelect({
 	categories,
-	selectQuestion,
+	selectClue,
 }: {
-	categories: any[];
-	selectQuestion: (question: object) => void;
+	categories: TCategory[];
+	selectClue: (question: Clue) => void;
 }) {
 	return (
 		<div className="question-select">
@@ -14,10 +16,10 @@ export default function QuestionSelect({
 					<>
 						<h2>{category.title}</h2>
 						<ul>
-							{category.clues.map((clue: any) => {
+							{category.clues.map((clue: Clue) => {
 								return (
 									<li key={clue.id}>
-										<button type="button" onClick={() => selectQuestion(clue)}>
+										<button type="button" onClick={() => selectClue(clue)}>
 											{clue.value}
 										</button>
 									</li>

@@ -5,7 +5,7 @@ import type { RequestInfo } from 'rwsdk/worker';
 import Board from '@/app/components/board';
 import QuestionOverlay from '@/app/components/question-overlay';
 import getCategories from '@/categories';
-import type { Connection, Connections } from '@/types';
+import type { Clue, Connection, Connections } from '@/types';
 import getRoleFromConnections from '@/utils/get-role-from-connections';
 import HostView from '@/views/host';
 import PlayerView from '@/views/player';
@@ -13,7 +13,7 @@ import SetupView from '@/views/setup';
 import Scoreboard from '../components/scoreboard';
 
 export default function Game({ params, ctx }: RequestInfo) {
-	const [selectedQuestion, setSelectedQuestion] = useSyncedState({}, 'selectedQuestion');
+	const [selectedClue, setSelectedClue] = useSyncedState<Clue | null>(null, 'selectedClue');
 	const [questionState, setQuestionState] = useSyncedState('initial', 'questionState');
 	const [gameState, setGameState] = useSyncedState('setup', 'gameState');
 	const [buzzedInPlayer, setBuzzedInPlayer] = useSyncedState<string | null>(null, 'buzzedInPlayer');
@@ -47,15 +47,16 @@ export default function Game({ params, ctx }: RequestInfo) {
 		}
 	};
 
-	const selectQuestion = (question: object) => {
-		setSelectedQuestion(question);
+	const selectClue = (clue: Clue) => {
+		setSelectedClue(clue);
 		setQuestionState('question');
 	};
 
-	const questionAnsweredCorrectly = (player: string | null, question: any) => {
+	const questionAnsweredCorrectly = (player: string | null, question: Clue) => {
 		// In a real app, this would update the player's score in the database
 		setBuzzedInPlayer(null);
 		setQuestionState('initial');
+		console.log(`Player ${player} answered question ${JSON.stringify(question)} correctly!`);
 	};
 
 	const role = getRoleFromConnections(connections, ctx.session?.cookieId || '');
@@ -98,7 +99,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 			<>
 				<p>Role: Display</p>
 				<Scoreboard connections={connections} />
-				<QuestionOverlay selectedQuestion={selectedQuestion} questionState={questionState} />
+				<QuestionOverlay selectedQuestion={selectedClue} questionState={questionState} />
 				<Board categories={categories} />
 			</>
 		);
@@ -110,7 +111,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 				connections={connections}
 				questionState={questionState}
 				setQuestionState={setQuestionState}
-				selectedQuestion={selectedQuestion}
+				selectedQuestion={selectedClue}
 				buzzedInPlayer={buzzedInPlayer}
 				setBuzzedInPlayer={setBuzzedInPlayer}
 				questionAnsweredCorrectly={questionAnsweredCorrectly}
@@ -122,7 +123,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 	return (
 		<PlayerView
 			questionState={questionState}
-			selectQuestion={selectQuestion}
+			selectClue={selectClue}
 			categories={categories}
 			buzzedInPlayer={buzzedInPlayer}
 			sessionId={ctx.session?.cookieId || ''}
