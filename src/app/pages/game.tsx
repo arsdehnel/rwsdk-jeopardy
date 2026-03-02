@@ -6,10 +6,10 @@ import getCategories from '@/categories';
 import type { Clue, ClueState, Connection, Connections, GameState } from '@/types';
 import getRoleFromConnections from '@/utils/get-role-from-connections';
 import DisplayView from '@/views/display';
+import FinishedView from '@/views/finished';
 import HostView from '@/views/host';
 import PlayerView from '@/views/player';
 import SetupView from '@/views/setup';
-import Scoreboard from '../components/scoreboard';
 
 export default function Game({ params, ctx }: RequestInfo) {
 	const [selectedClue, setSelectedClue] = useSyncedState<Clue | null>(null, 'selectedClue');
@@ -73,12 +73,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 	}
 
 	if (gameState === 'finished') {
-		return (
-			<>
-				<h1>Game Over</h1>
-				<Scoreboard connections={connections} />
-			</>
-		);
+		return <FinishedView connections={connections} />;
 	}
 
 	if (!role) {
