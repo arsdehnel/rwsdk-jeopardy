@@ -48,7 +48,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 
 	const selectClue = (clue: Clue) => {
 		setSelectedClue(clue);
-		setClueState('question');
+		setClueState('clue');
 	};
 
 	const correctClueResponse = (player: string | null, clue: Clue) => {

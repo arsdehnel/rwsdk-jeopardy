@@ -1,2 +1,2 @@
 export type GameState = 'setup' | 'active' | 'finished';
-export type ClueState = 'initial' | 'question' | 'answer';
+export type ClueState = 'initial' | 'clue' | 'response';
