@@ -7,9 +7,9 @@ import QuestionOverlay from '@/app/components/question-overlay';
 import getCategories from '@/categories';
 import type { Connection, Connections } from '@/types';
 import getRoleFromConnections from '@/utils/get-role-from-connections';
+import HostView from '@/views/host';
 import SetupView from '@/views/setup';
 import Buzzer from '../components/buzzer';
-import HostQuestionDisplay from '../components/host-question-display';
 import QuestionSelect from '../components/question-select';
 import Scoreboard from '../components/scoreboard';
 
@@ -107,27 +107,16 @@ export default function Game({ params, ctx }: RequestInfo) {
 
 	if (role === 'host') {
 		return (
-			<>
-				<p>Role: Host</p>
-				<Scoreboard connections={connections} />
-				<button type="button" onClick={() => setGameState('setup')}>
-					Back to Setup
-				</button>
-				<button type="button" onClick={() => setGameState('end')}>
-					End Game
-				</button>
-				{questionState === 'initial' ? (
-					<p>Player choosing question...</p>
-				) : (
-					<HostQuestionDisplay
-						selectedQuestion={selectedQuestion}
-						setQuestionState={setQuestionState}
-						buzzedInPlayer={buzzedInPlayer}
-						setBuzzedInPlayer={setBuzzedInPlayer}
-						questionAnsweredCorrectly={questionAnsweredCorrectly}
-					/>
-				)}
-			</>
+			<HostView
+				connections={connections}
+				questionState={questionState}
+				setQuestionState={setQuestionState}
+				selectedQuestion={selectedQuestion}
+				buzzedInPlayer={buzzedInPlayer}
+				setBuzzedInPlayer={setBuzzedInPlayer}
+				questionAnsweredCorrectly={questionAnsweredCorrectly}
+				setGameState={setGameState}
+			/>
 		);
 	}
 

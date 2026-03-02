@@ -1,4 +1,4 @@
-import type { Connections } from '@/app/pages/game';
+import type { Connections } from '@/types';
 
 export default function getRoleFromConnections(
 	connections: Connections,
