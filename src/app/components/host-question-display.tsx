@@ -1,31 +1,31 @@
 'use client';
 
-import type { Clue } from '@/types';
+import type { Clue, ClueState } from '@/types';
 
-export default function HostQuestionDisplay({
-	selectedQuestion,
-	setQuestionState,
+export default function HostClueDisplay({
+	selectedClue,
+	setClueState,
 	buzzedInPlayer,
 	setBuzzedInPlayer,
-	questionAnsweredCorrectly,
+	correctClueResponse,
 }: {
-	selectedQuestion: Clue;
-	setQuestionState: (questionState: string) => void;
+	selectedClue: Clue;
+	setClueState: (clueState: ClueState) => void;
 	buzzedInPlayer: string | null;
 	setBuzzedInPlayer: (player: string | null) => void;
-	questionAnsweredCorrectly: (player: string | null, clue: Clue) => void;
+	correctClueResponse: (player: string | null, clue: Clue) => void;
 }) {
 	return (
 		<div>
 			<h2>Question</h2>
-			<p>{selectedQuestion.clue}</p>
+			<p>{selectedClue.clue}</p>
 			<h2>Answer</h2>
-			<p>{selectedQuestion.response}</p>
+			<p>{selectedClue.response}</p>
 			<button
 				type="button"
 				className="jeopardy-question-overlay-button"
 				onClick={() => {
-					setQuestionState('initial');
+					setClueState('initial');
 				}}
 			>
 				Back to Board
@@ -34,7 +34,7 @@ export default function HostQuestionDisplay({
 			<button type="submit" onClick={() => setBuzzedInPlayer(null)}>
 				Answer was wrong, reset buzzers
 			</button>
-			<button type="submit" onClick={() => questionAnsweredCorrectly(buzzedInPlayer, selectedQuestion)}>
+			<button type="submit" onClick={() => correctClueResponse(buzzedInPlayer, selectedClue)}>
 				Answer was correct, award points and reset buzzers
 			</button>
 		</div>

@@ -2,11 +2,10 @@
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import type { RequestInfo } from 'rwsdk/worker';
 
-import Board from '@/app/components/board';
-import QuestionOverlay from '@/app/components/question-overlay';
 import getCategories from '@/categories';
-import type { Clue, Connection, Connections } from '@/types';
+import type { Clue, ClueState, Connection, Connections, GameState } from '@/types';
 import getRoleFromConnections from '@/utils/get-role-from-connections';
+import DisplayView from '@/views/display';
 import HostView from '@/views/host';
 import PlayerView from '@/views/player';
 import SetupView from '@/views/setup';
@@ -14,8 +13,8 @@ import Scoreboard from '../components/scoreboard';
 
 export default function Game({ params, ctx }: RequestInfo) {
 	const [selectedClue, setSelectedClue] = useSyncedState<Clue | null>(null, 'selectedClue');
-	const [questionState, setQuestionState] = useSyncedState('initial', 'questionState');
-	const [gameState, setGameState] = useSyncedState('setup', 'gameState');
+	const [clueState, setClueState] = useSyncedState<ClueState>('initial', 'clueState');
+	const [gameState, setGameState] = useSyncedState<GameState>('setup', 'gameState');
 	const [buzzedInPlayer, setBuzzedInPlayer] = useSyncedState<string | null>(null, 'buzzedInPlayer');
 	const [connections, setConnections] = useSyncedState<Connections>(
 		{ host: undefined, display: undefined, members: [] },
@@ -49,14 +48,14 @@ export default function Game({ params, ctx }: RequestInfo) {
 
 	const selectClue = (clue: Clue) => {
 		setSelectedClue(clue);
-		setQuestionState('question');
+		setClueState('question');
 	};
 
-	const questionAnsweredCorrectly = (player: string | null, question: Clue) => {
+	const correctClueResponse = (player: string | null, clue: Clue) => {
 		// In a real app, this would update the player's score in the database
 		setBuzzedInPlayer(null);
-		setQuestionState('initial');
-		console.log(`Player ${player} answered question ${JSON.stringify(question)} correctly!`);
+		setClueState('initial');
+		console.log(`Player ${player} answered clue ${JSON.stringify(clue)} correctly!`);
 	};
 
 	const role = getRoleFromConnections(connections, ctx.session?.cookieId || '');
@@ -67,13 +66,13 @@ export default function Game({ params, ctx }: RequestInfo) {
 				registerConnection={registerConnection}
 				unregisterConnection={unregisterConnection}
 				sessionId={ctx.session?.cookieId || ''}
-				role={role || ''}
+				role={role}
 				setGameState={setGameState}
 			/>
 		);
 	}
 
-	if (gameState === 'end') {
+	if (gameState === 'finished') {
 		return (
 			<>
 				<h1>Game Over</h1>
@@ -95,26 +94,19 @@ export default function Game({ params, ctx }: RequestInfo) {
 
 	// game mode active
 	if (role === 'display') {
-		return (
-			<>
-				<p>Role: Display</p>
-				<Scoreboard connections={connections} />
-				<QuestionOverlay selectedQuestion={selectedClue} questionState={questionState} />
-				<Board categories={categories} />
-			</>
-		);
+		return <DisplayView connections={connections} selectedClue={selectedClue} clueState={clueState} categories={categories} />;
 	}
 
 	if (role === 'host') {
 		return (
 			<HostView
 				connections={connections}
-				questionState={questionState}
-				setQuestionState={setQuestionState}
-				selectedQuestion={selectedClue}
+				clueState={clueState}
+				setClueState={setClueState}
+				selectedClue={selectedClue}
 				buzzedInPlayer={buzzedInPlayer}
 				setBuzzedInPlayer={setBuzzedInPlayer}
-				questionAnsweredCorrectly={questionAnsweredCorrectly}
+				correctClueResponse={correctClueResponse}
 				setGameState={setGameState}
 			/>
 		);
@@ -122,7 +114,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 
 	return (
 		<PlayerView
-			questionState={questionState}
+			clueState={clueState}
 			selectClue={selectClue}
 			categories={categories}
 			buzzedInPlayer={buzzedInPlayer}

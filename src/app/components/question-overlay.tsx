@@ -2,15 +2,15 @@
 
 import type { Clue } from '@/types';
 
-const QuestionOverlay = ({ selectedQuestion, questionState }: { selectedQuestion: Clue | null; questionState: string }) => {
-	if (questionState === 'initial' || !selectedQuestion) {
+const QuestionOverlay = ({ selectedClue, clueState }: { selectedClue: Clue | null; clueState: string }) => {
+	if (clueState === 'initial' || !selectedClue) {
 		return null;
 	}
 
 	return (
 		<div className="jeopardy-question-overlay">
 			<div className="jeopardy-question-content">
-				{questionState === 'question' ? <p>{selectedQuestion.clue}</p> : <p>{selectedQuestion.response}</p>}
+				{clueState === 'question' ? <p>{selectedClue.clue}</p> : <p>{selectedClue.response}</p>}
 			</div>
 		</div>
 	);

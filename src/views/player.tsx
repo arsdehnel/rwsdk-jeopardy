@@ -4,14 +4,14 @@ import QuestionSelect from '@/app/components/question-select';
 import type { Clue, TCategory } from '@/types';
 
 export default function PlayerView({
-	questionState,
+	clueState,
 	selectClue,
 	categories,
 	buzzedInPlayer,
 	sessionId,
 	setBuzzedInPlayer,
 }: {
-	questionState: string;
+	clueState: string;
 	selectClue: (clue: Clue) => void;
 	categories: TCategory[];
 	buzzedInPlayer: string | null;
@@ -21,7 +21,7 @@ export default function PlayerView({
 	return (
 		<>
 			<p>Role: Player</p>
-			{questionState === 'initial' ? (
+			{clueState === 'initial' ? (
 				<QuestionSelect selectClue={selectClue} categories={categories} />
 			) : (
 				<Buzzer setBuzzedInPlayer={setBuzzedInPlayer} buzzedInPlayer={buzzedInPlayer} sessionId={sessionId} />

@@ -1,6 +1,6 @@
 'use client';
 import MemberSelect from '@/app/components/member-select';
-import type { Connection, Connections } from '@/types';
+import type { Connection, Connections, GameState } from '@/types';
 
 export default function SetupView({
 	connections,
@@ -14,8 +14,8 @@ export default function SetupView({
 	registerConnection: (connection: Connection) => void;
 	unregisterConnection: (connectionId: string) => void;
 	sessionId: string;
-	role: string;
-	setGameState: (gameState: string) => void;
+	role: string | undefined;
+	setGameState: (gameState: GameState) => void;
 }) {
 	return (
 		<>

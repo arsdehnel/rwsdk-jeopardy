@@ -1,26 +1,26 @@
 'use client';
-import HostQuestionDisplay from '@/app/components/host-question-display';
+import HostClueDisplay from '@/app/components/host-question-display';
 import Scoreboard from '@/app/components/scoreboard';
-import type { Clue, Connections } from '@/types';
+import type { Clue, ClueState, Connections, GameState } from '@/types';
 
 export default function HostView({
 	connections,
-	questionState,
-	setQuestionState,
-	selectedQuestion,
+	clueState,
+	setClueState,
+	selectedClue,
 	buzzedInPlayer,
 	setBuzzedInPlayer,
-	questionAnsweredCorrectly,
+	correctClueResponse,
 	setGameState,
 }: {
 	connections: Connections;
-	questionState: string;
-	setQuestionState: (questionState: string) => void;
-	selectedQuestion: Clue | null;
+	clueState: ClueState;
+	setClueState: (clueState: ClueState) => void;
+	selectedClue: Clue | null;
 	buzzedInPlayer: string | null;
 	setBuzzedInPlayer: (player: string | null) => void;
-	questionAnsweredCorrectly: (player: string | null, question: Clue) => void;
-	setGameState: (gameState: string) => void;
+	correctClueResponse: (player: string | null, clue: Clue) => void;
+	setGameState: (gameState: GameState) => void;
 }) {
 	return (
 		<>
@@ -29,19 +29,19 @@ export default function HostView({
 			<button type="button" onClick={() => setGameState('setup')}>
 				Back to Setup
 			</button>
-			<button type="button" onClick={() => setGameState('end')}>
+			<button type="button" onClick={() => setGameState('finished')}>
 				End Game
 			</button>
-			{questionState === 'initial' ? (
+			{clueState === 'initial' ? (
 				<p>Player choosing question...</p>
 			) : (
-				selectedQuestion && (
-					<HostQuestionDisplay
-						selectedQuestion={selectedQuestion}
-						setQuestionState={setQuestionState}
+				selectedClue && (
+					<HostClueDisplay
+						selectedClue={selectedClue}
+						setClueState={setClueState}
 						buzzedInPlayer={buzzedInPlayer}
 						setBuzzedInPlayer={setBuzzedInPlayer}
-						questionAnsweredCorrectly={questionAnsweredCorrectly}
+						correctClueResponse={correctClueResponse}
 					/>
 				)
 			)}
