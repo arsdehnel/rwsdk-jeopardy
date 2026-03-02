@@ -8,9 +8,8 @@ import getCategories from '@/categories';
 import type { Connection, Connections } from '@/types';
 import getRoleFromConnections from '@/utils/get-role-from-connections';
 import HostView from '@/views/host';
+import PlayerView from '@/views/player';
 import SetupView from '@/views/setup';
-import Buzzer from '../components/buzzer';
-import QuestionSelect from '../components/question-select';
 import Scoreboard from '../components/scoreboard';
 
 export default function Game({ params, ctx }: RequestInfo) {
@@ -121,13 +120,13 @@ export default function Game({ params, ctx }: RequestInfo) {
 	}
 
 	return (
-		<>
-			<p>Role: Player</p>
-			{questionState === 'initial' ? (
-				<QuestionSelect selectQuestion={selectQuestion} categories={categories} />
-			) : (
-				<Buzzer setBuzzedInPlayer={setBuzzedInPlayer} buzzedInPlayer={buzzedInPlayer} sessionId={ctx.session?.cookieId} />
-			)}
-		</>
+		<PlayerView
+			questionState={questionState}
+			selectQuestion={selectQuestion}
+			categories={categories}
+			buzzedInPlayer={buzzedInPlayer}
+			sessionId={ctx.session?.cookieId || ''}
+			setBuzzedInPlayer={setBuzzedInPlayer}
+		/>
 	);
 }
