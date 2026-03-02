@@ -1,24 +1,46 @@
-# RedwoodSDK Minimal Starter
+# Jeopardy
 
-This is the starter project for RedwoodSDK. It's a template designed to get you up and running as quickly as possible.
+A real-time, multiplayer Jeopardy game built with [RedwoodSDK](https://rwsdk.com), demonstrating a more involved use case for `useSyncedState` backed by Cloudflare Durable Objects.
 
-Create your new project:
+## Overview
 
-```shell
-npx create-rwsdk my-project-name
-cd my-project-name
-npm install
+Multiple players connect to a shared game session from separate devices. State is synchronized in real-time across all connected clients via WebSocket — no polling, no manual sync logic.
+
+There are three roles:
+
+- **Host** — controls game flow, judges responses, and manages players
+- **Display** — a dedicated screen showing the board and clues (think: the TV in the room)
+- **Player** — selects clues on their turn and buzzes in to respond
+
+## How It Works
+
+All shared game state (`connections`, `selectedClue`, `clueState`, `gameState`, `buzzedInPlayer`) lives in `useSyncedState` keys. When any client updates a value, all connected clients see the change immediately.
+
+This project is intended to showcase how `useSyncedState` can coordinate complex multi-client interactions — role assignment, turn management, buzzer logic — without any custom WebSocket handling or server-side orchestration code.
+
+## Getting Started
+
+```bash
+pnpm install
+pnpm dev
 ```
 
-## Running the dev server
+Navigate to `/game/:gameId` from multiple devices or browser tabs. One participant should select the **Host** role to start the game.
 
-```shell
-npm run dev
+## Project Structure
+
+```
+src/
+  app/
+    components/   # Shared UI components (Board, Buzzer, Scoreboard, etc.)
+    pages/
+      game.tsx    # Main game component — state management and role-based routing
+    views/        # Role-specific views (HostView, PlayerView, DisplayView, SetupView)
+  types/          # Shared TypeScript types (Clue, Category, Connection, etc.)
+  utils/          # Helper functions
+  categories.ts   # Clue and category data
 ```
 
-Point your browser to the URL displayed in the terminal (e.g. `http://localhost:5173/`). You should see the RedwoodSDK welcome page in your browser.
+## Contributing
 
-## Further Reading
-
-- [RedwoodSDK Documentation](https://docs.rwsdk.com/)
-- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers)
+Contributions welcome. If you're familiar with RedwoodSDK and want to extend the game (scoring, multiple rounds, custom clue sets, etc.) please open an issue or PR.
