@@ -1,7 +1,7 @@
 @import "./board.less";
 @import "./category.less";
 @import "./clue.less";
-@import "./question-overlay.less";
+@import "./clue-overlay.less";
 
 body {
 	padding: 0;

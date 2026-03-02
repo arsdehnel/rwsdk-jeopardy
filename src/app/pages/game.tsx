@@ -55,7 +55,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 		// In a real app, this would update the player's score in the database
 		setBuzzedInPlayer(null);
 		setClueState('initial');
-		console.log(`Player ${player} answered clue ${JSON.stringify(clue)} correctly!`);
+		console.log(`Player ${player} responded to clue ${JSON.stringify(clue)} correctly!`);
 	};
 
 	const role = getRoleFromConnections(connections, ctx.session?.cookieId || '');

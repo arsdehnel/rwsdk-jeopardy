@@ -1,5 +1,5 @@
 'use client';
-import HostClueDisplay from '@/app/components/host-question-display';
+import HostClueDisplay from '@/app/components/host-clue-display';
 import Scoreboard from '@/app/components/scoreboard';
 import type { Clue, ClueState, Connections, GameState } from '@/types';
 
@@ -33,7 +33,7 @@ export default function HostView({
 				End Game
 			</button>
 			{clueState === 'initial' ? (
-				<p>Player choosing question...</p>
+				<p>Player choosing clue...</p>
 			) : (
 				selectedClue && (
 					<HostClueDisplay

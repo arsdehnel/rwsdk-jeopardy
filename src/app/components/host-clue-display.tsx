@@ -17,13 +17,13 @@ export default function HostClueDisplay({
 }) {
 	return (
 		<div>
-			<h2>Question</h2>
+			<h2>Clue</h2>
 			<p>{selectedClue.clue}</p>
-			<h2>Answer</h2>
+			<h2>Response</h2>
 			<p>{selectedClue.response}</p>
 			<button
 				type="button"
-				className="jeopardy-question-overlay-button"
+				className="clue-overlay-button"
 				onClick={() => {
 					setClueState('initial');
 				}}
@@ -32,10 +32,10 @@ export default function HostClueDisplay({
 			</button>
 			{buzzedInPlayer ? <p>{buzzedInPlayer} has buzzed in!</p> : <p>No one has buzzed in yet.</p>}
 			<button type="submit" onClick={() => setBuzzedInPlayer(null)}>
-				Answer was wrong, reset buzzers
+				Response was wrong, reset buzzers
 			</button>
 			<button type="submit" onClick={() => correctClueResponse(buzzedInPlayer, selectedClue)}>
-				Answer was correct, award points and reset buzzers
+				Response was correct, award points and reset buzzers
 			</button>
 		</div>
 	);

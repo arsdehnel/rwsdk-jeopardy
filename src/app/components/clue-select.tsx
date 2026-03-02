@@ -2,15 +2,9 @@
 
 import type { Clue, TCategory } from '@/types';
 
-export default function QuestionSelect({
-	categories,
-	selectClue,
-}: {
-	categories: TCategory[];
-	selectClue: (question: Clue) => void;
-}) {
+export default function ClueSelect({ categories, selectClue }: { categories: TCategory[]; selectClue: (clue: Clue) => void }) {
 	return (
-		<div className="question-select">
+		<div className="clue-select">
 			{categories.map(category => {
 				return (
 					<>
