@@ -3,7 +3,7 @@ import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import type { RequestInfo } from 'rwsdk/worker';
 import getCategories from '@/categories';
 import useGameState from '@/hooks/use-game-state';
-import type { Clue, Connection, Connections, GameState } from '@/types';
+import type { Clue, Connection, Connections, GamePhase } from '@/types';
 import getRoleFromConnections from '@/utils/get-role-from-connections';
 import DisplayView from '@/views/display';
 import FinishedView from '@/views/finished';
@@ -13,7 +13,7 @@ import SetupView from '@/views/setup';
 
 export default function Game({ params, ctx }: RequestInfo) {
 	const { selectedClue, setSelectedClue } = useGameState();
-	const [gameState, setGameState] = useSyncedState<GameState>('setup', 'gameState');
+	const [gamePhase, setGamePhase] = useSyncedState<GamePhase>('setup', 'gamePhase');
 	const [buzzedInPlayer, setBuzzedInPlayer] = useSyncedState<string | null>(null, 'buzzedInPlayer');
 	const [connections, setConnections] = useSyncedState<Connections>(
 		{ host: undefined, display: undefined, members: [] },
@@ -52,7 +52,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 	};
 
 	const role = getRoleFromConnections(connections, ctx.session?.cookieId || '');
-	if (gameState === 'setup') {
+	if (gamePhase === 'setup') {
 		return (
 			<SetupView
 				connections={connections}
@@ -60,12 +60,12 @@ export default function Game({ params, ctx }: RequestInfo) {
 				unregisterConnection={unregisterConnection}
 				sessionId={ctx.session?.cookieId || ''}
 				role={role}
-				setGameState={setGameState}
+				setGamePhase={setGamePhase}
 			/>
 		);
 	}
 
-	if (gameState === 'finished') {
+	if (gamePhase === 'finished') {
 		return <FinishedView connections={connections} />;
 	}
 
@@ -94,7 +94,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 				buzzedInPlayer={buzzedInPlayer}
 				setBuzzedInPlayer={setBuzzedInPlayer}
 				correctClueResponse={correctClueResponse}
-				setGameState={setGameState}
+				setGamePhase={setGamePhase}
 			/>
 		);
 	}

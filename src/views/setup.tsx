@@ -1,6 +1,6 @@
 'use client';
 import MemberSelect from '@/app/components/member-select';
-import type { Connection, Connections, GameState } from '@/types';
+import type { Connection, Connections, GamePhase } from '@/types';
 
 export default function SetupView({
 	connections,
@@ -8,14 +8,14 @@ export default function SetupView({
 	unregisterConnection,
 	sessionId,
 	role,
-	setGameState,
+	setGamePhase,
 }: {
 	connections: Connections;
 	registerConnection: (connection: Connection) => void;
 	unregisterConnection: (connectionId: string) => void;
 	sessionId: string;
 	role: string | undefined;
-	setGameState: (gameState: GameState) => void;
+	setGamePhase: (gamePhase: GamePhase) => void;
 }) {
 	return (
 		<>
@@ -31,7 +31,7 @@ export default function SetupView({
 				/>
 			)}
 			{role === 'host' && (
-				<button type="button" onClick={() => setGameState('active')}>
+				<button type="button" onClick={() => setGamePhase('active')}>
 					Start Game
 				</button>
 			)}

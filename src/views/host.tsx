@@ -1,7 +1,7 @@
 'use client';
 import HostClueDisplay from '@/app/components/host-clue-display';
 import Scoreboard from '@/app/components/scoreboard';
-import type { Clue, Connections, GameState } from '@/types';
+import type { Clue, Connections, GamePhase } from '@/types';
 
 export default function HostView({
 	connections,
@@ -10,7 +10,7 @@ export default function HostView({
 	setSelectedClue,
 	setBuzzedInPlayer,
 	correctClueResponse,
-	setGameState,
+	setGamePhase,
 }: {
 	connections: Connections;
 	selectedClue: Clue | null;
@@ -18,16 +18,16 @@ export default function HostView({
 	setSelectedClue: (clue: Clue | null) => void;
 	setBuzzedInPlayer: (player: string | null) => void;
 	correctClueResponse: (player: string | null, clue: Clue) => void;
-	setGameState: (gameState: GameState) => void;
+	setGamePhase: (gamePhase: GamePhase) => void;
 }) {
 	return (
 		<>
 			<p>Role: Host</p>
 			<Scoreboard connections={connections} />
-			<button type="button" onClick={() => setGameState('setup')}>
+			<button type="button" onClick={() => setGamePhase('setup')}>
 				Back to Setup
 			</button>
-			<button type="button" onClick={() => setGameState('finished')}>
+			<button type="button" onClick={() => setGamePhase('finished')}>
 				End Game
 			</button>
 			{selectedClue ? (

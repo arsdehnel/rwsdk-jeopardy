@@ -1,1 +1,1 @@
-export type GameState = 'setup' | 'active' | 'finished';
+export type GamePhase = 'setup' | 'active' | 'finished';
