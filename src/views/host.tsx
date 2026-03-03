@@ -1,23 +1,21 @@
 'use client';
 import HostClueDisplay from '@/app/components/host-clue-display';
 import Scoreboard from '@/app/components/scoreboard';
-import type { Clue, ClueState, Connections, GameState } from '@/types';
+import type { Clue, Connections, GameState } from '@/types';
 
 export default function HostView({
 	connections,
-	clueState,
-	setClueState,
 	selectedClue,
 	buzzedInPlayer,
+	setSelectedClue,
 	setBuzzedInPlayer,
 	correctClueResponse,
 	setGameState,
 }: {
 	connections: Connections;
-	clueState: ClueState;
-	setClueState: (clueState: ClueState) => void;
 	selectedClue: Clue | null;
 	buzzedInPlayer: string | null;
+	setSelectedClue: (clue: Clue | null) => void;
 	setBuzzedInPlayer: (player: string | null) => void;
 	correctClueResponse: (player: string | null, clue: Clue) => void;
 	setGameState: (gameState: GameState) => void;
@@ -32,18 +30,16 @@ export default function HostView({
 			<button type="button" onClick={() => setGameState('finished')}>
 				End Game
 			</button>
-			{clueState === 'initial' ? (
-				<p>Player choosing clue...</p>
+			{selectedClue ? (
+				<HostClueDisplay
+					selectedClue={selectedClue}
+					buzzedInPlayer={buzzedInPlayer}
+					setSelectedClue={setSelectedClue}
+					setBuzzedInPlayer={setBuzzedInPlayer}
+					correctClueResponse={correctClueResponse}
+				/>
 			) : (
-				selectedClue && (
-					<HostClueDisplay
-						selectedClue={selectedClue}
-						setClueState={setClueState}
-						buzzedInPlayer={buzzedInPlayer}
-						setBuzzedInPlayer={setBuzzedInPlayer}
-						correctClueResponse={correctClueResponse}
-					/>
-				)
+				<p>Player choosing clue...</p>
 			)}
 		</>
 	);

@@ -1,7 +1,7 @@
 {
-	"name": "@redwoodjs/starter",
+	"name": "rwsdk-jeopardy",
 	"version": "1.0.0",
-	"description": "A bare-bones RedwoodSDK starter",
+	"description": "A simple Jeopardy game built with RedwoodSDK using React Server Components and Cloudflare Workers",
 	"main": "index.js",
 	"type": "module",
 	"keywords": [],

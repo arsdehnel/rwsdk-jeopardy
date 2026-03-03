@@ -4,15 +4,15 @@ import ClueSelect from '@/app/components/clue-select';
 import type { Clue, TCategory } from '@/types';
 
 export default function PlayerView({
-	clueState,
-	selectClue,
+	setSelectedClue,
+	selectedClue,
 	categories,
 	buzzedInPlayer,
 	sessionId,
 	setBuzzedInPlayer,
 }: {
-	clueState: string;
-	selectClue: (clue: Clue) => void;
+	setSelectedClue: (clue: Clue) => void;
+	selectedClue: Clue | null;
 	categories: TCategory[];
 	buzzedInPlayer: string | null;
 	sessionId: string;
@@ -21,8 +21,8 @@ export default function PlayerView({
 	return (
 		<>
 			<p>Role: Player</p>
-			{clueState === 'initial' ? (
-				<ClueSelect selectClue={selectClue} categories={categories} />
+			{selectedClue === null ? (
+				<ClueSelect setSelectedClue={setSelectedClue} categories={categories} />
 			) : (
 				<Buzzer setBuzzedInPlayer={setBuzzedInPlayer} buzzedInPlayer={buzzedInPlayer} sessionId={sessionId} />
 			)}

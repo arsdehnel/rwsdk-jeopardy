@@ -2,7 +2,13 @@
 
 import type { Clue, TCategory } from '@/types';
 
-export default function ClueSelect({ categories, selectClue }: { categories: TCategory[]; selectClue: (clue: Clue) => void }) {
+export default function ClueSelect({
+	categories,
+	setSelectedClue,
+}: {
+	categories: TCategory[];
+	setSelectedClue: (clue: Clue) => void;
+}) {
 	return (
 		<div className="clue-select">
 			{categories.map(category => {
@@ -13,7 +19,7 @@ export default function ClueSelect({ categories, selectClue }: { categories: TCa
 							{category.clues.map((clue: Clue) => {
 								return (
 									<li key={clue.id}>
-										<button type="button" onClick={() => selectClue(clue)}>
+										<button type="button" onClick={() => setSelectedClue(clue)}>
 											{clue.value}
 										</button>
 									</li>

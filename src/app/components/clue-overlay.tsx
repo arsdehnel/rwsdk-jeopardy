@@ -1,15 +1,15 @@
 'use client';
 
-import type { Clue, ClueState } from '@/types';
+import type { Clue } from '@/types';
 
-const ClueOverlay = ({ selectedClue, clueState }: { selectedClue: Clue | null; clueState: ClueState }) => {
-	if (clueState === 'initial' || !selectedClue) {
+const ClueOverlay = ({ selectedClue }: { selectedClue: Clue | null }) => {
+	if (!selectedClue) {
 		return null;
 	}
 
 	return (
 		<div className="clue-overlay">
-			<div className="clue-content">{clueState === 'clue' ? <p>{selectedClue.clue}</p> : <p>{selectedClue.response}</p>}</div>
+			<div className="clue-content">{selectedClue && <p>{selectedClue.clue}</p>}</div>
 		</div>
 	);
 };
