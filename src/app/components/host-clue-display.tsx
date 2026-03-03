@@ -1,17 +1,17 @@
 'use client';
 
-import type { Clue, ClueState } from '@/types';
+import type { Clue } from '@/types';
 
 export default function HostClueDisplay({
 	selectedClue,
-	setClueState,
 	buzzedInPlayer,
+	setSelectedClue,
 	setBuzzedInPlayer,
 	correctClueResponse,
 }: {
 	selectedClue: Clue;
-	setClueState: (clueState: ClueState) => void;
 	buzzedInPlayer: string | null;
+	setSelectedClue: (clue: Clue | null) => void;
 	setBuzzedInPlayer: (player: string | null) => void;
 	correctClueResponse: (player: string | null, clue: Clue) => void;
 }) {
@@ -25,7 +25,7 @@ export default function HostClueDisplay({
 				type="button"
 				className="clue-overlay-button"
 				onClick={() => {
-					setClueState('initial');
+					setSelectedClue(null);
 				}}
 			>
 				Back to Board

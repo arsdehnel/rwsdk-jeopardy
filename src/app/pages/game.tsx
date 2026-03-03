@@ -1,9 +1,9 @@
 'use client';
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import type { RequestInfo } from 'rwsdk/worker';
-
 import getCategories from '@/categories';
-import type { Clue, ClueState, Connection, Connections, GameState } from '@/types';
+import useGameState from '@/hooks/use-game-state';
+import type { Clue, Connection, Connections, GameState } from '@/types';
 import getRoleFromConnections from '@/utils/get-role-from-connections';
 import DisplayView from '@/views/display';
 import FinishedView from '@/views/finished';
@@ -12,8 +12,7 @@ import PlayerView from '@/views/player';
 import SetupView from '@/views/setup';
 
 export default function Game({ params, ctx }: RequestInfo) {
-	const [selectedClue, setSelectedClue] = useSyncedState<Clue | null>(null, 'selectedClue');
-	const [clueState, setClueState] = useSyncedState<ClueState>('initial', 'clueState');
+	const { selectedClue, setSelectedClue } = useGameState();
 	const [gameState, setGameState] = useSyncedState<GameState>('setup', 'gameState');
 	const [buzzedInPlayer, setBuzzedInPlayer] = useSyncedState<string | null>(null, 'buzzedInPlayer');
 	const [connections, setConnections] = useSyncedState<Connections>(
@@ -46,15 +45,9 @@ export default function Game({ params, ctx }: RequestInfo) {
 		}
 	};
 
-	const selectClue = (clue: Clue) => {
-		setSelectedClue(clue);
-		setClueState('clue');
-	};
-
 	const correctClueResponse = (player: string | null, clue: Clue) => {
 		// In a real app, this would update the player's score in the database
 		setBuzzedInPlayer(null);
-		setClueState('initial');
 		console.log(`Player ${player} responded to clue ${JSON.stringify(clue)} correctly!`);
 	};
 
@@ -89,16 +82,15 @@ export default function Game({ params, ctx }: RequestInfo) {
 
 	// game mode active
 	if (role === 'display') {
-		return <DisplayView connections={connections} selectedClue={selectedClue} clueState={clueState} categories={categories} />;
+		return <DisplayView connections={connections} selectedClue={selectedClue} categories={categories} />;
 	}
 
 	if (role === 'host') {
 		return (
 			<HostView
 				connections={connections}
-				clueState={clueState}
-				setClueState={setClueState}
 				selectedClue={selectedClue}
+				setSelectedClue={setSelectedClue}
 				buzzedInPlayer={buzzedInPlayer}
 				setBuzzedInPlayer={setBuzzedInPlayer}
 				correctClueResponse={correctClueResponse}
@@ -109,8 +101,8 @@ export default function Game({ params, ctx }: RequestInfo) {
 
 	return (
 		<PlayerView
-			clueState={clueState}
-			selectClue={selectClue}
+			selectedClue={selectedClue}
+			setSelectedClue={setSelectedClue}
 			categories={categories}
 			buzzedInPlayer={buzzedInPlayer}
 			sessionId={ctx.session?.cookieId || ''}

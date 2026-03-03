@@ -14,7 +14,7 @@ There are three roles:
 
 ## How It Works
 
-All shared game state (`connections`, `selectedClue`, `clueState`, `gameState`, `buzzedInPlayer`) lives in `useSyncedState` keys. When any client updates a value, all connected clients see the change immediately.
+All shared game state (`connections`, `selectedClue`, `gameState`, `buzzedInPlayer`) lives in `useSyncedState` keys. When any client updates a value, all connected clients see the change immediately.
 
 This project is intended to showcase how `useSyncedState` can coordinate complex multi-client interactions — role assignment, turn management, buzzer logic — without any custom WebSocket handling or server-side orchestration code.
 
