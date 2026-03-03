@@ -1,12 +1,12 @@
 'use client';
-import type { TCategory } from '@/types';
-import Category from './category';
+import type { Category } from '@/types';
+import CategoryColumn from './category-column';
 
-export default function Board({ categories }: { categories: TCategory[] }) {
+export default function Board({ categories }: { categories: Category[] }) {
 	return (
 		<div className="jeopardy-board">
 			{categories.map(category => (
-				<Category key={category.id} category={category} />
+				<CategoryColumn key={category.id} category={category} />
 			))}
 		</div>
 	);

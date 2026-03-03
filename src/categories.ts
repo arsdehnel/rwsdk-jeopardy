@@ -1,4 +1,4 @@
-import type { TCategory } from './types';
+import type { Category } from './types';
 
 const categories = [
 	{
@@ -189,7 +189,7 @@ const categories = [
 	},
 ];
 
-export default function getCategories(): TCategory[] {
+export default function getCategories(): Category[] {
 	const values = [200, 400, 600, 800, 1000];
 
 	return categories.map(category => ({

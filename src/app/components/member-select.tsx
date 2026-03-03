@@ -1,21 +1,20 @@
 'use client';
 
 import type { Connection, Connections } from '@/types';
-import getRoleFromConnections from '@/utils/get-role-from-connections';
 
 export default function MemberSelect({
 	connections,
+	role,
 	registerConnection,
 	unregisterConnection,
 	sessionId,
 }: {
 	connections: Connections;
+	role: string | undefined;
 	registerConnection: (connection: Connection) => void;
 	unregisterConnection: (connectionId: string) => void;
 	sessionId: string;
 }) {
-	const role = getRoleFromConnections(connections, sessionId);
-
 	if (role) {
 		return (
 			<div className="member-select">

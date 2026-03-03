@@ -1,30 +1,30 @@
 'use client';
 import Buzzer from '@/app/components/buzzer';
 import ClueSelect from '@/app/components/clue-select';
-import type { Clue, TCategory } from '@/types';
+import type { Category, Clue } from '@/types';
 
 export default function PlayerView({
-	setSelectedClue,
+	selectClue,
 	selectedClue,
 	categories,
-	buzzedInPlayer,
+	buzzedInSessionId,
 	sessionId,
-	setBuzzedInPlayer,
+	buzzIn,
 }: {
-	setSelectedClue: (clue: Clue) => void;
+	selectClue: (clue: Clue) => void;
 	selectedClue: Clue | null;
-	categories: TCategory[];
-	buzzedInPlayer: string | null;
+	categories: Category[];
+	buzzedInSessionId: string | null;
 	sessionId: string;
-	setBuzzedInPlayer: (player: string | null) => void;
+	buzzIn: (playerSessionId: string) => void;
 }) {
 	return (
 		<>
 			<p>Role: Player</p>
 			{selectedClue === null ? (
-				<ClueSelect setSelectedClue={setSelectedClue} categories={categories} />
+				<ClueSelect selectClue={selectClue} categories={categories} />
 			) : (
-				<Buzzer setBuzzedInPlayer={setBuzzedInPlayer} buzzedInPlayer={buzzedInPlayer} sessionId={sessionId} />
+				<Buzzer buzzIn={buzzIn} buzzedInSessionId={buzzedInSessionId} sessionId={sessionId} />
 			)}
 		</>
 	);

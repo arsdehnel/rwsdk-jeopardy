@@ -1,6 +1,6 @@
 import type { Clue } from './clue';
 
-export type TCategory = {
+export type Category = {
 	id: number;
 	title: string;
 	clues: Clue[];

@@ -4,15 +4,15 @@ import type { Clue } from '@/types';
 
 export default function HostClueDisplay({
 	selectedClue,
-	buzzedInPlayer,
-	setSelectedClue,
-	setBuzzedInPlayer,
+	buzzedInSessionId,
+	abortClue,
+	resetBuzzers,
 	correctClueResponse,
 }: {
 	selectedClue: Clue;
-	buzzedInPlayer: string | null;
-	setSelectedClue: (clue: Clue | null) => void;
-	setBuzzedInPlayer: (player: string | null) => void;
+	buzzedInSessionId: string | null;
+	abortClue: () => void;
+	resetBuzzers: () => void;
 	correctClueResponse: (player: string | null, clue: Clue) => void;
 }) {
 	return (
@@ -25,16 +25,16 @@ export default function HostClueDisplay({
 				type="button"
 				className="clue-overlay-button"
 				onClick={() => {
-					setSelectedClue(null);
+					abortClue();
 				}}
 			>
 				Back to Board
 			</button>
-			{buzzedInPlayer ? <p>{buzzedInPlayer} has buzzed in!</p> : <p>No one has buzzed in yet.</p>}
-			<button type="submit" onClick={() => setBuzzedInPlayer(null)}>
+			{buzzedInSessionId ? <p>{buzzedInSessionId} has buzzed in!</p> : <p>No one has buzzed in yet.</p>}
+			<button type="submit" onClick={() => resetBuzzers()}>
 				Response was wrong, reset buzzers
 			</button>
-			<button type="submit" onClick={() => correctClueResponse(buzzedInPlayer, selectedClue)}>
+			<button type="submit" onClick={() => correctClueResponse(buzzedInSessionId, selectedClue)}>
 				Response was correct, award points and reset buzzers
 			</button>
 		</div>
