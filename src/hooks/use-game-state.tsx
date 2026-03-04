@@ -3,7 +3,7 @@ import type { Clue, Connection, Connections, GamePhase } from '@/types';
 
 export default function useGameState(sessionId?: string) {
 	const [connections, setConnections] = useSyncedState<Connections>(
-		{ host: undefined, display: undefined, members: [] },
+		{ host: undefined, display: undefined, contestants: [] },
 		'connections',
 	);
 	const [selectedClue, setSelectedClue] = useSyncedState<Clue | null>(null, 'selectedClue');
@@ -16,7 +16,7 @@ export default function useGameState(sessionId?: string) {
 		} else if (connection.role === 'display') {
 			setConnections({ ...connections, display: connection });
 		} else {
-			setConnections({ ...connections, members: [...connections.members, connection] });
+			setConnections({ ...connections, contestants: [...connections.contestants, connection] });
 		}
 	};
 
@@ -26,7 +26,10 @@ export default function useGameState(sessionId?: string) {
 		} else if (connections.display?.id === connectionId) {
 			setConnections({ ...connections, display: undefined });
 		} else {
-			setConnections({ ...connections, members: connections.members.filter(member => member.id !== connectionId) });
+			setConnections({
+				...connections,
+				contestants: connections.contestants.filter(contestant => contestant.id !== connectionId),
+			});
 		}
 	};
 
@@ -40,7 +43,7 @@ export default function useGameState(sessionId?: string) {
 		role = 'host';
 	} else if (connections.display?.id === sessionId) {
 		role = 'display';
-	} else if (connections.members.some(member => member.id === sessionId)) {
+	} else if (connections.contestants.some(contestant => contestant.id === sessionId)) {
 		role = 'player';
 	}
 

@@ -39,7 +39,7 @@ export default function MemberSelect({
 			<button
 				type="button"
 				onClick={() => {
-					registerConnection({ id: sessionId, name: `Player ${connections.members.length + 1}`, role: 'player' });
+					registerConnection({ id: sessionId, name: `Player ${connections.contestants.length + 1}`, role: 'contestant' });
 				}}
 			>
 				Add me as player
@@ -47,7 +47,7 @@ export default function MemberSelect({
 			<button
 				type="button"
 				onClick={() => {
-					registerConnection({ id: sessionId, name: `Host ${connections.members.length + 1}`, role: 'host' });
+					registerConnection({ id: sessionId, name: `Host ${connections.contestants.length + 1}`, role: 'host' });
 				}}
 			>
 				Register this device as host
@@ -55,7 +55,7 @@ export default function MemberSelect({
 			<button
 				type="button"
 				onClick={() => {
-					registerConnection({ id: sessionId, name: `Display ${connections.members.length + 1}`, role: 'display' });
+					registerConnection({ id: sessionId, name: `Display ${connections.contestants.length + 1}`, role: 'display' });
 				}}
 			>
 				Use this device as display
