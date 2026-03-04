@@ -2,7 +2,7 @@
 import type { Clue } from '@/types';
 import ClueValueTile from './clue-value-tile';
 
-const Category = ({ category }: { category: { title: string; clues: Clue[] } }) => {
+export default function CategoryColumn({ category }: { category: { title: string; clues: Clue[] } }) {
 	return (
 		<div className="jeopardy-category">
 			<h2>{category.title}</h2>
@@ -11,6 +11,4 @@ const Category = ({ category }: { category: { title: string; clues: Clue[] } }) 
 			})}
 		</div>
 	);
-};
-
-export default Category;
+}

@@ -1,10 +1,7 @@
 'use client';
-import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import type { RequestInfo } from 'rwsdk/worker';
 import getCategories from '@/categories';
 import useGameState from '@/hooks/use-game-state';
-import type { Clue, Connection, Connections, GameState } from '@/types';
-import getRoleFromConnections from '@/utils/get-role-from-connections';
 import DisplayView from '@/views/display';
 import FinishedView from '@/views/finished';
 import HostView from '@/views/host';
@@ -12,47 +9,31 @@ import PlayerView from '@/views/player';
 import SetupView from '@/views/setup';
 
 export default function Game({ params, ctx }: RequestInfo) {
-	const { selectedClue, setSelectedClue } = useGameState();
-	const [gameState, setGameState] = useSyncedState<GameState>('setup', 'gameState');
-	const [buzzedInPlayer, setBuzzedInPlayer] = useSyncedState<string | null>(null, 'buzzedInPlayer');
-	const [connections, setConnections] = useSyncedState<Connections>(
-		{ host: undefined, display: undefined, members: [] },
-		'connections',
-	);
+	const {
+		connections,
+		registerConnection,
+		unregisterConnection,
+		role,
+		selectedClue,
+		gamePhase,
+		buzzerQueue,
+		correctClueResponse,
+		wrongClueResponse,
+		startGame,
+		setupGame,
+		finishGame,
+		resetBuzzers,
+		abortClue,
+		selectClue,
+		buzzIn,
+	} = useGameState();
 
 	const gameId = params.gameId;
 	if (!gameId) {
 		return <p>Game ID not provided</p>;
 	}
 
-	const registerConnection = (connection: Connection) => {
-		if (connection.role === 'host') {
-			setConnections({ ...connections, host: connection });
-		} else if (connection.role === 'display') {
-			setConnections({ ...connections, display: connection });
-		} else {
-			setConnections({ ...connections, members: [...connections.members, connection] });
-		}
-	};
-
-	const unregisterConnection = (connectionId: string) => {
-		if (connections.host?.id === connectionId) {
-			setConnections({ ...connections, host: undefined });
-		} else if (connections.display?.id === connectionId) {
-			setConnections({ ...connections, display: undefined });
-		} else {
-			setConnections({ ...connections, members: connections.members.filter(member => member.id !== connectionId) });
-		}
-	};
-
-	const correctClueResponse = (player: string | null, clue: Clue) => {
-		// In a real app, this would update the player's score in the database
-		setBuzzedInPlayer(null);
-		console.log(`Player ${player} responded to clue ${JSON.stringify(clue)} correctly!`);
-	};
-
-	const role = getRoleFromConnections(connections, ctx.session?.cookieId || '');
-	if (gameState === 'setup') {
+	if (gamePhase === 'setup') {
 		return (
 			<SetupView
 				connections={connections}
@@ -60,12 +41,12 @@ export default function Game({ params, ctx }: RequestInfo) {
 				unregisterConnection={unregisterConnection}
 				sessionId={ctx.session?.cookieId || ''}
 				role={role}
-				setGameState={setGameState}
+				startGame={startGame}
 			/>
 		);
 	}
 
-	if (gameState === 'finished') {
+	if (gamePhase === 'finished') {
 		return <FinishedView connections={connections} />;
 	}
 
@@ -90,11 +71,13 @@ export default function Game({ params, ctx }: RequestInfo) {
 			<HostView
 				connections={connections}
 				selectedClue={selectedClue}
-				setSelectedClue={setSelectedClue}
-				buzzedInPlayer={buzzedInPlayer}
-				setBuzzedInPlayer={setBuzzedInPlayer}
+				abortClue={abortClue}
+				buzzerQueue={buzzerQueue}
+				resetBuzzers={resetBuzzers}
 				correctClueResponse={correctClueResponse}
-				setGameState={setGameState}
+				wrongClueResponse={wrongClueResponse}
+				setupGame={setupGame}
+				finishGame={finishGame}
 			/>
 		);
 	}
@@ -102,11 +85,11 @@ export default function Game({ params, ctx }: RequestInfo) {
 	return (
 		<PlayerView
 			selectedClue={selectedClue}
-			setSelectedClue={setSelectedClue}
+			selectClue={selectClue}
 			categories={categories}
-			buzzedInPlayer={buzzedInPlayer}
+			buzzerQueue={buzzerQueue}
 			sessionId={ctx.session?.cookieId || ''}
-			setBuzzedInPlayer={setBuzzedInPlayer}
+			buzzIn={buzzIn}
 		/>
 	);
 }

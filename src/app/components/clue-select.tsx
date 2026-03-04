@@ -1,14 +1,8 @@
 'use client';
 
-import type { Clue, TCategory } from '@/types';
+import type { Category, Clue } from '@/types';
 
-export default function ClueSelect({
-	categories,
-	setSelectedClue,
-}: {
-	categories: TCategory[];
-	setSelectedClue: (clue: Clue) => void;
-}) {
+export default function ClueSelect({ categories, selectClue }: { categories: Category[]; selectClue: (clue: Clue) => void }) {
 	return (
 		<div className="clue-select">
 			{categories.map(category => {
@@ -19,7 +13,7 @@ export default function ClueSelect({
 							{category.clues.map((clue: Clue) => {
 								return (
 									<li key={clue.id}>
-										<button type="button" onClick={() => setSelectedClue(clue)}>
+										<button type="button" onClick={() => selectClue(clue)}>
 											{clue.value}
 										</button>
 									</li>

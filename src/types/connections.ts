@@ -1,11 +1,7 @@
-export type Connection = {
-	id: string;
-	name: string;
-	role: 'host' | 'player' | 'display';
-};
+import type { Connection } from './connection';
 
 export type Connections = {
 	host: Connection | undefined;
 	display: Connection | undefined;
-	members: Connection[];
+	contestants: Connection[];
 };

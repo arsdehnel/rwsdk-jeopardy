@@ -1,23 +1,23 @@
 'use client';
 
 export default function Buzzer({
-	setBuzzedInPlayer,
-	buzzedInPlayer,
+	buzzIn,
+	buzzerQueue,
 	sessionId,
 }: {
-	setBuzzedInPlayer: (player: string | null) => void;
-	buzzedInPlayer: string | null;
+	buzzIn: (playerSessionId: string) => void;
+	buzzerQueue: string[];
 	sessionId: string;
 }) {
-	if (buzzedInPlayer && buzzedInPlayer !== sessionId) {
+	if (buzzerQueue.length > 0 && !buzzerQueue.includes(sessionId)) {
 		return (
 			<div>
-				<p>{buzzedInPlayer} has buzzed in!</p>
+				<p>{buzzerQueue[0]} has buzzed in!</p>
 			</div>
 		);
 	}
 
-	if (buzzedInPlayer === sessionId) {
+	if (buzzerQueue.includes(sessionId)) {
 		return (
 			<div>
 				<p>You have buzzed in!</p>
@@ -27,7 +27,7 @@ export default function Buzzer({
 
 	return (
 		<div>
-			<button type="button" onClick={() => setBuzzedInPlayer(sessionId)}>
+			<button type="button" onClick={() => buzzIn(sessionId)}>
 				Buzz In
 			</button>
 		</div>
