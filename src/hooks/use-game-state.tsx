@@ -1,5 +1,6 @@
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
-import type { Clue, Connection, Connections, GamePhase } from '@/types';
+import type { Clue, Connection, Connections, GamePhase, Role } from '@/types';
+import * as helpers from './helpers';
 
 export default function useGameState(sessionId?: string) {
 	const [connections, setConnections] = useSyncedState<Connections>(
@@ -8,43 +9,33 @@ export default function useGameState(sessionId?: string) {
 	);
 	const [selectedClue, setSelectedClue] = useSyncedState<Clue | null>(null, 'selectedClue');
 	const [gamePhase, setGamePhase] = useSyncedState<GamePhase>('setup', 'gamePhase');
-	const [buzzedInSessionId, setBuzzedInSessionId] = useSyncedState<string | null>(null, 'buzzedInSessionId');
+	const [buzzerQueue, setBuzzerQueue] = useSyncedState<string[]>([], 'buzzerQueue');
 
 	const registerConnection = (connection: Connection) => {
-		if (connection.role === 'host') {
-			setConnections({ ...connections, host: connection });
-		} else if (connection.role === 'display') {
-			setConnections({ ...connections, display: connection });
-		} else {
-			setConnections({ ...connections, contestants: [...connections.contestants, connection] });
-		}
+		setConnections(helpers.registerConnection(connections, connection));
 	};
 
 	const unregisterConnection = (connectionId: string) => {
-		if (connections.host?.id === connectionId) {
-			setConnections({ ...connections, host: undefined });
-		} else if (connections.display?.id === connectionId) {
-			setConnections({ ...connections, display: undefined });
-		} else {
-			setConnections({
-				...connections,
-				contestants: connections.contestants.filter(contestant => contestant.id !== connectionId),
-			});
-		}
+		setConnections(helpers.unregisterConnection(connections, connectionId));
 	};
 
-	const correctClueResponse = (player: string | null, clue: Clue) => {
-		setBuzzedInSessionId(null);
-		console.log(`Player ${player} responded to clue ${JSON.stringify(clue)} correctly!`);
+	const correctClueResponse = (playerId: string, clue: Clue) => {
+		setBuzzerQueue([]);
+		setSelectedClue(null);
+		console.log(`Player ${playerId} responded to clue ${JSON.stringify(clue)} correctly!`);
 	};
 
-	let role: 'host' | 'player' | 'display' | undefined;
+	const wrongClueResponse = () => {
+		setBuzzerQueue(prev => prev.slice(1));
+	};
+
+	let role: Role | undefined;
 	if (connections.host?.id === sessionId) {
 		role = 'host';
 	} else if (connections.display?.id === sessionId) {
 		role = 'display';
 	} else if (connections.contestants.some(contestant => contestant.id === sessionId)) {
-		role = 'player';
+		role = 'contestant';
 	}
 
 	const startGame = () => {
@@ -54,22 +45,22 @@ export default function useGameState(sessionId?: string) {
 	const setupGame = () => {
 		setGamePhase('setup');
 		setSelectedClue(null);
-		setBuzzedInSessionId(null);
+		setBuzzerQueue([]);
 	};
 
 	const finishGame = () => {
 		setGamePhase('finished');
 		setSelectedClue(null);
-		setBuzzedInSessionId(null);
+		setBuzzerQueue([]);
 	};
 
 	const resetBuzzers = () => {
-		setBuzzedInSessionId(null);
+		setBuzzerQueue([]);
 	};
 
 	const abortClue = () => {
 		setSelectedClue(null);
-		setBuzzedInSessionId(null);
+		setBuzzerQueue([]);
 	};
 
 	const selectClue = (clue: Clue) => {
@@ -77,7 +68,10 @@ export default function useGameState(sessionId?: string) {
 	};
 
 	const buzzIn = (playerSessionId: string) => {
-		setBuzzedInSessionId(playerSessionId);
+		if (buzzerQueue.includes(playerSessionId)) {
+			return;
+		}
+		setBuzzerQueue([...buzzerQueue, playerSessionId]);
 	};
 
 	return {
@@ -87,8 +81,9 @@ export default function useGameState(sessionId?: string) {
 		role,
 		selectedClue,
 		gamePhase,
-		buzzedInSessionId,
+		buzzerQueue,
 		correctClueResponse,
+		wrongClueResponse,
 		startGame,
 		setupGame,
 		finishGame,

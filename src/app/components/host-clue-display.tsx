@@ -4,16 +4,18 @@ import type { Clue } from '@/types';
 
 export default function HostClueDisplay({
 	selectedClue,
-	buzzedInSessionId,
+	buzzerQueue,
 	abortClue,
 	resetBuzzers,
 	correctClueResponse,
+	wrongClueResponse,
 }: {
 	selectedClue: Clue;
-	buzzedInSessionId: string | null;
+	buzzerQueue: string[];
 	abortClue: () => void;
 	resetBuzzers: () => void;
-	correctClueResponse: (player: string | null, clue: Clue) => void;
+	correctClueResponse: (playerId: string, clue: Clue) => void;
+	wrongClueResponse: () => void;
 }) {
 	return (
 		<div>
@@ -30,13 +32,22 @@ export default function HostClueDisplay({
 			>
 				Back to Board
 			</button>
-			{buzzedInSessionId ? <p>{buzzedInSessionId} has buzzed in!</p> : <p>No one has buzzed in yet.</p>}
-			<button type="submit" onClick={() => resetBuzzers()}>
-				Response was wrong, reset buzzers
-			</button>
-			<button type="submit" onClick={() => correctClueResponse(buzzedInSessionId, selectedClue)}>
-				Response was correct, award points and reset buzzers
-			</button>
+			{buzzerQueue.length > 0 ? (
+				<>
+					<p>{buzzerQueue[0]} has buzzed in!</p>
+					<button type="submit" onClick={() => resetBuzzers()}>
+						Something weng wrong, reset buzzers
+					</button>
+					<button type="submit" onClick={() => wrongClueResponse()}>
+						Response was wrong, move to next in line
+					</button>
+					<button type="submit" onClick={() => correctClueResponse(buzzerQueue[0], selectedClue)}>
+						Response was correct, award points and reset buzzers
+					</button>
+				</>
+			) : (
+				<p>No one has buzzed in yet.</p>
+			)}
 		</div>
 	);
 }

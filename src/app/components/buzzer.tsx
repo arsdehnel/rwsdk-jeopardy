@@ -2,22 +2,22 @@
 
 export default function Buzzer({
 	buzzIn,
-	buzzedInSessionId,
+	buzzerQueue,
 	sessionId,
 }: {
 	buzzIn: (playerSessionId: string) => void;
-	buzzedInSessionId: string | null;
+	buzzerQueue: string[];
 	sessionId: string;
 }) {
-	if (buzzedInSessionId && buzzedInSessionId !== sessionId) {
+	if (buzzerQueue.length > 0 && !buzzerQueue.includes(sessionId)) {
 		return (
 			<div>
-				<p>{buzzedInSessionId} has buzzed in!</p>
+				<p>{buzzerQueue[0]} has buzzed in!</p>
 			</div>
 		);
 	}
 
-	if (buzzedInSessionId === sessionId) {
+	if (buzzerQueue.includes(sessionId)) {
 		return (
 			<div>
 				<p>You have buzzed in!</p>

@@ -6,19 +6,21 @@ import type { Clue, Connections } from '@/types';
 export default function HostView({
 	connections,
 	selectedClue,
-	buzzedInSessionId,
+	buzzerQueue,
 	abortClue,
 	resetBuzzers,
 	correctClueResponse,
+	wrongClueResponse,
 	setupGame,
 	finishGame,
 }: {
 	connections: Connections;
 	selectedClue: Clue | null;
-	buzzedInSessionId: string | null;
+	buzzerQueue: string[];
 	abortClue: () => void;
 	resetBuzzers: () => void;
-	correctClueResponse: (player: string | null, clue: Clue) => void;
+	correctClueResponse: (player: string, clue: Clue) => void;
+	wrongClueResponse: () => void;
 	setupGame: () => void;
 	finishGame: () => void;
 }) {
@@ -35,10 +37,11 @@ export default function HostView({
 			{selectedClue ? (
 				<HostClueDisplay
 					selectedClue={selectedClue}
-					buzzedInSessionId={buzzedInSessionId}
+					buzzerQueue={buzzerQueue}
 					abortClue={abortClue}
 					resetBuzzers={resetBuzzers}
 					correctClueResponse={correctClueResponse}
+					wrongClueResponse={wrongClueResponse}
 				/>
 			) : (
 				<p>Player choosing clue...</p>

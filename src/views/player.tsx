@@ -7,14 +7,14 @@ export default function PlayerView({
 	selectClue,
 	selectedClue,
 	categories,
-	buzzedInSessionId,
+	buzzerQueue,
 	sessionId,
 	buzzIn,
 }: {
 	selectClue: (clue: Clue) => void;
 	selectedClue: Clue | null;
 	categories: Category[];
-	buzzedInSessionId: string | null;
+	buzzerQueue: string[];
 	sessionId: string;
 	buzzIn: (playerSessionId: string) => void;
 }) {
@@ -24,7 +24,7 @@ export default function PlayerView({
 			{selectedClue === null ? (
 				<ClueSelect selectClue={selectClue} categories={categories} />
 			) : (
-				<Buzzer buzzIn={buzzIn} buzzedInSessionId={buzzedInSessionId} sessionId={sessionId} />
+				<Buzzer buzzIn={buzzIn} buzzerQueue={buzzerQueue} sessionId={sessionId} />
 			)}
 		</>
 	);

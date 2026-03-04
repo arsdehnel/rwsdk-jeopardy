@@ -16,8 +16,9 @@ export default function Game({ params, ctx }: RequestInfo) {
 		role,
 		selectedClue,
 		gamePhase,
-		buzzedInSessionId,
+		buzzerQueue,
 		correctClueResponse,
+		wrongClueResponse,
 		startGame,
 		setupGame,
 		finishGame,
@@ -71,9 +72,10 @@ export default function Game({ params, ctx }: RequestInfo) {
 				connections={connections}
 				selectedClue={selectedClue}
 				abortClue={abortClue}
-				buzzedInSessionId={buzzedInSessionId}
+				buzzerQueue={buzzerQueue}
 				resetBuzzers={resetBuzzers}
 				correctClueResponse={correctClueResponse}
+				wrongClueResponse={wrongClueResponse}
 				setupGame={setupGame}
 				finishGame={finishGame}
 			/>
@@ -85,7 +87,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 			selectedClue={selectedClue}
 			selectClue={selectClue}
 			categories={categories}
-			buzzedInSessionId={buzzedInSessionId}
+			buzzerQueue={buzzerQueue}
 			sessionId={ctx.session?.cookieId || ''}
 			buzzIn={buzzIn}
 		/>

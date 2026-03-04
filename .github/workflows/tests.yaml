@@ -24,3 +24,4 @@ jobs:
           pnpm install
           pnpm biome:check
           pnpm type-check
+          pnpm test:run

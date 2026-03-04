@@ -1,8 +1,4 @@
-export type Connection = {
-	id: string;
-	name: string;
-	role: 'host' | 'contestant' | 'display';
-};
+import type { Connection } from './connection';
 
 export type Connections = {
 	host: Connection | undefined;

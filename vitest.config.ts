@@ -5,6 +5,15 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: 'jsdom',
+		coverage: {
+			provider: 'v8', // or 'istanbul'
+			reporter: ['text', 'json-summary'],
+			exclude: ['**/*.md', '**/__tests__/**', '**/*.test.ts', '**/*.integration.test.ts'],
+			thresholds: {
+				branches: 100,
+				lines: 100,
+			},
+		},
 		setupFiles: ['./tests/setup.ts'],
 		alias: {
 			'rwsdk/use-synced-state/client': path.resolve(__dirname, 'tests/mocks/rwsdk-use-synced-state.ts'),
