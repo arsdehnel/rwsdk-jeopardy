@@ -26,7 +26,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 		abortClue,
 		selectClue,
 		buzzIn,
-	} = useGameState();
+	} = useGameState(ctx?.session?.cookieId);
 
 	const gameId = params.gameId;
 	if (!gameId) {
