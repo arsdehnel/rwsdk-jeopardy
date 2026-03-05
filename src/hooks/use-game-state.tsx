@@ -2,7 +2,7 @@ import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import type { Clue, Connection, Connections, GamePhase, Role } from '@/types';
 import * as helpers from './helpers';
 
-export default function useGameState(sessionId?: string) {
+export default function useGameState(sessionId: string = '') {
 	const [connections, setConnections] = useSyncedState<Connections>(
 		{ host: undefined, display: undefined, contestants: [] },
 		'connections',
