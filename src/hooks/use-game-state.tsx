@@ -10,6 +10,7 @@ export default function useGameState(sessionId: string = '') {
 	const [selectedClue, setSelectedClue] = useSyncedState<Clue | null>(null, 'selectedClue');
 	const [gamePhase, setGamePhase] = useSyncedState<GamePhase>('setup', 'gamePhase');
 	const [buzzerQueue, setBuzzerQueue] = useSyncedState<string[]>([], 'buzzerQueue');
+	const [usedClueIds, setUsedClueIds] = useSyncedState<number[]>([], 'usedClueIds');
 
 	const registerConnection = (connection: Connection) => {
 		setConnections(helpers.registerConnection(connections, connection));
@@ -19,10 +20,14 @@ export default function useGameState(sessionId: string = '') {
 		setConnections(helpers.unregisterConnection(connections, connectionId));
 	};
 
-	const correctClueResponse = (playerId: string, clue: Clue) => {
+	const correctClueResponse = (playerId: string) => {
+		if (!selectedClue) {
+			return;
+		}
 		setBuzzerQueue([]);
 		setSelectedClue(null);
-		console.log(`Player ${playerId} responded to clue ${JSON.stringify(clue)} correctly!`);
+		setUsedClueIds(Array.from(new Set([...usedClueIds, selectedClue.id])));
+		console.log(`Player ${playerId} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
 	};
 
 	const wrongClueResponse = () => {
@@ -67,6 +72,15 @@ export default function useGameState(sessionId: string = '') {
 		setSelectedClue(clue);
 	};
 
+	const expireClue = () => {
+		if (!selectedClue) {
+			return;
+		}
+		setSelectedClue(null);
+		setBuzzerQueue([]);
+		setUsedClueIds(Array.from(new Set([...usedClueIds, selectedClue.id])));
+	};
+
 	const buzzIn = (playerSessionId: string) => {
 		if (buzzerQueue.includes(playerSessionId)) {
 			return;
@@ -91,5 +105,7 @@ export default function useGameState(sessionId: string = '') {
 		abortClue,
 		selectClue,
 		buzzIn,
+		usedClueIds,
+		expireClue,
 	};
 }

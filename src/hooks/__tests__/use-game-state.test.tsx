@@ -129,9 +129,10 @@ describe('buzzerQueue', () => {
 
 	it('clears the queue on correctClueResponse', () => {
 		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
 		act(() => result.current.buzzIn(contestant2.id));
-		act(() => result.current.correctClueResponse(contestant1.id, clue));
+		act(() => result.current.correctClueResponse(contestant1.id));
 		expect(result.current.buzzerQueue).toHaveLength(0);
 	});
 });
@@ -164,15 +165,91 @@ describe('correctClueResponse', () => {
 	it('clears the selected clue', () => {
 		const { result } = renderHook(() => useGameState());
 		act(() => result.current.selectClue(clue));
-		act(() => result.current.correctClueResponse(contestant1.id, clue));
+		act(() => result.current.correctClueResponse(contestant1.id));
 		expect(result.current.selectedClue).toBeNull();
 	});
 
 	it('clears the buzzer queue', () => {
 		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
-		act(() => result.current.correctClueResponse(contestant1.id, clue));
+		act(() => result.current.correctClueResponse(contestant1.id));
 		expect(result.current.buzzerQueue).toHaveLength(0);
+	});
+
+	it('is a no-op when there is no selected clue', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.correctClueResponse(contestant1.id));
+		expect(result.current.buzzerQueue).toHaveLength(1);
+	});
+});
+
+describe('usedClueIds', () => {
+	it('starts empty', () => {
+		const { result } = renderHook(() => useGameState());
+		expect(result.current.usedClueIds).toHaveLength(0);
+	});
+
+	it('adds clue id on correctClueResponse', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.correctClueResponse(contestant1.id));
+		expect(result.current.usedClueIds).toContain(clue.id);
+	});
+
+	it('adds clue id on expireClue', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.expireClue());
+		expect(result.current.usedClueIds).toContain(clue.id);
+	});
+
+	it('expireClue also clears selected clue', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.expireClue());
+		expect(result.current.selectedClue).toBeNull();
+	});
+
+	it('expireClue also resets buzzers', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.expireClue());
+		expect(result.current.buzzerQueue).toHaveLength(0);
+	});
+
+	it('expireClue is a no-op when there is no selected clue', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.expireClue());
+		expect(result.current.buzzerQueue).toHaveLength(1);
+	});
+
+	it('does not add duplicate clue ids', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.correctClueResponse(contestant1.id));
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.expireClue());
+		expect(result.current.usedClueIds.filter(id => id === clue.id)).toHaveLength(1);
+	});
+
+	it('does not clear on setupGame', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.correctClueResponse(contestant1.id));
+		act(() => result.current.setupGame());
+		expect(result.current.usedClueIds).toContain(clue.id);
+	});
+
+	it('does not clear on finishGame', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.correctClueResponse(contestant1.id));
+		act(() => result.current.finishGame());
+		expect(result.current.usedClueIds).toContain(clue.id);
 	});
 });
 
