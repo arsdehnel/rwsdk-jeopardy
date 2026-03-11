@@ -15,7 +15,7 @@ export default function DisplayView({
 	connections: Connections;
 	selectedClue: Clue | null;
 	categories: ReturnType<typeof getCategories>;
-	usedClueIds: number[];
+	usedClueIds: string[];
 	scores: Record<string, number>;
 }) {
 	return (

@@ -1,5 +1,4 @@
 import { env } from 'cloudflare:workers';
-import { randomUUID } from 'node:crypto';
 import type { DefaultAppContext, RequestInfo } from 'rwsdk/worker';
 
 const COOKIE_NAME = 'RWSDK_JEOPARDY_SESSION';
@@ -25,6 +24,6 @@ export default async function sessionMiddleware(requestInfo: RequestInfo<Default
 		ctx.session = { cookieId: sessionCookie, createdAt: Date.now(), lastAccessedAt: Date.now() };
 	}
 	if (!sessionCookie) {
-		response.headers.set('Set-Cookie', `${COOKIE_NAME}=${randomUUID()}; Path=/; ${useSecureCookie ? 'Secure; ' : ''}`);
+		response.headers.set('Set-Cookie', `${COOKIE_NAME}=${crypto.randomUUID()}; Path=/; ${useSecureCookie ? 'Secure; ' : ''}`);
 	}
 }

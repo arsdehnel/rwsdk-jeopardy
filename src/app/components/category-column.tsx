@@ -7,7 +7,7 @@ export default function CategoryColumn({
 	usedClueIds,
 }: {
 	category: { title: string; clues: Clue[] };
-	usedClueIds: number[];
+	usedClueIds: string[];
 }) {
 	return (
 		<div className="jeopardy-category">
