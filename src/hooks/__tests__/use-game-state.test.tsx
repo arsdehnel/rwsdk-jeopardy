@@ -106,6 +106,7 @@ describe('buzzerQueue', () => {
 
 	it('advances the queue on a wrong answer', () => {
 		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
 		act(() => result.current.buzzIn(contestant2.id));
 		act(() => result.current.wrongClueResponse());
@@ -114,6 +115,7 @@ describe('buzzerQueue', () => {
 
 	it('empties the queue when the last contestant answers incorrectly', () => {
 		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
 		act(() => result.current.wrongClueResponse());
 		expect(result.current.buzzerQueue).toHaveLength(0);
@@ -129,9 +131,10 @@ describe('buzzerQueue', () => {
 
 	it('clears the queue on correctClueResponse', () => {
 		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
 		act(() => result.current.buzzIn(contestant2.id));
-		act(() => result.current.correctClueResponse(contestant1.id, clue));
+		act(() => result.current.correctClueResponse());
 		expect(result.current.buzzerQueue).toHaveLength(0);
 	});
 });
@@ -164,15 +167,174 @@ describe('correctClueResponse', () => {
 	it('clears the selected clue', () => {
 		const { result } = renderHook(() => useGameState());
 		act(() => result.current.selectClue(clue));
-		act(() => result.current.correctClueResponse(contestant1.id, clue));
+		act(() => result.current.correctClueResponse());
 		expect(result.current.selectedClue).toBeNull();
 	});
 
 	it('clears the buzzer queue', () => {
 		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
-		act(() => result.current.correctClueResponse(contestant1.id, clue));
+		act(() => result.current.correctClueResponse());
 		expect(result.current.buzzerQueue).toHaveLength(0);
+	});
+
+	it('is a no-op when there is no selected clue', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.correctClueResponse());
+		expect(result.current.buzzerQueue).toHaveLength(1);
+	});
+});
+
+describe('usedClueIds', () => {
+	it('starts empty', () => {
+		const { result } = renderHook(() => useGameState());
+		expect(result.current.usedClueIds).toHaveLength(0);
+	});
+
+	it('adds clue id on correctClueResponse', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.correctClueResponse());
+		expect(result.current.usedClueIds).toContain(clue.id);
+	});
+
+	it('adds clue id on expireClue', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.expireClue());
+		expect(result.current.usedClueIds).toContain(clue.id);
+	});
+
+	it('expireClue also clears selected clue', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.expireClue());
+		expect(result.current.selectedClue).toBeNull();
+	});
+
+	it('expireClue also resets buzzers', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.expireClue());
+		expect(result.current.buzzerQueue).toHaveLength(0);
+	});
+
+	it('expireClue is a no-op when there is no selected clue', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.expireClue());
+		expect(result.current.buzzerQueue).toHaveLength(1);
+	});
+
+	it('does not add duplicate clue ids', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.correctClueResponse());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.expireClue());
+		expect(result.current.usedClueIds.filter(id => id === clue.id)).toHaveLength(1);
+	});
+
+	it('does not clear on setupGame', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.correctClueResponse());
+		act(() => result.current.setupGame());
+		expect(result.current.usedClueIds).toContain(clue.id);
+	});
+
+	it('does not clear on finishGame', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.correctClueResponse());
+		act(() => result.current.finishGame());
+		expect(result.current.usedClueIds).toContain(clue.id);
+	});
+});
+
+describe('scores', () => {
+	it('starts empty', () => {
+		const { result } = renderHook(() => useGameState());
+		expect(result.current.scores).toEqual({});
+	});
+
+	it('awards points to the buzzed in contestant on correctClueResponse', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.correctClueResponse());
+		expect(result.current.scores[contestant1.id]).toBe(clue.value);
+	});
+
+	it('deducts points from the buzzed in contestant on wrongClueResponse', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.wrongClueResponse());
+		expect(result.current.scores[contestant1.id]).toBe(-clue.value);
+	});
+
+	it('is a no-op when there is no selected clue', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.wrongClueResponse());
+		expect(result.current.scores[contestant1.id]).toBeUndefined();
+	});
+
+	it('accumulates points across multiple clues', () => {
+		const clue2: Clue = { id: 2, value: 400, clue: 'Another clue', response: 'What is another answer?' };
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.correctClueResponse());
+		act(() => result.current.selectClue(clue2));
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.correctClueResponse());
+		expect(result.current.scores[contestant1.id]).toBe(clue.value + clue2.value);
+	});
+
+	it('tracks scores independently per contestant', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.wrongClueResponse());
+		act(() => result.current.buzzIn(contestant2.id));
+		act(() => result.current.correctClueResponse());
+		expect(result.current.scores[contestant1.id]).toBe(-clue.value);
+		expect(result.current.scores[contestant2.id]).toBe(clue.value);
+	});
+
+	it('is undefined for a contestant who has not answered', () => {
+		const { result } = renderHook(() => useGameState());
+		expect(result.current.scores[contestant1.id]).toBeUndefined();
+	});
+
+	it('does not reset on setupGame', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.correctClueResponse());
+		act(() => result.current.setupGame());
+		expect(result.current.scores[contestant1.id]).toBe(clue.value);
+	});
+
+	it('does not reset on finishGame', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.correctClueResponse());
+		act(() => result.current.finishGame());
+		expect(result.current.scores[contestant1.id]).toBe(clue.value);
+	});
+
+	it('is a no-op when there is no selected clue', () => {
+		const { result } = renderHook(() => useGameState());
+		act(() => result.current.buzzIn(contestant1.id));
+		act(() => result.current.correctClueResponse());
+		expect(result.current.scores[contestant1.id]).toBeUndefined();
 	});
 });
 

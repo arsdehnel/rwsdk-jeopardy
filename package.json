@@ -10,7 +10,7 @@
 	"private": true,
 	"scripts": {
 		"build": "vite build",
-		"dev": "vite dev",
+		"dev": "vite dev --host",
 		"dev:init": "rw-scripts dev-init",
 		"preview": "vite preview",
 		"worker:run": "rw-scripts worker-run",

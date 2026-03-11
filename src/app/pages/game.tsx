@@ -17,6 +17,8 @@ export default function Game({ params, ctx }: RequestInfo) {
 		selectedClue,
 		gamePhase,
 		buzzerQueue,
+		usedClueIds,
+		scores,
 		correctClueResponse,
 		wrongClueResponse,
 		startGame,
@@ -26,6 +28,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 		abortClue,
 		selectClue,
 		buzzIn,
+		expireClue,
 	} = useGameState(ctx?.session?.cookieId);
 
 	const gameId = params.gameId;
@@ -47,7 +50,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 	}
 
 	if (gamePhase === 'finished') {
-		return <FinishedView connections={connections} />;
+		return <FinishedView connections={connections} scores={scores} />;
 	}
 
 	if (!role) {
@@ -63,7 +66,15 @@ export default function Game({ params, ctx }: RequestInfo) {
 
 	// game mode active
 	if (role === 'display') {
-		return <DisplayView connections={connections} selectedClue={selectedClue} categories={categories} />;
+		return (
+			<DisplayView
+				connections={connections}
+				selectedClue={selectedClue}
+				categories={categories}
+				usedClueIds={usedClueIds}
+				scores={scores}
+			/>
+		);
 	}
 
 	if (role === 'host') {
@@ -73,11 +84,13 @@ export default function Game({ params, ctx }: RequestInfo) {
 				selectedClue={selectedClue}
 				abortClue={abortClue}
 				buzzerQueue={buzzerQueue}
+				scores={scores}
 				resetBuzzers={resetBuzzers}
 				correctClueResponse={correctClueResponse}
 				wrongClueResponse={wrongClueResponse}
 				setupGame={setupGame}
 				finishGame={finishGame}
+				expireClue={expireClue}
 			/>
 		);
 	}
