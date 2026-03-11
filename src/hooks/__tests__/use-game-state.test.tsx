@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import useGameState from '@/hooks/use-game-state';
@@ -9,7 +8,7 @@ const display: Connection = { id: 'display-1', name: 'TV', role: 'display' };
 const contestant1: Connection = { id: 'contestant-1', name: 'Bob', role: 'contestant' };
 const contestant2: Connection = { id: 'contestant-2', name: 'Carol', role: 'contestant' };
 
-const clue: Clue = { id: randomUUID(), value: 200, clue: 'This is a clue', response: 'What is an answer?' };
+const clue: Clue = { id: crypto.randomUUID(), value: 200, clue: 'This is a clue', response: 'What is an answer?' };
 
 describe('registerConnection', () => {
 	it('registers a host', () => {
@@ -286,7 +285,7 @@ describe('scores', () => {
 	});
 
 	it('accumulates points across multiple clues', () => {
-		const clue2: Clue = { id: randomUUID(), value: 400, clue: 'Another clue', response: 'What is another answer?' };
+		const clue2: Clue = { id: crypto.randomUUID(), value: 400, clue: 'Another clue', response: 'What is another answer?' };
 		const { result } = renderHook(() => useGameState());
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
