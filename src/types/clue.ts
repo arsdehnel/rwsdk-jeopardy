@@ -1,6 +1,6 @@
 export type Clue = {
 	id: number;
-	value: number | undefined; // undefined originally and we inject the value based on position and the "round" of Jeopardy
+	value: number;
 	clue: string;
 	response: string;
 };
