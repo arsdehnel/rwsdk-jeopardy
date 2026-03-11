@@ -16,7 +16,7 @@ export default function HostClueDisplay({
 	abortClue: () => void;
 	expireClue: () => void;
 	resetBuzzers: () => void;
-	correctClueResponse: (playerId: string, clue: Clue) => void;
+	correctClueResponse: () => void;
 	wrongClueResponse: () => void;
 }) {
 	return (
@@ -46,7 +46,7 @@ export default function HostClueDisplay({
 					<button type="submit" onClick={() => wrongClueResponse()}>
 						Response was wrong, move to next in line
 					</button>
-					<button type="submit" onClick={() => correctClueResponse(buzzerQueue[0], selectedClue)}>
+					<button type="submit" onClick={() => correctClueResponse()}>
 						Response was correct, award points and reset buzzers
 					</button>
 				</>

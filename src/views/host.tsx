@@ -49,7 +49,7 @@ export default function HostView({
 					wrongClueResponse={wrongClueResponse}
 				/>
 			) : (
-				<p>Player choosing clue...</p>
+				<p>Contestant choosing clue...</p>
 			)}
 		</>
 	);

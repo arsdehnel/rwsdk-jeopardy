@@ -39,10 +39,10 @@ export default function MemberSelect({
 			<button
 				type="button"
 				onClick={() => {
-					registerConnection({ id: sessionId, name: `Player ${connections.contestants.length + 1}`, role: 'contestant' });
+					registerConnection({ id: sessionId, name: `Contestant ${connections.contestants.length + 1}`, role: 'contestant' });
 				}}
 			>
-				Add me as player
+				Add me as contestant
 			</button>
 			<button
 				type="button"
@@ -60,9 +60,6 @@ export default function MemberSelect({
 			>
 				Use this device as display
 			</button>
-			<div>
-				<pre>{JSON.stringify(connections, null, 4)}</pre>
-			</div>
 		</div>
 	);
 }
