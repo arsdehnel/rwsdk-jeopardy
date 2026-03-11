@@ -1,5 +1,5 @@
 export type Clue = {
-	id: number;
+	id: string;
 	value: number;
 	clue: string;
 	response: string;

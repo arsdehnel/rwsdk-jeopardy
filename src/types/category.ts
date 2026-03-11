@@ -1,7 +1,7 @@
 import type { Clue } from './clue';
 
 export type Category = {
-	id: number;
+	id: string;
 	title: string;
 	clues: Clue[];
 };

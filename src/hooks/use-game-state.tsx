@@ -10,7 +10,7 @@ export default function useGameState(sessionId: string = '') {
 	const [selectedClue, setSelectedClue] = useSyncedState<Clue | null>(null, 'selectedClue');
 	const [gamePhase, setGamePhase] = useSyncedState<GamePhase>('setup', 'gamePhase');
 	const [buzzerQueue, setBuzzerQueue] = useSyncedState<string[]>([], 'buzzerQueue');
-	const [usedClueIds, setUsedClueIds] = useSyncedState<number[]>([], 'usedClueIds');
+	const [usedClueIds, setUsedClueIds] = useSyncedState<string[]>([], 'usedClueIds');
 	const [scores, setScores] = useSyncedState<Record<string, number>>({}, 'scores');
 
 	const registerConnection = (connection: Connection) => {
