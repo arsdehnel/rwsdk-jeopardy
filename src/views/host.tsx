@@ -7,27 +7,31 @@ export default function HostView({
 	connections,
 	selectedClue,
 	buzzerQueue,
+	scores,
 	abortClue,
 	resetBuzzers,
 	correctClueResponse,
 	wrongClueResponse,
 	setupGame,
 	finishGame,
+	expireClue,
 }: {
 	connections: Connections;
 	selectedClue: Clue | null;
 	buzzerQueue: string[];
+	scores: Record<string, number>;
 	abortClue: () => void;
 	resetBuzzers: () => void;
-	correctClueResponse: (player: string, clue: Clue) => void;
+	correctClueResponse: () => void;
 	wrongClueResponse: () => void;
 	setupGame: () => void;
 	finishGame: () => void;
+	expireClue: () => void;
 }) {
 	return (
 		<>
 			<p>Role: Host</p>
-			<Scoreboard connections={connections} />
+			<Scoreboard connections={connections} scores={scores} />
 			<button type="button" onClick={() => setupGame()}>
 				Back to Setup
 			</button>
@@ -39,6 +43,7 @@ export default function HostView({
 					selectedClue={selectedClue}
 					buzzerQueue={buzzerQueue}
 					abortClue={abortClue}
+					expireClue={expireClue}
 					resetBuzzers={resetBuzzers}
 					correctClueResponse={correctClueResponse}
 					wrongClueResponse={wrongClueResponse}

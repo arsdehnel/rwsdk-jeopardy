@@ -9,17 +9,21 @@ export default function DisplayView({
 	connections,
 	selectedClue,
 	categories,
+	usedClueIds,
+	scores,
 }: {
 	connections: Connections;
 	selectedClue: Clue | null;
 	categories: ReturnType<typeof getCategories>;
+	usedClueIds: number[];
+	scores: Record<string, number>;
 }) {
 	return (
 		<>
 			<p>Role: Display</p>
-			<Scoreboard connections={connections} />
+			<Scoreboard connections={connections} scores={scores} />
 			<ClueOverlay selectedClue={selectedClue} />
-			<Board categories={categories} />
+			<Board categories={categories} usedClueIds={usedClueIds} />
 		</>
 	);
 }

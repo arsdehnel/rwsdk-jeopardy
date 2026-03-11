@@ -6,6 +6,7 @@ export default function HostClueDisplay({
 	selectedClue,
 	buzzerQueue,
 	abortClue,
+	expireClue,
 	resetBuzzers,
 	correctClueResponse,
 	wrongClueResponse,
@@ -13,6 +14,7 @@ export default function HostClueDisplay({
 	selectedClue: Clue;
 	buzzerQueue: string[];
 	abortClue: () => void;
+	expireClue: () => void;
 	resetBuzzers: () => void;
 	correctClueResponse: (playerId: string, clue: Clue) => void;
 	wrongClueResponse: () => void;
@@ -37,6 +39,9 @@ export default function HostClueDisplay({
 					<p>{buzzerQueue[0]} has buzzed in!</p>
 					<button type="submit" onClick={() => resetBuzzers()}>
 						Something weng wrong, reset buzzers
+					</button>
+					<button type="submit" onClick={() => expireClue()}>
+						Nobody got it, expire clue
 					</button>
 					<button type="submit" onClick={() => wrongClueResponse()}>
 						Response was wrong, move to next in line
