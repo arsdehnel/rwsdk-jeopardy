@@ -26,10 +26,9 @@ export default function SetupView({
 					<>
 						<p>
 							We don't have logins at this point so we just assign you a randomly generated session ID. In case you need it that
-							ID for you is {sessionId}
+							ID for you is <code>{sessionId}</code>.
 						</p>
 						<h2>Game Registration</h2>
-						<p>Register for this game by selecting a role below</p>
 						<MemberSelect
 							role={role}
 							connections={connections}
@@ -43,12 +42,13 @@ export default function SetupView({
 				)}
 				{role === 'host' && (
 					<>
+						<div>
+							As the host you get some debugging information while we're in alpha.
+							<pre>{JSON.stringify(connections, null, 4)}</pre>
+						</div>
 						<button type="button" onClick={() => startGame()}>
 							Start Game
 						</button>
-						<div>
-							<pre>{JSON.stringify(connections, null, 4)}</pre>
-						</div>
 					</>
 				)}
 			</main>

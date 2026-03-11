@@ -27,39 +27,39 @@ export default function MemberSelect({
 				>
 					Unregister
 				</button>
-				<div>
-					<pre>{JSON.stringify(connections, null, 4)}</pre>
-				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="member-select">
-			<button
-				type="button"
-				onClick={() => {
-					registerConnection({ id: sessionId, name: `Contestant ${connections.contestants.length + 1}`, role: 'contestant' });
-				}}
-			>
-				Add me as contestant
-			</button>
-			<button
-				type="button"
-				onClick={() => {
-					registerConnection({ id: sessionId, name: `Host ${connections.contestants.length + 1}`, role: 'host' });
-				}}
-			>
-				Register this device as host
-			</button>
-			<button
-				type="button"
-				onClick={() => {
-					registerConnection({ id: sessionId, name: `Display ${connections.contestants.length + 1}`, role: 'display' });
-				}}
-			>
-				Use this device as display
-			</button>
-		</div>
+		<>
+			<p>Register for this game by selecting a role below</p>
+			<div className="member-select">
+				<button
+					type="button"
+					onClick={() => {
+						registerConnection({ id: sessionId, name: `Contestant ${connections.contestants.length + 1}`, role: 'contestant' });
+					}}
+				>
+					Add me as contestant
+				</button>
+				<button
+					type="button"
+					onClick={() => {
+						registerConnection({ id: sessionId, name: `Host ${connections.contestants.length + 1}`, role: 'host' });
+					}}
+				>
+					Register this device as host
+				</button>
+				<button
+					type="button"
+					onClick={() => {
+						registerConnection({ id: sessionId, name: `Display ${connections.contestants.length + 1}`, role: 'display' });
+					}}
+				>
+					Use this device as display
+				</button>
+			</div>
+		</>
 	);
 }
