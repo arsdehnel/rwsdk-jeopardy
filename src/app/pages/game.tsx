@@ -2,10 +2,10 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import getCategories from '@/categories';
 import useGameState from '@/hooks/use-game-state';
+import ContestantView from '@/views/contestant';
 import DisplayView from '@/views/display';
 import FinishedView from '@/views/finished';
 import HostView from '@/views/host';
-import PlayerView from '@/views/player';
 import SetupView from '@/views/setup';
 
 export default function Game({ params, ctx }: RequestInfo) {
@@ -96,13 +96,14 @@ export default function Game({ params, ctx }: RequestInfo) {
 	}
 
 	return (
-		<PlayerView
+		<ContestantView
 			selectedClue={selectedClue}
 			selectClue={selectClue}
 			categories={categories}
 			buzzerQueue={buzzerQueue}
 			sessionId={ctx.session?.cookieId || ''}
 			buzzIn={buzzIn}
+			usedClueIds={usedClueIds}
 		/>
 	);
 }

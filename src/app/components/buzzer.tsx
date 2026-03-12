@@ -5,7 +5,7 @@ export default function Buzzer({
 	buzzerQueue,
 	sessionId,
 }: {
-	buzzIn: (playerSessionId: string) => void;
+	buzzIn: (contestantSessionId: string) => void;
 	buzzerQueue: string[];
 	sessionId: string;
 }) {

@@ -32,7 +32,7 @@ export default function useGameState(sessionId: string = '') {
 			...scores,
 			[buzzerQueue[0]]: (scores[buzzerQueue[0]] || 0) + selectedClue.value,
 		});
-		console.log(`Player ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
+		console.log(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
 	};
 
 	const wrongClueResponse = () => {
@@ -44,7 +44,7 @@ export default function useGameState(sessionId: string = '') {
 			...scores,
 			[buzzerQueue[0]]: (scores[buzzerQueue[0]] || 0) - selectedClue.value,
 		});
-		console.log(`Player ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} incorrectly!`);
+		console.log(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} incorrectly!`);
 	};
 
 	let role: Role | undefined;
@@ -94,11 +94,11 @@ export default function useGameState(sessionId: string = '') {
 		setUsedClueIds(Array.from(new Set([...usedClueIds, selectedClue.id])));
 	};
 
-	const buzzIn = (playerSessionId: string) => {
-		if (buzzerQueue.includes(playerSessionId)) {
+	const buzzIn = (contestantSessionId: string) => {
+		if (buzzerQueue.includes(contestantSessionId)) {
 			return;
 		}
-		setBuzzerQueue([...buzzerQueue, playerSessionId]);
+		setBuzzerQueue([...buzzerQueue, contestantSessionId]);
 	};
 
 	return {

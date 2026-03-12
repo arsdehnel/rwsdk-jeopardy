@@ -4,17 +4,17 @@ A real-time, multiplayer Jeopardy game built with [RedwoodSDK](https://rwsdk.com
 
 ## Overview
 
-Multiple players connect to a shared game session from separate devices. State is synchronized in real-time across all connected clients via WebSocket — no polling, no manual sync logic.
+Multiple contestants connect to a shared game session from separate devices. State is synchronized in real-time across all connected clients via WebSocket — no polling, no manual sync logic.
 
 There are three roles:
 
-- **Host** — controls game flow, judges responses, and manages players
+- **Host** — controls game flow, judges responses, and manages contestants
 - **Display** — a dedicated screen showing the board and clues (think: the TV in the room)
-- **Player** — selects clues on their turn and buzzes in to respond
+- **Contestant** — selects clues on their turn and buzzes in to respond
 
 ## How It Works
 
-All shared game state (`connections`, `selectedClue`, `gamePhase`, `buzzedInPlayer`) lives in `useSyncedState` keys. When any client updates a value, all connected clients see the change immediately.
+All shared game state (`connections`, `selectedClue`, `gamePhase`, `buzzerQueue`) lives in `useSyncedState` keys. When any client updates a value, all connected clients see the change immediately.
 
 This project is intended to showcase how `useSyncedState` can coordinate complex multi-client interactions — role assignment, turn management, buzzer logic — without any custom WebSocket handling or server-side orchestration code.
 
@@ -35,7 +35,7 @@ src/
     components/   # Shared UI components (Board, Buzzer, Scoreboard, etc.)
     pages/
       game.tsx    # Main game component — state management and role-based routing
-    views/        # Role-specific views (HostView, PlayerView, DisplayView, SetupView)
+    views/        # Role-specific views (HostView, ContestantView, DisplayView, SetupView)
   types/          # Shared TypeScript types (Clue, Category, Connection, etc.)
   utils/          # Helper functions
   categories.ts   # Clue and category data

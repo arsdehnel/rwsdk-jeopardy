@@ -3,26 +3,28 @@ import Buzzer from '@/app/components/buzzer';
 import ClueSelect from '@/app/components/clue-select';
 import type { Category, Clue } from '@/types';
 
-export default function PlayerView({
+export default function ContestantView({
 	selectClue,
 	selectedClue,
 	categories,
 	buzzerQueue,
 	sessionId,
 	buzzIn,
+	usedClueIds,
 }: {
 	selectClue: (clue: Clue) => void;
 	selectedClue: Clue | null;
 	categories: Category[];
 	buzzerQueue: string[];
 	sessionId: string;
-	buzzIn: (playerSessionId: string) => void;
+	buzzIn: (contestantSessionId: string) => void;
+	usedClueIds: string[];
 }) {
 	return (
 		<>
-			<p>Role: Player</p>
+			<p>Role: Contestant</p>
 			{selectedClue === null ? (
-				<ClueSelect selectClue={selectClue} categories={categories} />
+				<ClueSelect selectClue={selectClue} categories={categories} usedClueIds={usedClueIds} />
 			) : (
 				<Buzzer buzzIn={buzzIn} buzzerQueue={buzzerQueue} sessionId={sessionId} />
 			)}

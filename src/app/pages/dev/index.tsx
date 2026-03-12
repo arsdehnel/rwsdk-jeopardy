@@ -1,4 +1,5 @@
 import { route } from 'rwsdk/router';
-import DevUsedClueStyling from './used-clue-styling';
+import DevBoardStyling from './board-styling';
+import DevClueSelectStyling from './clue-select-styling';
 
-export default [route('/used-clue-styling', DevUsedClueStyling)];
+export default [route('/clue-select-styling', DevClueSelectStyling), route('/board-styling', DevBoardStyling)];
