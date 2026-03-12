@@ -103,6 +103,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 			buzzerQueue={buzzerQueue}
 			sessionId={ctx.session?.cookieId || ''}
 			buzzIn={buzzIn}
+			usedClueIds={usedClueIds}
 		/>
 	);
 }

@@ -2,6 +2,7 @@
 @import "./category.less";
 @import "./clue.less";
 @import "./clue-overlay.less";
+@import "./clue-select.less";
 @import "./welcome.less";
 
 body {
@@ -25,7 +26,6 @@ button {
 	background-color: goldenrod;
 	color: black;
 	border: 1px solid white;
-	margin: 0 0.5rem;
 	font-weight: bold;
 	cursor: pointer;
 }
