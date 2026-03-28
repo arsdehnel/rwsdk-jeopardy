@@ -29,7 +29,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 		selectClue,
 		buzzIn,
 		expireClue,
-	} = useGameState(ctx?.session?.cookieId);
+	} = useGameState(ctx?.session.sessionId);
 
 	const gameId = params.gameId;
 	if (!gameId) {
@@ -42,7 +42,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 				connections={connections}
 				registerConnection={registerConnection}
 				unregisterConnection={unregisterConnection}
-				sessionId={ctx.session?.cookieId || ''}
+				sessionId={ctx.session?.sessionId || ''}
 				role={role}
 				startGame={startGame}
 			/>
@@ -101,7 +101,7 @@ export default function Game({ params, ctx }: RequestInfo) {
 			selectClue={selectClue}
 			categories={categories}
 			buzzerQueue={buzzerQueue}
-			sessionId={ctx.session?.cookieId || ''}
+			sessionId={ctx.session?.sessionId || ''}
 			buzzIn={buzzIn}
 			usedClueIds={usedClueIds}
 		/>
