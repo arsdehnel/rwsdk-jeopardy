@@ -3,6 +3,7 @@
 @import "./clue.less";
 @import "./clue-overlay.less";
 @import "./clue-select.less";
+@import "./registration.less";
 @import "./welcome.less";
 
 body {
