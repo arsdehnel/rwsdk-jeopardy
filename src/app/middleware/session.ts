@@ -3,11 +3,10 @@ import type { DefaultAppContext, RequestInfo } from 'rwsdk/worker';
 
 const COOKIE_NAME = 'RWSDK_JEOPARDY_SESSION';
 
-function getSessionCookie(cookies: string): string | undefined {
+function getSessionIdFromCookie(cookies: string): string | undefined {
 	const cookieArray = cookies.split(';').map(cookie => cookie.trim());
 	for (const cookie of cookieArray) {
 		if (cookie.startsWith(`${COOKIE_NAME}=`)) {
-			console.log(`Found session cookie: ${cookie}`);
 			return cookie.substring(`${COOKIE_NAME}=`.length);
 		}
 	}
@@ -18,12 +17,17 @@ export default async function sessionMiddleware(requestInfo: RequestInfo<Default
 	const { ctx, request, response } = requestInfo;
 
 	const useSecureCookie = env.RWSDK_JEOPARDY_ENV !== 'development';
-	const sessionCookie = getSessionCookie(request.headers.get('Cookie') || '');
-	console.log(`Session Cookie: ${sessionCookie}`);
-	if (sessionCookie) {
-		ctx.session = { cookieId: sessionCookie, createdAt: Date.now(), lastAccessedAt: Date.now() };
+	const existingSessionId = getSessionIdFromCookie(request.headers.get('Cookie') || '');
+	if (existingSessionId) {
+		ctx.session = { sessionId: existingSessionId, createdAt: Date.now(), lastAccessedAt: Date.now() };
 	}
-	if (!sessionCookie) {
-		response.headers.set('Set-Cookie', `${COOKIE_NAME}=${crypto.randomUUID()}; Path=/; ${useSecureCookie ? 'Secure; ' : ''}`);
+	if (!existingSessionId) {
+		const newSessionId = crypto.randomUUID();
+		response.headers.set('Set-Cookie', `${COOKIE_NAME}=${newSessionId}; Path=/; ${useSecureCookie ? 'Secure; ' : ''}`);
+		ctx.session = {
+			sessionId: newSessionId,
+			createdAt: Date.now(),
+			lastAccessedAt: Date.now(),
+		};
 	}
 }
