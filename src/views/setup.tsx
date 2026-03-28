@@ -41,26 +41,33 @@ export default function SetupView({
 					We don't have logins at this point so we just assign you a randomly generated session ID. In case you need it that ID
 					for you is <code>{sessionId}</code>.
 				</p>
-				<h2>Game Registration</h2>
-				<QRCodeSVG value={gameUrl} size={256} />
-				<MemberSelect
-					role={role}
-					connections={connections}
-					registerConnection={registerConnection}
-					unregisterConnection={unregisterConnection}
-					sessionId={sessionId}
-				/>
-				{role === 'host' && (
-					<>
-						<div>
-							As the host you get some debugging information while we're in alpha.
-							<pre>{JSON.stringify(connections, null, 4)}</pre>
-						</div>
-						<button type="button" onClick={() => startGame()}>
-							Start Game
-						</button>
-					</>
-				)}
+				<div style={{ display: 'flex' }}>
+					<div style={{ margin: '5rem', textAlign: 'center', flex: '0 0 300px' }}>
+						<h2>Game Registration</h2>
+						<MemberSelect
+							role={role}
+							connections={connections}
+							registerConnection={registerConnection}
+							unregisterConnection={unregisterConnection}
+							sessionId={sessionId}
+						/>
+						{role === 'host' && (
+							<>
+								<hr />
+								<div>
+									As the host you get some debugging information while we're in alpha.
+									<pre>{JSON.stringify(connections, null, 4)}</pre>
+								</div>
+								<button type="button" onClick={() => startGame()}>
+									Start Game
+								</button>
+							</>
+						)}
+					</div>
+					<div style={{ margin: '5rem', textAlign: 'center', flex: '1 0 100px' }}>
+						<QRCodeSVG value={gameUrl} size={300} />
+					</div>
+				</div>
 			</main>
 		</>
 	);

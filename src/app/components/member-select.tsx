@@ -1,6 +1,7 @@
 'use client';
+import { useState } from 'react';
 
-import type { Connection, Connections } from '@/types';
+import type { Connection, Connections, Role } from '@/types';
 
 export default function MemberSelect({
 	connections,
@@ -15,11 +16,18 @@ export default function MemberSelect({
 	unregisterConnection: (connectionId: string) => void;
 	sessionId: string;
 }) {
+	const [name, setName] = useState('');
+	const [selectedRole, setSelectedRole] = useState<Role>('contestant');
+
+	const gameHasHost = connections.host && connections.host !== null;
+	const gameHasDisplay = connections.display && connections.display !== null;
+
 	if (role) {
 		return (
 			<div className="member-select">
-				<p>You are registered as a {role}.</p>
+				<div>You are registered as a {role}.</div>
 				<button
+					className="registration-button"
 					type="button"
 					onClick={() => {
 						unregisterConnection(sessionId);
@@ -33,31 +41,24 @@ export default function MemberSelect({
 
 	return (
 		<>
-			<p>Register for this game by selecting a role below</p>
+			<p>Enter your name and pick a role!</p>
 			<div className="member-select">
+				<label htmlFor="name">Name:</label>
+				<input id="name" type="text" placeholder="Your name here" value={name} onChange={e => setName(e.target.value)} />
+				<select id="role" value={selectedRole} onChange={e => setSelectedRole(e.target.value as Role)}>
+					{!gameHasHost && <option value="host">Host</option>}
+					{!gameHasDisplay && <option value="display">Display</option>}
+					<option value="contestant">Contestant</option>
+				</select>
 				<button
+					className="registration-button"
 					type="button"
+					disabled={!name || !selectedRole}
 					onClick={() => {
-						registerConnection({ id: sessionId, name: `Contestant ${connections.contestants.length + 1}`, role: 'contestant' });
+						registerConnection({ id: sessionId, name, role: selectedRole });
 					}}
 				>
-					Add me as contestant
-				</button>
-				<button
-					type="button"
-					onClick={() => {
-						registerConnection({ id: sessionId, name: `Host ${connections.contestants.length + 1}`, role: 'host' });
-					}}
-				>
-					Register this device as host
-				</button>
-				<button
-					type="button"
-					onClick={() => {
-						registerConnection({ id: sessionId, name: `Display ${connections.contestants.length + 1}`, role: 'display' });
-					}}
-				>
-					Use this device as display
+					Register for this game
 				</button>
 			</div>
 		</>
