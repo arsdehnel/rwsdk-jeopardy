@@ -4,6 +4,8 @@
 @import "./clue-overlay.less";
 @import "./clue-select.less";
 @import "./registration.less";
+@import "./view-contestant.less";
+@import "./view-display.less";
 @import "./welcome.less";
 
 body {
