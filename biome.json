@@ -37,7 +37,8 @@
 			"!**/dist",
 			"!**/.wrangler",
 			"!**/playwright",
-			"!**/playwright-report"
+			"!**/playwright-report",
+			"!**/test-results"
 		]
 	},
 	"overrides": [
