@@ -38,7 +38,8 @@
 			"!**/.wrangler",
 			"!**/playwright",
 			"!**/playwright-report",
-			"!**/test-results"
+			"!**/test-results",
+			"!**/.pnpm-store"
 		]
 	},
 	"overrides": [
