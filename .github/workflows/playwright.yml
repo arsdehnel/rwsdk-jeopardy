@@ -27,6 +27,8 @@ jobs:
         run: pnpm install
       - name: Run Playwright tests
         run: pnpm playwright:run
+        env:
+          HOME: /root
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
