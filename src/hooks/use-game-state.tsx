@@ -22,28 +22,29 @@ export default function useGameState(sessionId: string = '') {
 	};
 
 	const correctClueResponse = () => {
-		if (!selectedClue) {
-			return;
-		}
-		setBuzzerQueue([]);
-		setSelectedClue(null);
-		setUsedClueIds(Array.from(new Set([...usedClueIds, selectedClue.id])));
-		setScores({
-			...scores,
-			[buzzerQueue[0]]: (scores[buzzerQueue[0]] || 0) + selectedClue.value,
-		});
+		const next = helpers.correctClueResponse({ connections, selectedClue, gamePhase, buzzerQueue, usedClueIds, scores });
+		setSelectedClue(next.selectedClue);
+		setBuzzerQueue(next.buzzerQueue);
+		setUsedClueIds(next.usedClueIds);
+		setScores(next.scores);
+		console.log(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
+	};
+
+	const expireClue = () => {
+		const next = helpers.expireClue({ selectedClue, buzzerQueue, usedClueIds });
+		setSelectedClue(next.selectedClue);
+		setBuzzerQueue(next.buzzerQueue);
+		setUsedClueIds(next.usedClueIds);
 		console.log(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
 	};
 
 	const wrongClueResponse = () => {
+		const next = helpers.wrongClueResponse({ selectedClue, buzzerQueue, scores });
 		if (!selectedClue) {
 			return;
 		}
-		setBuzzerQueue(buzzerQueue.slice(1));
-		setScores({
-			...scores,
-			[buzzerQueue[0]]: (scores[buzzerQueue[0]] || 0) - selectedClue.value,
-		});
+		setBuzzerQueue(next.buzzerQueue);
+		setScores(next.scores);
 		console.log(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} incorrectly!`);
 	};
 
@@ -83,15 +84,6 @@ export default function useGameState(sessionId: string = '') {
 
 	const selectClue = (clue: Clue) => {
 		setSelectedClue(clue);
-	};
-
-	const expireClue = () => {
-		if (!selectedClue) {
-			return;
-		}
-		setSelectedClue(null);
-		setBuzzerQueue([]);
-		setUsedClueIds(Array.from(new Set([...usedClueIds, selectedClue.id])));
 	};
 
 	const buzzIn = (contestantSessionId: string) => {
