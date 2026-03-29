@@ -1,11 +1,21 @@
 .view-contestant {
-    padding: 5vh 5vw;
-    font-size: 6rem;
-    text-align: center;
+    &.view-contestant--buzzer {
+        padding: 5vh 5vw;
+        font-size: 3rem;
+        text-align: center;
+    }
     .buzzer-button {
         padding: 2rem;
-        font-size: 6rem;
+        font-size: 3rem;
         width: 90vw;
         height: 90vh;
+        &.buzzer-button--position-0 {
+            background-color: #009900;
+        }
+        &:disabled:not(.buzzer-button--position-0) {
+            background-color: #3333cc;
+            color: #888888;
+            cursor: not-allowed;
+        }
     }
 }

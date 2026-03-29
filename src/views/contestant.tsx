@@ -1,4 +1,5 @@
 'use client';
+import classnames from 'classnames';
 import Buzzer from '@/app/components/buzzer';
 import ClueSelect from '@/app/components/clue-select';
 import type { Category, Clue } from '@/types';
@@ -20,8 +21,10 @@ export default function ContestantView({
 	buzzIn: (contestantSessionId: string) => void;
 	usedClueIds: string[];
 }) {
+	const mode = selectedClue ? 'buzzer' : 'clue-select';
+
 	return (
-		<div className="view-contestant">
+		<div className={classnames('view-contestant', `view-contestant--${mode}`)}>
 			{selectedClue === null ? (
 				<ClueSelect selectClue={selectClue} categories={categories} usedClueIds={usedClueIds} />
 			) : (

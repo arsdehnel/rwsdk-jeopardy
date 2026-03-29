@@ -44,3 +44,16 @@ src/
 ## Contributing
 
 Contributions welcome. If you're familiar with RedwoodSDK and want to extend the game (scoring, multiple rounds, custom clue sets, etc.) please open an issue or PR.
+
+## Visual Tests
+
+Need to generate images on linux to avoid mismatching architectures.
+
+```sh
+docker run --rm \
+  -v $(pwd):/work/ \
+  -v /work/node_modules \
+  -w /work/ \
+  mcr.microsoft.com/playwright:v1.58.2-noble \
+  /bin/sh -c "npm install -g pnpm && pnpm install && pnpm playwright:update"
+```
