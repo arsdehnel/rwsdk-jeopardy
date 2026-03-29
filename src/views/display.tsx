@@ -19,11 +19,10 @@ export default function DisplayView({
 	scores: Record<string, number>;
 }) {
 	return (
-		<>
-			<p>Role: Display</p>
+		<div className="view-display">
 			<Scoreboard connections={connections} scores={scores} />
 			<ClueOverlay selectedClue={selectedClue} />
 			<Board categories={categories} usedClueIds={usedClueIds} />
-		</>
+		</div>
 	);
 }

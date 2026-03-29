@@ -21,13 +21,12 @@ export default function ContestantView({
 	usedClueIds: string[];
 }) {
 	return (
-		<>
-			<p>Role: Contestant</p>
+		<div className="view-contestant">
 			{selectedClue === null ? (
 				<ClueSelect selectClue={selectClue} categories={categories} usedClueIds={usedClueIds} />
 			) : (
 				<Buzzer buzzIn={buzzIn} buzzerQueue={buzzerQueue} sessionId={sessionId} />
 			)}
-		</>
+		</div>
 	);
 }

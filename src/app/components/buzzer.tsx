@@ -26,10 +26,8 @@ export default function Buzzer({
 	}
 
 	return (
-		<div>
-			<button type="button" onClick={() => buzzIn(sessionId)}>
-				Buzz In
-			</button>
-		</div>
+		<button className="buzzer-button" type="button" onClick={() => buzzIn(sessionId)}>
+			Buzz In
+		</button>
 	);
 }
