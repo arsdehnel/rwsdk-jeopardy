@@ -1,6 +1,6 @@
 import type { RequestInfo } from 'rwsdk/worker';
 
-import GameClient from '@/app/components/game';
+import GameClient from '@/components/game';
 
 export default function Game({ params, ctx, request }: RequestInfo) {
 	const gameId = params.gameId;

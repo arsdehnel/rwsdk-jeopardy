@@ -1,8 +1,8 @@
 'use client';
-import Board from '@/app/components/board';
-import ClueOverlay from '@/app/components/clue-overlay';
-import Scoreboard from '@/app/components/scoreboard';
 import type getCategories from '@/categories';
+import Board from '@/components/board';
+import ClueOverlay from '@/components/clue-overlay';
+import Scoreboard from '@/components/scoreboard';
 import type { Clue, Connections } from '@/types';
 
 export default function DisplayView({

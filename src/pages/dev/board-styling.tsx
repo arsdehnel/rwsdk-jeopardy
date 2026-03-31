@@ -1,5 +1,5 @@
-import Board from '@/app/components/board';
 import getCategories from '@/categories';
+import Board from '@/components/board';
 
 export default function BoardStyling() {
 	const categories = getCategories();

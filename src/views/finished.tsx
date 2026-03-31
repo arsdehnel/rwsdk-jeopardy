@@ -1,5 +1,5 @@
 'use client';
-import Scoreboard from '@/app/components/scoreboard';
+import Scoreboard from '@/components/scoreboard';
 import type { Connections } from '@/types';
 
 export default function FinishedView({ connections, scores }: { connections: Connections; scores: Record<string, number> }) {

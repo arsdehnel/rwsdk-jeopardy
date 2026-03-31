@@ -1,6 +1,6 @@
 'use client';
 import { QRCodeSVG } from 'qrcode.react';
-import MemberSelect from '@/app/components/member-select';
+import MemberSelect from '@/components/member-select';
 import type { Connection, Connections } from '@/types';
 
 export default function SetupView({
