@@ -1,4 +1,12 @@
+'use client';
+import { navigate } from 'rwsdk/client';
+
 export const Home = () => {
+	const createGame = () => {
+		const gameId = crypto.randomUUID();
+		navigate(`/games/${gameId}`);
+	};
+
 	return (
 		<>
 			<h1 className="welcome-title">RWSDK Jeopardy</h1>
@@ -12,23 +20,9 @@ export const Home = () => {
 					realtime hook.
 				</p>
 				<h2>Play a Game</h2>
-				<p>
-					To play a game we just have these static links for now. In the future we will add a way to make your own custom and
-					private game.
-				</p>
-				<div className="games-listing">
-					<ul>
-						<li>
-							<a href="/games/123">Game 123</a>
-						</li>
-						<li>
-							<a href="/games/456">Game 456</a>
-						</li>
-						<li>
-							<a href="/games/789">Game 789</a>
-						</li>
-					</ul>
-				</div>
+				<button type="button" onClick={createGame}>
+					Create New Game
+				</button>
 			</main>
 		</>
 	);

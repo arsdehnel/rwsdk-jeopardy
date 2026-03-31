@@ -1,7 +1,7 @@
 'use client';
 import classnames from 'classnames';
-import Buzzer from '@/app/components/buzzer';
-import ClueSelect from '@/app/components/clue-select';
+import Buzzer from '@/components/buzzer';
+import ClueSelect from '@/components/clue-select';
 import type { Category, Clue } from '@/types';
 
 export default function ContestantView({

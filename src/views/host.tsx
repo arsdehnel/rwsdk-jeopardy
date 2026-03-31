@@ -1,6 +1,6 @@
 'use client';
-import HostClueDisplay from '@/app/components/host-clue-display';
-import Scoreboard from '@/app/components/scoreboard';
+import HostClueDisplay from '@/components/host-clue-display';
+import Scoreboard from '@/components/scoreboard';
 import type { Clue, Connections } from '@/types';
 
 export default function HostView({
