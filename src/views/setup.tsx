@@ -35,14 +35,14 @@ export default function SetupView({
 	return (
 		<>
 			<h1 className="welcome-title">RWSDK Jeopardy</h1>
-			<main>
+			<main className="view-setup">
 				<h2 className="page-title">Game Setup</h2>
-				<p>
+				<p className="session-disclaimer">
 					We don't have logins at this point so we just assign you a randomly generated session ID. In case you need it that ID
 					for you is <code>{sessionId}</code>.
 				</p>
-				<div style={{ display: 'flex' }}>
-					<div style={{ margin: '5rem', textAlign: 'center', flex: '0 0 300px' }}>
+				<div className="registration-container">
+					<div className="user-registration">
 						<h2>Game Registration</h2>
 						<MemberSelect
 							role={role}
@@ -64,7 +64,7 @@ export default function SetupView({
 							</>
 						)}
 					</div>
-					<div style={{ margin: '5rem', textAlign: 'center', flex: '1 0 100px' }}>
+					<div className="qr-code">
 						<QRCodeSVG value={gameUrl} size={300} />
 					</div>
 				</div>
