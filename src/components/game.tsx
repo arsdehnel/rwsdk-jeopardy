@@ -10,14 +10,14 @@ import SetupView from '@/views/setup';
 export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; sessionId: string }) {
 	const {
 		connections,
-		registerConnection,
-		unregisterConnection,
 		role,
 		selectedClue,
 		gamePhase,
 		buzzerQueue,
 		usedClueIds,
 		scores,
+		registerConnection,
+		unregisterConnection,
 		correctClueResponse,
 		wrongClueResponse,
 		startGame,
@@ -86,6 +86,8 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 				setupGame={setupGame}
 				finishGame={finishGame}
 				expireClue={expireClue}
+				usedClueIds={usedClueIds}
+				gamePhase={gamePhase}
 			/>
 		);
 	}
