@@ -57,3 +57,14 @@ docker run --rm \
   mcr.microsoft.com/playwright:v1.58.2-noble \
   /bin/sh -c "npm install -g pnpm && pnpm install && pnpm playwright:update"
 ```
+
+## GH Workflows
+
+### Token
+
+For the `SEMANTIC_RELEASE_TOKEN` variable in github actions:
+- Scope it to the `rwsdk-jeopardy` repo 
+- Repo perms
+  - Content read/write
+  - Metadata read
+- 90 days

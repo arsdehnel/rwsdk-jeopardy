@@ -45,6 +45,7 @@ export default function MemberSelect({
 			<div className="member-select">
 				<label htmlFor="name">Name:</label>
 				<input id="name" type="text" placeholder="Your name here" value={name} onChange={e => setName(e.target.value)} />
+				<label htmlFor="role">Role:</label>
 				<select id="role" value={selectedRole} onChange={e => setSelectedRole(e.target.value as Role)}>
 					{!gameHasHost && <option value="host">Host</option>}
 					{!gameHasDisplay && <option value="display">Display</option>}

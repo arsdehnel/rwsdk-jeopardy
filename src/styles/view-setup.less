@@ -1,0 +1,45 @@
+.view-setup {
+    .session-disclaimer {
+        font-size: 0.9em;
+        font-style: italic;
+        color: #666666;
+    }
+    .registration-container {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        @media screen  and (min-width: 600px) {
+            flex-direction: row;
+        }
+    }
+    .user-registration {
+        text-align: center;
+        flex: 0 0 300px;
+    }
+    .member-select {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0;
+        margin: 0;
+        @media screen  and (min-width: 600px) {
+            flex-direction: row;
+            height: 2rem;
+            line-height: 2rem;
+        }
+    }
+    .qr-code {
+        margin: 0rem auto;
+        text-align: center;
+        @media screen  and (min-width: 600px) {
+            flex: 1 0 100px;
+        }
+    }
+    .registration-button {
+        white-space: nowrap;
+        &:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    }
+}
