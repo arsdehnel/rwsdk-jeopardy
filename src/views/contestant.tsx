@@ -2,6 +2,7 @@
 import classnames from 'classnames';
 import Buzzer from '@/components/buzzer';
 import ClueSelect from '@/components/clue-select';
+import Debug from '@/components/debug';
 import type { Category, Clue } from '@/types';
 
 export default function ContestantView({
@@ -26,7 +27,10 @@ export default function ContestantView({
 	return (
 		<div className={classnames('view-contestant', `view-contestant--${mode}`)}>
 			{selectedClue === null ? (
-				<ClueSelect selectClue={selectClue} categories={categories} usedClueIds={usedClueIds} />
+				<>
+					<ClueSelect selectClue={selectClue} categories={categories} usedClueIds={usedClueIds} />
+					<Debug object={{ selectedClue, buzzerQueue, usedClueIds }} />
+				</>
 			) : (
 				<Buzzer buzzIn={buzzIn} buzzerQueue={buzzerQueue} sessionId={sessionId} />
 			)}
