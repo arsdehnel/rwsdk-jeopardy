@@ -1,4 +1,4 @@
+pnpm exec lint-staged
 pnpm generate
-pnpm biome:check
 pnpm type-check
 pnpm test:run

@@ -1,11 +1,18 @@
 .view-display {
-    .jeopardy-scoreboard {
-        height: 5vh;
-        line-height: 5vh;
-        display: flex;
-        justify-content: space-around;
-        span {
-            text-align: center;
-        }
-    }
+	.jeopardy-scoreboard {
+		height: 5vh;
+		line-height: 5vh;
+		display: flex;
+		justify-content: space-around;
+		span {
+			text-align: center;
+			flex: 1;
+		}
+		.scoreboard-buzzer-queue--current {
+			box-shadow: inset 0 0 10px 2px #009900;
+		}
+		.scoreboard-buzzer-queue--in-queue {
+			box-shadow: inset 0 0 10px 2px #999900;
+		}
+	}
 }

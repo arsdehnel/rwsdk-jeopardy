@@ -21,9 +21,9 @@ export default function HostClueDisplay({
 }) {
 	return (
 		<div>
-			<h2>Clue</h2>
+			<h3>Clue</h3>
 			<p>{selectedClue.clue}</p>
-			<h2>Response</h2>
+			<h3>Response</h3>
 			<p>{selectedClue.response}</p>
 			<button
 				type="button"
@@ -32,7 +32,7 @@ export default function HostClueDisplay({
 					abortClue();
 				}}
 			>
-				Back to Board
+				Oops, something went wrong, go back to the board
 			</button>
 			{buzzerQueue.length > 0 ? (
 				<>

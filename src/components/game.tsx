@@ -68,6 +68,7 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 				categories={categories}
 				usedClueIds={usedClueIds}
 				scores={scores}
+				buzzerQueue={buzzerQueue}
 			/>
 		);
 	}

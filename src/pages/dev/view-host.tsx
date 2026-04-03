@@ -2,16 +2,15 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import getCategories from '@/categories';
 import type { Connections } from '@/types';
-import DisplayView from '@/views/display';
+import HostView from '@/views/host';
 
-export default function DevViewDisplay({ ctx }: RequestInfo) {
+export default function DevViewHost({ ctx }: RequestInfo) {
 	const sessionId = ctx?.session.sessionId;
 	if (!sessionId) {
 		return <p>Session ID not found, please refresh the page.</p>;
 	}
 
 	const devClueSelected = true; // Set this to true or false to test both states
-
 	const categories = getCategories();
 	const usedClueIds: string[] = [];
 	categories.forEach(cat => {
@@ -27,8 +26,6 @@ export default function DevViewDisplay({ ctx }: RequestInfo) {
 		contestant2: 2000,
 		contestant3: 3000,
 	};
-
-	const buzzerQueue = ['contestant2', 'contestant3'];
 
 	const connections: Connections = {
 		host: { id: 'host1', name: 'Host 1', role: 'host' },
@@ -57,19 +54,24 @@ export default function DevViewDisplay({ ctx }: RequestInfo) {
 		selectedClue = {
 			id: 'clue1',
 			value: 200,
-			clue: 'lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+			clue: 'This is a sample clue',
 			response: 'What is a sample clue?',
 		};
 	}
 
 	return (
-		<DisplayView
+		<HostView
 			connections={connections}
-			categories={categories}
+			buzzerQueue={[]}
+			abortClue={() => {}}
+			correctClueResponse={() => {}}
+			finishGame={() => {}}
+			resetBuzzers={() => {}}
+			setupGame={() => {}}
+			wrongClueResponse={() => {}}
+			expireClue={() => {}}
 			selectedClue={selectedClue}
-			usedClueIds={usedClueIds}
 			scores={scores}
-			buzzerQueue={buzzerQueue}
 		/>
 	);
 }

@@ -7,7 +7,7 @@ import ContestantView from '@/views/contestant';
 export default function DevViewContestant({ ctx }: RequestInfo) {
 	const sessionId = ctx?.session.sessionId;
 
-	const devClueSelected = true; // Set this to true or false to test both states
+	const devClueSelected = false; // Set this to true or false to test both states
 	const devIsBuzzedIn = false; // Set this to true or false to test both states
 	const othersBuzzedIn = true; // Set this to true or false to test both states
 
