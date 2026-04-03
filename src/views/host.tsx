@@ -29,15 +29,10 @@ export default function HostView({
 	expireClue: () => void;
 }) {
 	return (
-		<>
-			<p>Role: Host</p>
-			<Scoreboard connections={connections} scores={scores} />
-			<button type="button" onClick={() => setupGame()}>
-				Back to Setup
-			</button>
-			<button type="button" onClick={() => finishGame()}>
-				End Game
-			</button>
+		<div className="view-host">
+			<h2>Scores</h2>
+			<Scoreboard connections={connections} scores={scores} buzzerQueue={buzzerQueue} />
+			<h2>Current Clue</h2>
 			{selectedClue ? (
 				<HostClueDisplay
 					selectedClue={selectedClue}
@@ -51,6 +46,14 @@ export default function HostView({
 			) : (
 				<p>Contestant choosing clue...</p>
 			)}
-		</>
+
+			<h2>Game Options</h2>
+			<button type="button" onClick={() => setupGame()}>
+				Back to Setup
+			</button>
+			<button type="button" onClick={() => finishGame()}>
+				End Game
+			</button>
+		</div>
 	);
 }

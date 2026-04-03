@@ -11,16 +11,18 @@ export default function DisplayView({
 	categories,
 	usedClueIds,
 	scores,
+	buzzerQueue,
 }: {
 	connections: Connections;
 	selectedClue: Clue | null;
 	categories: ReturnType<typeof getCategories>;
 	usedClueIds: string[];
 	scores: Record<string, number>;
+	buzzerQueue: string[];
 }) {
 	return (
 		<div className="view-display">
-			<Scoreboard connections={connections} scores={scores} />
+			<Scoreboard connections={connections} scores={scores} buzzerQueue={buzzerQueue} />
 			<ClueOverlay selectedClue={selectedClue} />
 			<Board categories={categories} usedClueIds={usedClueIds} />
 		</div>
