@@ -86,8 +86,6 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 				setupGame={setupGame}
 				finishGame={finishGame}
 				expireClue={expireClue}
-				usedClueIds={usedClueIds}
-				gamePhase={gamePhase}
 			/>
 		);
 	}
