@@ -1,13 +1,13 @@
-@import './board.less';
-@import './category.less';
-@import './clue.less';
-@import './clue-overlay.less';
-@import './clue-select.less';
-@import './view-contestant.less';
-@import './view-display.less';
-@import './view-host.less';
-@import './view-setup.less';
-@import './welcome.less';
+@import "./board.less";
+@import "./category.less";
+@import "./clue.less";
+@import "./clue-overlay.less";
+@import "./clue-select.less";
+@import "./view-contestant.less";
+@import "./view-display.less";
+@import "./view-host.less";
+@import "./view-setup.less";
+@import "./welcome.less";
 
 body {
 	padding: 0;
