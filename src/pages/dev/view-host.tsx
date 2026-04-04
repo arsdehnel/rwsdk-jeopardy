@@ -59,10 +59,12 @@ export default function DevViewHost({ ctx }: RequestInfo) {
 		};
 	}
 
+	const buzzerQueue: string[] = [];
+
 	return (
 		<HostView
 			connections={connections}
-			buzzerQueue={[]}
+			buzzerQueue={buzzerQueue}
 			abortClue={() => {}}
 			correctClueResponse={() => {}}
 			finishGame={() => {}}
