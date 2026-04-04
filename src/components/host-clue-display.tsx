@@ -36,7 +36,6 @@ export default function HostClueDisplay({
 			</button>
 			{buzzerQueue.length > 0 ? (
 				<>
-					<p>{buzzerQueue[0]} has buzzed in!</p>
 					<button type="submit" onClick={() => resetBuzzers()}>
 						Something weng wrong, reset buzzers
 					</button>

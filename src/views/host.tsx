@@ -30,7 +30,7 @@ export default function HostView({
 }) {
 	return (
 		<div className="view-host">
-			<h2>Scores</h2>
+			<h2>Scores / Buzzers</h2>
 			<Scoreboard connections={connections} scores={scores} buzzerQueue={buzzerQueue} />
 			<h2>Current Clue</h2>
 			{selectedClue ? (
