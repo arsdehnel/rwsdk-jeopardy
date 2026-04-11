@@ -1,32 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.4.4/schema.json",
-	"formatter": {
-		"enabled": true,
-		"formatWithErrors": false,
-		"indentStyle": "tab",
-		"indentWidth": 2,
-		"lineWidth": 130
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true
-		}
-	},
-	"javascript": {
-		"formatter": {
-			"quoteStyle": "single",
-			"semicolons": "always",
-			"trailingCommas": "all",
-			"arrowParentheses": "asNeeded"
-		}
-	},
-	"css": {
-		"formatter": {
-			"enabled": true,
-			"indentStyle": "tab"
-		}
-	},
+	"$schema": "https://biomejs.dev/schemas/2.4.11/schema.json",
 	"files": {
 		"includes": [
 			"**",
@@ -35,12 +8,30 @@
 			"!**/.terraform",
 			"!**/node_modules",
 			"!**/dist",
-			"!**/.wrangler",
-			"!**/playwright",
-			"!**/playwright-report",
-			"!**/test-results",
-			"!**/.pnpm-store"
+			"!**/.wrangler"
 		]
+	},
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false,
+		"indentStyle": "tab",
+		"indentWidth": 4,
+		"lineWidth": 130
+	},
+	"javascript": {
+		"formatter": {
+			"arrowParentheses": "asNeeded",
+			"quoteStyle": "single",
+			"semicolons": "always",
+			"trailingCommas": "all"
+		},
+		"jsxRuntime": "transparent"
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true
+		}
 	},
 	"overrides": [
 		{
