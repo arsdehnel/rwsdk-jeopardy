@@ -49,7 +49,11 @@ export default function ClueSelect({
 										{category.clues.map((clue: Clue) => {
 											return (
 												<li key={clue.id}>
-													<button type="button" onClick={() => selectClue(clue)} disabled={usedClueIds.includes(clue.id)}>
+													<button
+														type="button"
+														onClick={() => selectClue(clue)}
+														disabled={usedClueIds.includes(clue.id)}
+													>
 														{clue.value}
 													</button>
 												</li>

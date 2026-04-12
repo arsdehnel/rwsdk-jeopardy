@@ -26,7 +26,10 @@ export default function SetupView({
 				<h1 className="welcome-title">RWSDK Jeopardy</h1>
 				<main>
 					<h2 className="page-title">Game Setup</h2>
-					<p>Sorry but there is a bug we haven't fixed yet, can you refresh your page and hopefully this message will go away.</p>
+					<p>
+						Sorry but there is a bug we haven't fixed yet, can you refresh your page and hopefully this message will
+						go away.
+					</p>
 				</main>
 			</>
 		);
@@ -38,8 +41,8 @@ export default function SetupView({
 			<main className="view-setup">
 				<h2 className="page-title">Game Setup</h2>
 				<p className="session-disclaimer">
-					We don't have logins at this point so we just assign you a randomly generated session ID. In case you need it that ID
-					for you is <code>{sessionId}</code>.
+					We don't have logins at this point so we just assign you a randomly generated session ID. In case you need it
+					that ID for you is <code>{sessionId}</code>.
 				</p>
 				<div className="registration-container">
 					<div className="user-registration">

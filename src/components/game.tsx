@@ -51,8 +51,8 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 	if (!role) {
 		return (
 			<p>
-				You are not registered in this game but the game has started, please contact the host and have them revert it back to
-				setup stage.
+				You are not registered in this game but the game has started, please contact the host and have them revert it back
+				to setup stage.
 			</p>
 		);
 	}
