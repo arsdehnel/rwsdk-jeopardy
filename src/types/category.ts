@@ -5,3 +5,11 @@ export type Category = {
 	title: string;
 	clues: Clue[];
 };
+
+export type GeneratedCategory = {
+	title: string;
+	clues: {
+		clue: string;
+		response: string;
+	}[];
+};

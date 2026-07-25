@@ -1,12 +1,4 @@
-'use client';
-import { navigate } from 'rwsdk/client';
-
-export const Home = () => {
-	const createGame = () => {
-		const gameId = crypto.randomUUID();
-		navigate(`/games/${gameId}`);
-	};
-
+export default async function Pages__Home() {
 	return (
 		<>
 			<h1 className="welcome-title">RWSDK Jeopardy</h1>
@@ -21,10 +13,8 @@ export const Home = () => {
 					realtime hook.
 				</p>
 				<h2>Play a Game</h2>
-				<button type="button" onClick={createGame}>
-					Create New Game
-				</button>
+				<a href="/games/new">New Game</a>
 			</main>
 		</>
 	);
-};
+}

@@ -2,7 +2,7 @@ import type { RequestInfo } from 'rwsdk/worker';
 
 import GameClient from '@/components/game';
 
-export default function Game({ params, ctx, request }: RequestInfo) {
+export default function Pages__Games__Play({ params, ctx, request }: RequestInfo) {
 	const gameId = params.gameId;
 	if (!gameId) {
 		return <p>Game ID not provided</p>;

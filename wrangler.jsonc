@@ -24,9 +24,8 @@
 
 	// Environment variables
 	"vars": {
-		// Add your environment variables here
+		"RWSDK_JEOPARDY_ENV": "development"
 	},
-
 	"durable_objects": {
 		"bindings": [
 			{
@@ -40,5 +39,26 @@
 			"tag": "v1",
 			"new_sqlite_classes": ["SyncedStateServer"]
 		}
-	]
+	],
+	"ai": {
+		"binding": "AI",
+		"remote": true
+	},
+	"env": {
+		"integration": {
+			"vars": {
+				"RWSDK_JEOPARDY_ENV": "integration"
+			}
+		},
+		"staging": {
+			"vars": {
+				"RWSDK_JEOPARDY_ENV": "staging"
+			}
+		},
+		"production": {
+			"vars": {
+				"RWSDK_JEOPARDY_ENV": "production"
+			}
+		}
+	}
 }

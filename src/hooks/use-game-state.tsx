@@ -57,6 +57,8 @@ export default function useGameState(sessionId: string = '') {
 		role = 'contestant';
 	}
 
+	const hasDisplay: boolean = !!connections.display;
+
 	const startGame = () => {
 		setGamePhase('active');
 	};
@@ -98,6 +100,7 @@ export default function useGameState(sessionId: string = '') {
 		registerConnection,
 		unregisterConnection,
 		role,
+		hasDisplay,
 		selectedClue,
 		gamePhase,
 		buzzerQueue,

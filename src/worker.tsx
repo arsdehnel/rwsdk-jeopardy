@@ -4,11 +4,12 @@ import { SyncedStateServer, syncedStateRoutes } from 'rwsdk/use-synced-state/wor
 import { defineApp } from 'rwsdk/worker';
 
 import { Document } from '@/document';
-import { Home } from '@/pages/home';
-import headerMiddleware from './middleware/headers';
-import sessionMiddleware from './middleware/session';
-import devRoutes from './pages/dev';
-import Game from './pages/game';
+import headerMiddleware from '@/middleware/headers';
+import sessionMiddleware from '@/middleware/session';
+import devRoutes from '@/pages/dev';
+import Pages__Games__New from '@/pages/games/new';
+import Pages__Games__Play from '@/pages/games/play';
+import Pages__Home from '@/pages/home';
 
 export { SyncedStateServer };
 
@@ -16,5 +17,10 @@ export default defineApp([
 	...syncedStateRoutes(() => env.SYNCED_STATE_SERVER),
 	headerMiddleware,
 	sessionMiddleware,
-	render(Document, [route('/', Home), route('/games/:gameId', Game), prefix('/dev', devRoutes)]),
+	render(Document, [
+		route('/', Pages__Home),
+		route('/games/new', Pages__Games__New),
+		route('/games/:gameId', Pages__Games__Play),
+		prefix('/dev', devRoutes),
+	]),
 ]);

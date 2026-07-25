@@ -11,6 +11,7 @@ export default function SetupView({
 	role,
 	startGame,
 	gameUrl,
+	hasDisplay,
 }: {
 	connections: Connections;
 	registerConnection: (connection: Connection) => void;
@@ -19,6 +20,7 @@ export default function SetupView({
 	role: string | undefined;
 	startGame: () => void;
 	gameUrl: string;
+	hasDisplay: boolean;
 }) {
 	if (!sessionId) {
 		return (
@@ -53,6 +55,7 @@ export default function SetupView({
 							registerConnection={registerConnection}
 							unregisterConnection={unregisterConnection}
 							sessionId={sessionId}
+							hasDisplay={hasDisplay}
 						/>
 						{role === 'host' && (
 							<>
@@ -66,9 +69,11 @@ export default function SetupView({
 								</button>
 							</>
 						)}
-					</div>
-					<div className="qr-code">
-						<QRCodeSVG value={gameUrl} size={300} />
+						{role === 'display' && (
+							<div className="qr-code">
+								<QRCodeSVG value={gameUrl} size={300} />
+							</div>
+						)}
 					</div>
 				</div>
 			</main>
