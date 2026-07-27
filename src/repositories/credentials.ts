@@ -1,0 +1,88 @@
+import { and, eq, isNull, sql } from 'drizzle-orm';
+import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
+import db from '@/db';
+import { credentials } from '@/models';
+import type { CredentialDBRead, CredentialWriteInput, KADLogger } from '@/types';
+import { validateUuid } from './utils';
+
+export async function createCredential(
+	newCredential: CredentialWriteInput,
+	actingUserId: string,
+	logger: KADLogger,
+): Promise<CredentialDBRead> {
+	logger.debug(`Creating credential for user ${newCredential.userId}`);
+	if (!validateUuid(actingUserId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [actingUserId, 'Acting User ID']);
+	}
+	const [insertedCredential] = await db
+		.insert(credentials)
+		.values({ ...newCredential, createdBy: actingUserId })
+		.returning();
+	logger.info(`Created credential ${insertedCredential.id}`);
+	return insertedCredential;
+}
+
+export async function deleteCredential(credentialId: string, actingUserId: string, logger: KADLogger): Promise<CredentialDBRead> {
+	if (!validateUuid(credentialId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [credentialId, 'Credential']);
+	}
+
+	logger.debug(`Deleting credential ${credentialId}`);
+	const deleted = await db
+		.update(credentials)
+		.set({ deletedAt: sql`(datetime('now', 'localtime'))`, deletedBy: actingUserId })
+		.where(eq(credentials.id, credentialId))
+		.returning();
+
+	if (deleted.length !== 1) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [deleted.length, 1, 'Credential']);
+	}
+
+	logger.info(`Deleted credential ${credentialId}`);
+	return deleted[0];
+}
+
+export async function getCredentialsByUserId(userId: string, logger: KADLogger): Promise<CredentialDBRead[]> {
+	logger.debug(`Fetching credentials for user ${userId}`);
+	const matchedCredentials = await db
+		.select()
+		.from(credentials)
+		.where(and(eq(credentials.userId, userId), isNull(credentials.deletedAt)));
+	logger.debug(`Fetched ${matchedCredentials.length} credentials for user ${userId}`);
+	return matchedCredentials;
+}
+
+export async function getCredentialById(credentialId: string, logger: KADLogger): Promise<CredentialDBRead> {
+	// credentialId is a WebAuthn credential identifier, not an internal UUID — no UUID validation
+	logger.debug(`Fetching credential ${credentialId}`);
+	const matchedCredentials = await db
+		.select()
+		.from(credentials)
+		.where(and(eq(credentials.credentialId, credentialId), isNull(credentials.deletedAt)));
+
+	if (matchedCredentials.length !== 1) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [matchedCredentials.length, 1, 'Credential']);
+	}
+
+	return matchedCredentials[0];
+}
+
+export async function updateCredentialCounter(
+	credentialId: string,
+	counter: number,
+	actingUserId: string,
+	logger: KADLogger,
+): Promise<void> {
+	logger.debug(`Updating credential counter for ${credentialId}`);
+	const updated = await db
+		.update(credentials)
+		.set({ counter, updatedAt: sql`(datetime('now', 'localtime'))`, updatedBy: actingUserId })
+		.where(eq(credentials.credentialId, credentialId))
+		.returning();
+
+	if (updated.length !== 1) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [updated.length, 1, 'Credential']);
+	}
+
+	logger.info(`Updated credential counter for ${credentialId} to ${counter}`);
+}

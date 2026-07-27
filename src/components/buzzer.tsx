@@ -9,7 +9,7 @@ export default function Buzzer({
 	buzzIn: (contestantSessionId: string) => void;
 	buzzerQueue: string[];
 	sessionId: string;
-}) {
+}): React.ReactNode {
 	const someoneHasBuzzedIn = buzzerQueue.length > 0;
 	const buzzerPosition = buzzerQueue.indexOf(sessionId);
 	const currentHasBuzzedIn = buzzerQueue.includes(sessionId);
@@ -27,7 +27,7 @@ export default function Buzzer({
 			className={classnames('buzzer-button', `buzzer-button--position-${buzzerPosition}`)}
 			type="button"
 			disabled={currentHasBuzzedIn}
-			onClick={() => buzzIn(sessionId)}
+			onClick={(): void => buzzIn(sessionId)}
 		>
 			{buzzerText}
 		</button>

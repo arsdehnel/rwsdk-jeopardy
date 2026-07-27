@@ -7,7 +7,7 @@ import FinishedView from '@/views/finished';
 import HostView from '@/views/host';
 import SetupView from '@/views/setup';
 
-export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; sessionId: string }) {
+export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; sessionId: string }): React.ReactNode {
 	const {
 		connections,
 		role,

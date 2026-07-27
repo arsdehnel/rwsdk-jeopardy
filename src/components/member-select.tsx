@@ -17,7 +17,7 @@ export default function MemberSelect({
 	unregisterConnection: (connectionId: string) => void;
 	sessionId: string;
 	hasDisplay: boolean;
-}) {
+}): React.ReactNode {
 	const [name, setName] = useState('');
 	const [selectedRole, setSelectedRole] = useState<Role>('host');
 
@@ -38,7 +38,7 @@ export default function MemberSelect({
 				<button
 					className="registration-button"
 					type="button"
-					onClick={() => {
+					onClick={(): void => {
 						unregisterConnection(sessionId);
 					}}
 				>
@@ -58,7 +58,7 @@ export default function MemberSelect({
 				<button
 					className="registration-button"
 					type="button"
-					onClick={() => {
+					onClick={(): void => {
 						registerConnection({ id: sessionId, role: 'display' });
 					}}
 				>
@@ -73,7 +73,11 @@ export default function MemberSelect({
 			<p>Who are you?</p>
 			<div className="member-select">
 				<label htmlFor="role">Role:</label>
-				<select id="role" value={selectedRole} onChange={e => setSelectedRole(e.target.value as Role)}>
+				<select
+					id="role"
+					value={selectedRole}
+					onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => setSelectedRole(e.target.value as Role)}
+				>
 					{!gameHasHost && <option value="host">Host</option>}
 					{!gameHasDisplay && <option value="display">Display</option>}
 					<option value="contestant">Contestant</option>
@@ -86,7 +90,7 @@ export default function MemberSelect({
 							type="text"
 							placeholder="Your name here"
 							value={name}
-							onChange={e => setName(e.target.value)}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setName(e.target.value)}
 						/>
 					</>
 				)}
@@ -94,7 +98,7 @@ export default function MemberSelect({
 					className="registration-button"
 					type="button"
 					disabled={!name || !selectedRole}
-					onClick={() => {
+					onClick={(): void => {
 						registerConnection({ id: sessionId, name, role: selectedRole });
 					}}
 				>

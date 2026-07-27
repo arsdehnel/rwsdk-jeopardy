@@ -1,7 +1,7 @@
 import getCategories from '@/categories';
 import Board from '@/components/board';
 
-export default function BoardStyling() {
+export default function BoardStyling(): React.JSX.Element {
 	const categories = getCategories();
 	const usedClueIds: string[] = [];
 	categories.forEach(cat => {

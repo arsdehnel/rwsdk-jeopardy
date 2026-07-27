@@ -2,13 +2,13 @@ import type { RequestInfo } from 'rwsdk/worker';
 
 import GameClient from '@/components/game';
 
-export default function Pages__Games__Play({ params, ctx, request }: RequestInfo) {
+export default function Pages__Games__Play({ params, ctx, request }: RequestInfo): React.JSX.Element {
 	const gameId = params.gameId;
 	if (!gameId) {
 		return <p>Game ID not provided</p>;
 	}
 
-	const sessionId = ctx?.session.sessionId;
+	const sessionId = ctx?.session?.sessionId;
 	if (!sessionId) {
 		return <p>Session ID not found, please refresh the page.</p>;
 	}

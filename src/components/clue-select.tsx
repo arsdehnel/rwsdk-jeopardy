@@ -12,10 +12,10 @@ export default function ClueSelect({
 	categories: Category[];
 	selectClue: (clue: Clue) => void;
 	usedClueIds: string[];
-}) {
+}): React.ReactNode {
 	const [openCategory, setOpenCategory] = useState('');
 
-	const toggleCategory = (categoryId: string) => {
+	const toggleCategory = (categoryId: string): void => {
 		if (openCategory === categoryId) {
 			setOpenCategory('');
 		} else {
@@ -34,7 +34,7 @@ export default function ClueSelect({
 								key={category.id}
 								className="CollapsibleRoot"
 								open={openCategory === category.id}
-								onOpenChange={() => toggleCategory(category.id)}
+								onOpenChange={(): void => toggleCategory(category.id)}
 							>
 								<div className="clue-select-category">
 									<h3>{category.title}</h3>
@@ -51,7 +51,7 @@ export default function ClueSelect({
 												<li key={clue.id}>
 													<button
 														type="button"
-														onClick={() => selectClue(clue)}
+														onClick={(): void => selectClue(clue)}
 														disabled={usedClueIds.includes(clue.id)}
 													>
 														{clue.value}

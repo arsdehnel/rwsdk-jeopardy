@@ -10,7 +10,7 @@ export default function Scoreboard({
 	connections: Connections;
 	scores: Record<string, number>;
 	buzzerQueue?: string[];
-}) {
+}): React.ReactNode {
 	return (
 		<div className="jeopardy-scoreboard">
 			{connections.contestants.map((member: Connection) => {

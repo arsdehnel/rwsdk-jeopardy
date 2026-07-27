@@ -1,4 +1,4 @@
-export default async function Pages__Home() {
+export default async function Pages__Home(): Promise<React.JSX.Element> {
 	return (
 		<>
 			<h1 className="welcome-title">RWSDK Jeopardy</h1>

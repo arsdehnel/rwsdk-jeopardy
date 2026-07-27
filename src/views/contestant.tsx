@@ -20,7 +20,7 @@ export default function ContestantView({
 	sessionId: string;
 	buzzIn: (contestantSessionId: string) => void;
 	usedClueIds: string[];
-}) {
+}): React.ReactNode {
 	const mode = selectedClue ? 'buzzer' : 'clue-select';
 
 	return (

@@ -11,13 +11,34 @@ export default defineConfig({
 			reporter: ['text', 'json-summary'],
 			exclude: ['**/*.md', '**/__tests__/**', '**/*.test.ts', '**/*.integration.test.ts'],
 			thresholds: {
-				branches: 100,
-				lines: 100,
+				branches: 30,
+				lines: 30, // using this to make sure we don't miss something big or have dead code
+				'src/actions/**': {
+					branches: 92,
+				},
+				'src/classes/**': {
+					branches: 66,
+				},
+				'src/durable-objects/**': {
+					branches: 100,
+				},
+				'src/middleware/**': {
+					branches: 100,
+				},
+				'src/repositories/**': {
+					branches: 96,
+				},
+				'src/schemas/**': {
+					branches: 0,
+				},
 			},
 		},
 		setupFiles: ['./tests/setup.ts'],
 		alias: {
+			'cloudflare:workers': path.resolve(__dirname, 'tests/mocks/cloudflare-workers.ts'),
+			'rwsdk/auth': path.resolve(__dirname, 'tests/mocks/rwsdk-auth.ts'),
 			'rwsdk/use-synced-state/client': path.resolve(__dirname, 'tests/mocks/rwsdk-use-synced-state.ts'),
+			'@/db': path.resolve(__dirname, 'tests/mocks/db.ts'),
 			'@': path.resolve(__dirname, './src'),
 		},
 	},

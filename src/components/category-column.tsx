@@ -8,7 +8,7 @@ export default function CategoryColumn({
 }: {
 	category: { title: string; clues: Clue[] };
 	usedClueIds: string[];
-}) {
+}): React.ReactNode {
 	return (
 		<div className="jeopardy-category">
 			<h2>{category.title}</h2>

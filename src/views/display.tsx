@@ -19,7 +19,7 @@ export default function DisplayView({
 	usedClueIds: string[];
 	scores: Record<string, number>;
 	buzzerQueue: string[];
-}) {
+}): React.ReactNode {
 	return (
 		<div className="view-display">
 			<Scoreboard connections={connections} scores={scores} buzzerQueue={buzzerQueue} />

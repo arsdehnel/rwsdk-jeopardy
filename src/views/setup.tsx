@@ -21,7 +21,7 @@ export default function SetupView({
 	startGame: () => void;
 	gameUrl: string;
 	hasDisplay: boolean;
-}) {
+}): React.ReactNode {
 	if (!sessionId) {
 		return (
 			<>
@@ -64,7 +64,7 @@ export default function SetupView({
 									As the host you get some debugging information while we're in alpha.
 									<pre>{JSON.stringify(connections, null, 4)}</pre>
 								</div>
-								<button type="button" onClick={() => startGame()}>
+								<button type="button" onClick={(): void => startGame()}>
 									Start Game
 								</button>
 							</>

@@ -4,8 +4,8 @@ import type { RequestInfo } from 'rwsdk/worker';
 import getCategories from '@/categories';
 import ContestantView from '@/views/contestant';
 
-export default function DevViewContestant({ ctx }: RequestInfo) {
-	const sessionId = ctx?.session.sessionId;
+export default function DevViewContestant({ ctx }: RequestInfo): React.JSX.Element {
+	const sessionId = ctx?.session?.sessionId;
 
 	const devClueSelected = false; // Set this to true or false to test both states
 	const devIsBuzzedIn = false; // Set this to true or false to test both states
@@ -44,13 +44,13 @@ export default function DevViewContestant({ ctx }: RequestInfo) {
 		};
 	}
 
-	const buzzIn = () => {
+	const buzzIn = (): void => {
 		setBuzzerQueue(prev => [...prev, sessionId]);
 	};
 
 	return (
 		<ContestantView
-			selectClue={() => {}}
+			selectClue={(): void => {}}
 			selectedClue={selectedClue}
 			categories={categories}
 			buzzerQueue={buzzerQueue}
