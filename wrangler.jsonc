@@ -66,7 +66,6 @@
 			"migrations_pattern": "drizzle/*/migration.sql"
 		}
 	],
-
 	"env": {
 		"integration": {
 			"vars": {
@@ -87,7 +86,19 @@
 					"binding": "AED_LOGIN_ATTEMPTS",
 					"dataset": "login_attempts_local"
 				}
-			]
+			],
+			"durable_objects": {
+				"bindings": [
+					{
+						"name": "SESSION_DURABLE_OBJECT",
+						"class_name": "SessionDurableObject"
+					},
+					{
+						"name": "SYNCED_STATE_SERVER",
+						"class_name": "SyncedStateServer"
+					}
+				]
+			}
 		},
 		"staging": {
 			"vars": {
