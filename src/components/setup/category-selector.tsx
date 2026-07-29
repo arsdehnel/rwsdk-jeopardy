@@ -1,10 +1,17 @@
 'use client';
 import { useState } from 'react';
 import { generateCategory, saveCategory } from '@/actions/categories';
-import type { CategoryDBRead, GeneratedCategory } from '@/types';
+import { KADButton } from '@/components/design-system';
+import type { CategoryDBRead, GeneratedCategory, Permission } from '@/types';
 import ViewCategory from './view-category';
 
-export default function CategorySelector({ categories }: { categories: CategoryDBRead[] }): React.ReactNode {
+export default function CategorySelector({
+	categories,
+	userPermissions,
+}: {
+	categories: CategoryDBRead[];
+	userPermissions: Permission[];
+}): React.ReactNode {
 	const [generatedCategory, setGeneratedCategory] = useState<GeneratedCategory>();
 	const [errors, setErrors] = useState<string>();
 	const [pending, setPending] = useState<boolean>(false);
@@ -48,9 +55,12 @@ export default function CategorySelector({ categories }: { categories: CategoryD
 			)}
 
 			<div className="btn-group">
-				<button type="button" onClick={triggerCategoryGeneration}>
-					Generate Category
-				</button>
+				<KADButton
+					label="Generate Category"
+					userPermissions={userPermissions}
+					requiredPermission="categories:generate"
+					onClick={triggerCategoryGeneration}
+				/>
 			</div>
 		</>
 	);

@@ -1,16 +1,16 @@
 import type { categories } from '@/models';
-import type { Clue } from './clue';
+import type { Clue, ClueDBRead } from './clue';
 
 export type Category = {
 	id: string;
-	title: string;
+	name: string;
 	clues: Clue[];
 };
 
 export type GeneratedCategory = {
-	title: string;
+	name: string;
 	clues: {
-		clue: string;
+		text: string;
 		response: string;
 	}[];
 };
@@ -20,3 +20,7 @@ export type CategoryRepoInput = Omit<
 	typeof categories.$inferInsert,
 	'createdAt' | 'createdBy' | 'updatedAt' | 'updatedBy' | 'deletedAt' | 'deletedBy'
 >;
+
+export type CategoryWithClues = CategoryDBRead & {
+	clues: ClueDBRead[];
+};

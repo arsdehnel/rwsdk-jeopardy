@@ -10,16 +10,6 @@ const permissions = {
 	__controls: {
 		read: ['*'],
 	},
-	admin: {
-		read: ['ADMIN'],
-	},
-	'api-keys': {
-		copy: ['BASIC', 'ADMIN'],
-		create: ['BASIC', 'ADMIN'],
-		read: ['BASIC', 'ADMIN'],
-		update: ['BASIC', 'ADMIN'],
-		delete: ['BASIC', 'ADMIN'],
-	},
 	auth: {
 		login: ['PUBLIC'],
 		logout: ['ADMIN', 'BASIC'],
@@ -27,54 +17,15 @@ const permissions = {
 	credentials: {
 		read: ['BASIC', 'ADMIN'],
 	},
-	'growing-zones': {
-		read: ['BASIC', 'ADMIN'],
-		create: ['ADMIN'],
-		update: ['ADMIN'],
-		delete: ['ADMIN'],
-	},
-	ingredients: {
-		create: ['ADMIN'],
-		load: ['ADMIN'],
+	categories: {
 		read: ['*'],
+		create: ['ADMIN'],
 		update: ['ADMIN'],
 		delete: ['ADMIN'],
-	},
-	'ingredient-seasons': {
-		load: ['ADMIN'],
-	},
-	permissions: {
-		override: ['ADMIN'],
+		generate: ['BASIC'],
 	},
 	profile: {
 		read: ['ADMIN', 'BASIC'],
-	},
-	recipes: {
-		create: ['ADMIN', 'BASIC'],
-		read: ['*'],
-		update: ['ADMIN', 'BASIC'],
-		delete: ['ADMIN', 'BASIC'],
-		scrape: ['ADMIN', 'BASIC'],
-		upload: ['ADMIN', 'BASIC'],
-		favorite: ['ADMIN', 'BASIC'],
-	},
-	seasons: {
-		create: ['ADMIN'],
-		read: ['*'],
-		update: ['ADMIN'],
-		delete: ['ADMIN'],
-	},
-	users: {
-		read: ['ADMIN'],
-		update: ['ADMIN'],
-	},
-	verifications: {
-		create: ['ADMIN'],
-		read: ['ADMIN'],
-	},
-	workflows: {
-		read: ['ADMIN'],
-		run: ['ADMIN'],
 	},
 } as const satisfies Record<string, Record<string, RoleEntry[]>>;
 

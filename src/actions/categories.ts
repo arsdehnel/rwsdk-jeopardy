@@ -1,23 +1,28 @@
 'use server';
 import { env } from 'cloudflare:workers';
-import { requestInfo } from 'rwsdk/worker';
-import type { ActionState, Category, GeneratedCategory } from '@/types';
+import { requestInfo, serverAction } from 'rwsdk/worker';
+import { requireAuthentication } from '@/interrupters';
+import { createCategory, createClue } from '@/repositories';
+import type { ActionState, CategoryWithClues, GeneratedCategory } from '@/types';
 import { errorResponse, successResponse } from './utils';
 
 const prompt = `I have a jeopardy-style game and a user is requesting a new category.  Can you provide a category title and five increasingly-difficult "answers" for which the contestants will have to provide the "question" in traditional Jeopardy style. Can you return the data in JSON with the top-level thing being a category object like this with clues as an array? Return it without the pretty-printed formatting and please make sure to return the full JSON so I can parse it. Also please double-check the accuracy to avoid hallucinations.
 
 { 
-	"title": "Animal Kingdom",
+	"name": "Animal Kingdom",
 	"clues": [
 		{
-			"clue": "This is the only mammal capable of true flight.",
+			"text": "This is the only mammal capable of true flight.",
 			"response": "What is a bat?"
 		}
 	]
 }
 `;
 
-export async function generateCategory(): Promise<ActionState<GeneratedCategory>> {
+export const generateCategory = serverAction([requireAuthentication, _generateCategory]);
+export const saveCategory = serverAction([requireAuthentication, _saveCategory]);
+
+export async function _generateCategory(): Promise<ActionState<GeneratedCategory>> {
 	try {
 		requestInfo.ctx.logger.info(`Initializing category generation`);
 
@@ -47,22 +52,26 @@ export async function generateCategory(): Promise<ActionState<GeneratedCategory>
 	}
 }
 
-export async function saveCategory(category: GeneratedCategory): Promise<ActionState<Category>> {
+export async function _saveCategory(category: GeneratedCategory): Promise<ActionState<CategoryWithClues>> {
+	const { ctx } = requestInfo;
+	// biome-ignore lint/style/noNonNullAssertion: guaranteed by requireAuthentication in serverAction chain
+	const userId = ctx.user!.id;
+
 	try {
 		requestInfo.ctx.logger.info(`Received category to be saved: ${JSON.stringify(category)}`);
 
-		const savedCategory = {
-			id: crypto.randomUUID(),
-			...category,
-			clues: category.clues.map((c, idx) => {
-				return {
-					id: crypto.randomUUID(),
-					value: (idx + 1) * 100,
-					...c,
-				};
-			}),
+		const savedCategory = await createCategory(category, userId, ctx.logger);
+
+		const savedClues = await Promise.all(
+			category.clues.map(async clue => await createClue({ categoryId: savedCategory.id, ...clue }, userId, ctx.logger)),
+		);
+
+		const fullCategory: CategoryWithClues = {
+			...savedCategory,
+			clues: savedClues,
 		};
-		return successResponse<Category>(savedCategory);
+
+		return successResponse<CategoryWithClues>(fullCategory);
 	} catch (err) {
 		requestInfo.ctx.logger.error(`Unexpected error: ${err}`);
 		return errorResponse(err);

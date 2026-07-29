@@ -1,14 +1,14 @@
 import type { GeneratedCategory } from '@/types';
 
-export default function ViewCategory({ title, clues }: GeneratedCategory): React.ReactNode {
+export default function ViewCategory({ name, clues }: GeneratedCategory): React.ReactNode {
 	return (
 		<>
-			<p>{title}</p>
+			<p>{name}</p>
 			<ol>
 				{clues?.map(clue => {
 					return (
-						<li key={clue.clue}>
-							<strong>{clue.clue}</strong> ({clue.response})
+						<li key={clue.text}>
+							<strong>{clue.text}</strong> ({clue.response})
 						</li>
 					);
 				})}
