@@ -72,7 +72,22 @@
 			"vars": {
 				"RWSDK_JEOPARDY_ENV": "integration",
 				"WEBAUTHN_APP_NAME": "kad-jeopardy"
-			}
+			},
+			"d1_databases": [
+				{
+					"binding": "D1_JEOPARDY",
+					"database_id": "a86dcb3d-4605-42ba-afec-50d19caad546",
+					"database_name": "jeopardy-integration",
+					"migrations_dir": "drizzle",
+					"migrations_pattern": "drizzle/*/migration.sql"
+				}
+			],
+			"analytics_engine_datasets": [
+				{
+					"binding": "AED_LOGIN_ATTEMPTS",
+					"dataset": "login_attempts_local"
+				}
+			]
 		},
 		"staging": {
 			"vars": {
