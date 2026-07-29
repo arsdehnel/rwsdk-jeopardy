@@ -41,12 +41,16 @@
 			}
 		]
 	},
-	"migrations": [
-		{
-			"tag": "v1",
-			"new_sqlite_classes": ["SyncedStateServer"]
+	"exports": {
+		"SyncedStateServer": {
+			"type": "durable-object",
+			"storage": "sqlite"
+		},
+		"SessionDurableObject": {
+			"type": "durable-object",
+			"storage": "sqlite"
 		}
-	],
+	},
 	"ai": {
 		"binding": "AI",
 		"remote": true
