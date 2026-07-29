@@ -26,7 +26,7 @@
 		"playwright:write": "playwright test -c playwright-ct.config.ts --ui",
 		"prepare": "husky",
 		"preview": "vite preview",
-		"release": "rw-scripts ensure-deploy-env && npm run clean && vite build --mode $CLOUDFLARE_ENV && wrangler d1 migrations apply REZEPT_CORE --remote --env $CLOUDFLARE_ENV && wrangler deploy --env $CLOUDFLARE_ENV",
+		"release": "rw-scripts ensure-deploy-env && npm run clean && vite build --mode $CLOUDFLARE_ENV && wrangler d1 migrations apply D1_JEOPARDY --remote --env $CLOUDFLARE_ENV && wrangler deploy --env $CLOUDFLARE_ENV",
 		"test": "vitest",
 		"test:run": "vitest run --coverage",
 		"test:ui": "vitest --ui",

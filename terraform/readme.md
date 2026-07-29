@@ -14,10 +14,10 @@ export GITHUB_TOKEN=ghp_your_token_here_with_gh_project_perms
 terraform init
 
 # Preview changes
-terraform plan -var="rezept_core_workflow_automation=$GITHUB_TOKEN_REZEPT_CORE_WORKFLOW_AUTOMATION"
+terraform plan
 
 # Apply protection rules
-terraform apply -var="rezept_core_workflow_automation=$GITHUB_TOKEN_REZEPT_CORE_WORKFLOW_AUTOMATION"
+terraform apply
 ```
 
 ## Steps
