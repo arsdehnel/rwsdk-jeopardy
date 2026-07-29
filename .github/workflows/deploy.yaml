@@ -56,12 +56,12 @@ jobs:
             '.environments.integration = {version: $v, deployedAt: $d}' \
             current-status.json > _status/status.json
 
-      - name: Publish status to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_status
-          keep_files: true
+      # - name: Publish status to gh-pages
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./_status
+      #     keep_files: true
 
   deploy-staging:
     name: Deploy to Staging
@@ -107,12 +107,12 @@ jobs:
             '.environments.staging = {version: $v, deployedAt: $d}' \
             current-status.json > _status/status.json
 
-      - name: Publish status to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_status
-          keep_files: true
+      # - name: Publish status to gh-pages
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./_status
+      #     keep_files: true
 
   deploy-production:
     name: Deploy to Production
@@ -158,9 +158,9 @@ jobs:
             '.environments.production = {version: $v, deployedAt: $d}' \
             current-status.json > _status/status.json
 
-      - name: Publish status to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_status
-          keep_files: true
+      # - name: Publish status to gh-pages
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./_status
+      #     keep_files: true
