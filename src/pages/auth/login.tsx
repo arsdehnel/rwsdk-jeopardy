@@ -5,7 +5,7 @@ import SetupLayout from '@/layouts/setup';
 
 export default function Pages__auth__login({ ctx }: RequestInfo): React.JSX.Element {
 	return (
-		<SetupLayout pageTitle="Login" ctx={ctx}>
+		<SetupLayout pageTitle="Login" ctx={ctx} currentBasePage="home">
 			{ctx.user ? (
 				<div>
 					<div>
