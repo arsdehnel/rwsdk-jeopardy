@@ -72,6 +72,9 @@
 	],
 	"env": {
 		"integration": {
+			"ai": {
+				"binding": "AI"
+			},
 			"vars": {
 				"RWSDK_JEOPARDY_ENV": "integration",
 				"WEBAUTHN_APP_NAME": "kad-jeopardy"
