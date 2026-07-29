@@ -72,3 +72,11 @@ coverage
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Terraform files
+.terraform/
+.terraform.lock.hcl
+.terraform.tfstate.lock.info
+terraform.tfstate*
+*.tfvars.backup
+*.tfvars*

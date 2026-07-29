@@ -1,0 +1,17 @@
+terraform {
+  required_providers {
+    github = {
+      source  = "integrations/github"
+      version = "~> 6.0"
+    }
+  }
+}
+
+provider "github" {
+  owner = "arsdehnel"
+  # Token via GITHUB_TOKEN env var
+}
+
+data "github_user" "admin" {
+  username = "arsdehnel"
+}

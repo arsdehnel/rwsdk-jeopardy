@@ -5,8 +5,13 @@ on:
     branches:
       - main
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
-  semantic-release:
+  release:
+    name: Semantic Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -14,25 +19,50 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
 
       - run: pnpm install
 
-      - name: Debug Token
+      - name: Get pre-release tag
+        id: pre-release
+        run: echo "tag=$(git describe --tags --abbrev=0 2>/dev/null || echo '')" >> $GITHUB_OUTPUT
+
+      - name: Save branch protection
         env:
           GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
         run: |
-          echo "Token starts with: ${GITHUB_TOKEN:0:10}..."
-          curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user
+          curl --fail-with-body -s \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/arsdehnel/rwsdk-jeopardy/branches/main/protection \
+          | jq '{
+              restrictions: (if .restrictions then {
+                users: [.restrictions.users[].login],
+                teams: [.restrictions.teams[].slug]
+              } else null end),
+              required_status_checks: (if .required_status_checks then {
+                strict: .required_status_checks.strict,
+                contexts: .required_status_checks.contexts
+              } else null end),
+              enforce_admins: .enforce_admins.enabled,
+              required_pull_request_reviews: (if .required_pull_request_reviews then {
+                dismiss_stale_reviews: .required_pull_request_reviews.dismiss_stale_reviews,
+                require_code_owner_reviews: .required_pull_request_reviews.require_code_owner_reviews,
+                required_approving_review_count: .required_pull_request_reviews.required_approving_review_count
+              } else null end),
+              allow_deletions: .allow_deletions.enabled,
+              allow_force_pushes: .allow_force_pushes.enabled,
+              block_creations: .block_creations.enabled
+            }' > /tmp/branch-protection.json
 
       - name: Disable branch protection
         env:
@@ -54,7 +84,6 @@ jobs:
           HUSKY: 0
         run: pnpm dlx semantic-release
 
-        # NOTE: this would ideally be the same settings that are in Terraform but they could drift
       - name: Re-enable branch protection
         if: always()
         env:
@@ -64,12 +93,17 @@ jobs:
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/arsdehnel/rwsdk-jeopardy/branches/main/protection \
-            -d '{"restrictions":{"users":["arsdehnel"],"teams":[]},"required_status_checks":{"strict":true,"contexts":["commitlint / commitlint"]},"enforce_admins":false,"required_pull_request_reviews":{"dismiss_stale_reviews":false,"require_code_owner_reviews":false,"required_approving_review_count":0},"allow_deletions":false,"allow_force_pushes":false,"block_creations":false}'
+            -d @/tmp/branch-protection.json
 
-      - name: Integration Deploy
+      - name: Trigger Deploy
         if: success()
-        env: 
-          CLOUDFLARE_ENV: integration
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: pnpm release
+        env:
+          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+        run: |
+          TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$TAG" ] && [ "$TAG" != "${{ steps.pre-release.outputs.tag }}" ]; then
+            echo "New release $TAG — triggering deploy"
+            gh workflow run deploy.yaml --ref main --field tag="$TAG"
+          else
+            echo "No new release — skipping deploy"
+          fi
