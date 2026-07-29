@@ -24,6 +24,11 @@ const permissions = {
 		delete: ['ADMIN'],
 		generate: ['BASIC'],
 	},
+	games: {
+		read: ['*'],
+		create: ['BASIC', 'ADMIN'],
+		update: ['BASIC', 'ADMIN'],
+	},
 	profile: {
 		read: ['ADMIN', 'BASIC'],
 	},
