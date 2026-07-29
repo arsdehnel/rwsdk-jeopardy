@@ -21,9 +21,9 @@ export default function Pages__auth__login({ ctx }: RequestInfo): React.JSX.Elem
 				<>
 					<h2>Passkeys</h2>
 					<p>
-						We only support passkey login right now as it is a smooth user experience and much more secure than
-						standard username and password. If you're not familiar with passkeys, take a look at our quick explanation
-						here or dive into the technical details here.
+						We only support passkey login right now as it is a smooth user experience and much more secure than standard username
+						and password. If you're not familiar with passkeys, take a look at our quick explanation here or dive into the
+						technical details here.
 					</p>
 					<div className="login-options">
 						<PasskeyLogin />

@@ -211,9 +211,7 @@ describe('deleteUser', () => {
 	});
 
 	it('throws when id is not a valid uuid', async () => {
-		await expect(deleteUser('not-a-uuid', null, logger)).rejects.toThrow(
-			'The value "not-a-uuid" is not a valid ID for a User',
-		);
+		await expect(deleteUser('not-a-uuid', null, logger)).rejects.toThrow('The value "not-a-uuid" is not a valid ID for a User');
 	});
 });
 

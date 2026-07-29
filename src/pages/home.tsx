@@ -5,8 +5,7 @@ export default async function Pages__Home(): Promise<React.JSX.Element> {
 			<main>
 				<h2 className="page-title">Welcome!</h2>
 				<p>
-					This is really just a way for me to mess around with <a href="https://rwsdk.com/">RedwoodSDK</a> and their
-					sweet{' '}
+					This is really just a way for me to mess around with <a href="https://rwsdk.com/">RedwoodSDK</a> and their sweet{' '}
 					<a href="https://docs.rwsdk.com/experimental/realtime/">
 						<code>useSyncedState</code>
 					</a>{' '}

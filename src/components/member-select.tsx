@@ -52,8 +52,8 @@ export default function MemberSelect({
 		return (
 			<>
 				<p>
-					No devices are registered yet so this one will be the display. If you want another device to act as the
-					display please start the game on that one.
+					No devices are registered yet so this one will be the display. If you want another device to act as the display please
+					start the game on that one.
 				</p>
 				<button
 					className="registration-button"
