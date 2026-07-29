@@ -9,6 +9,7 @@ export * from './game-phase';
 export * from './kad-button';
 export * from './kad-link';
 export * from './kad-logger';
+export * from './nav-item';
 export * from './permissions';
 export * from './role';
 export * from './sessions';

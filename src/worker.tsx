@@ -11,6 +11,7 @@ import devRoutes from '@/pages/dev';
 import Pages__Games__New from '@/pages/games/new';
 import Pages__Games__Play from '@/pages/games/play';
 import Pages__Home from '@/pages/home';
+import profileRoutes from '@/pages/profile/routes';
 import botMiddleware from './middleware/bot';
 import loggerMiddleware from './middleware/logger';
 import permissionsMiddleware from './middleware/permissions';
@@ -33,6 +34,7 @@ export default defineApp([
 		except<RequestInfo<DefaultAppContext>>(handlePageError),
 		route('/', Pages__Home),
 		prefix('/auth', authRoutes),
+		prefix('/profile', profileRoutes),
 		route('/games/new', Pages__Games__New),
 		route('/games/:gameId', Pages__Games__Play),
 		prefix('/dev', devRoutes),
