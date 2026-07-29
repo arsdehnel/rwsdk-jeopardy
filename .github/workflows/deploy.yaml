@@ -42,19 +42,19 @@ jobs:
           VITE_APP_VERSION: ${{ inputs.tag }}
         run: pnpm release
 
-      - name: Update status
-        run: |
-          VERSION="${{ inputs.tag }}"
-          VERSION="${VERSION#v}"
-          DEPLOYED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+      # - name: Update status
+      #   run: |
+      #     VERSION="${{ inputs.tag }}"
+      #     VERSION="${VERSION#v}"
+      #     DEPLOYED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-          git fetch origin gh-pages
-          git show origin/gh-pages:status.json > current-status.json
+      #     git fetch origin gh-pages
+      #     git show origin/gh-pages:status.json > current-status.json
 
-          mkdir -p _status
-          jq --arg v "$VERSION" --arg d "$DEPLOYED_AT" \
-            '.environments.integration = {version: $v, deployedAt: $d}' \
-            current-status.json > _status/status.json
+      #     mkdir -p _status
+      #     jq --arg v "$VERSION" --arg d "$DEPLOYED_AT" \
+      #       '.environments.integration = {version: $v, deployedAt: $d}' \
+      #       current-status.json > _status/status.json
 
       # - name: Publish status to gh-pages
       #   uses: peaceiris/actions-gh-pages@v4
@@ -93,19 +93,19 @@ jobs:
           VITE_APP_VERSION: ${{ inputs.tag }}
         run: pnpm release
 
-      - name: Update status
-        run: |
-          VERSION="${{ inputs.tag }}"
-          VERSION="${VERSION#v}"
-          DEPLOYED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+      # - name: Update status
+      #   run: |
+      #     VERSION="${{ inputs.tag }}"
+      #     VERSION="${VERSION#v}"
+      #     DEPLOYED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-          git fetch origin gh-pages
-          git show origin/gh-pages:status.json > current-status.json
+      #     git fetch origin gh-pages
+      #     git show origin/gh-pages:status.json > current-status.json
 
-          mkdir -p _status
-          jq --arg v "$VERSION" --arg d "$DEPLOYED_AT" \
-            '.environments.staging = {version: $v, deployedAt: $d}' \
-            current-status.json > _status/status.json
+      #     mkdir -p _status
+      #     jq --arg v "$VERSION" --arg d "$DEPLOYED_AT" \
+      #       '.environments.staging = {version: $v, deployedAt: $d}' \
+      #       current-status.json > _status/status.json
 
       # - name: Publish status to gh-pages
       #   uses: peaceiris/actions-gh-pages@v4
@@ -144,19 +144,19 @@ jobs:
           VITE_APP_VERSION: ${{ inputs.tag }}
         run: pnpm release
 
-      - name: Update status
-        run: |
-          VERSION="${{ inputs.tag }}"
-          VERSION="${VERSION#v}"
-          DEPLOYED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+      # - name: Update status
+      #   run: |
+      #     VERSION="${{ inputs.tag }}"
+      #     VERSION="${VERSION#v}"
+      #     DEPLOYED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-          git fetch origin gh-pages
-          git show origin/gh-pages:status.json > current-status.json
+      #     git fetch origin gh-pages
+      #     git show origin/gh-pages:status.json > current-status.json
 
-          mkdir -p _status
-          jq --arg v "$VERSION" --arg d "$DEPLOYED_AT" \
-            '.environments.production = {version: $v, deployedAt: $d}' \
-            current-status.json > _status/status.json
+      #     mkdir -p _status
+      #     jq --arg v "$VERSION" --arg d "$DEPLOYED_AT" \
+      #       '.environments.production = {version: $v, deployedAt: $d}' \
+      #       current-status.json > _status/status.json
 
       # - name: Publish status to gh-pages
       #   uses: peaceiris/actions-gh-pages@v4

@@ -34,7 +34,7 @@
 		"worker:run": "rw-scripts worker-run"
 	},
 	"lint-staged": {
-		"*.{ts,tsx}": "biome check --write",
+		"*.{ts,tsx}": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true",
 		"*.{css,less}": "prettier --write"
 	},
 	"dependencies": {
