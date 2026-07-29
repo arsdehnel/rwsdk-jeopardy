@@ -16,7 +16,9 @@ export const clues = snakeCase.table(
 		text: text().notNull(),
 		response: text().notNull(),
 		createdAt: text().notNull().default(sql`(datetime('now', 'localtime'))`),
-		createdBy: text().references((): AnySQLiteColumn => users.id),
+		createdBy: text()
+			.notNull()
+			.references((): AnySQLiteColumn => users.id),
 		updatedAt: text(),
 		updatedBy: text().references((): AnySQLiteColumn => users.id),
 		deletedAt: text(),

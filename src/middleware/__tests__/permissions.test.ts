@@ -5,7 +5,6 @@ const mockRequestInfo = {
 		user: null as { id: string; role?: string | null } | null,
 		session: undefined as { permissionsOverride?: string[] } | undefined,
 		permissions: [] as string[],
-		apiKey: undefined as { permissions: string[] } | undefined,
 	},
 };
 
@@ -23,7 +22,6 @@ describe('permissionsMiddleware', () => {
 		mockRequestInfo.ctx.user = null;
 		mockRequestInfo.ctx.session = undefined;
 		mockRequestInfo.ctx.permissions = [];
-		mockRequestInfo.ctx.apiKey = undefined;
 	});
 
 	it('sets permissions on context for unauthenticated users', () => {
@@ -43,9 +41,8 @@ describe('permissionsMiddleware', () => {
 		permissionsMiddleware(mockRequestInfo as any);
 
 		expect(mockRequestInfo.ctx.permissions).toBeDefined();
-		expect(mockRequestInfo.ctx.permissions).toContain('recipes:create');
-		expect(mockRequestInfo.ctx.permissions).toContain('recipes:update');
-		expect(mockRequestInfo.ctx.permissions).not.toContain('seasons:create');
+		expect(mockRequestInfo.ctx.permissions).toContain('categories:generate');
+		expect(mockRequestInfo.ctx.permissions).not.toContain('categories:create');
 	});
 
 	it('sets all permissions for ADMIN role users', () => {
@@ -54,10 +51,8 @@ describe('permissionsMiddleware', () => {
 		permissionsMiddleware(mockRequestInfo as any);
 
 		expect(mockRequestInfo.ctx.permissions).toBeDefined();
-		expect(mockRequestInfo.ctx.permissions).toContain('seasons:create');
-		expect(mockRequestInfo.ctx.permissions).toContain('seasons:delete');
-		expect(mockRequestInfo.ctx.permissions).toContain('recipes:create');
-		expect(mockRequestInfo.ctx.permissions).toContain('recipes:delete');
+		expect(mockRequestInfo.ctx.permissions).toContain('categories:create');
+		expect(mockRequestInfo.ctx.permissions).toContain('categories:delete');
 	});
 
 	it('handles users without a role', () => {
@@ -91,23 +86,23 @@ describe('permissionsMiddleware', () => {
 	describe('permissionsOverride', () => {
 		it('uses permissionsOverride from session when present', () => {
 			mockRequestInfo.ctx.user = { id: 'user-123', role: 'ADMIN' };
-			mockRequestInfo.ctx.session = { permissionsOverride: ['recipes:read'] };
+			mockRequestInfo.ctx.session = { permissionsOverride: ['categories:read'] };
 
 			permissionsMiddleware(mockRequestInfo as any);
 
-			expect(mockRequestInfo.ctx.permissions).toEqual(['recipes:read']);
+			expect(mockRequestInfo.ctx.permissions).toEqual(['categories:read']);
 			// Admin role permissions should NOT be used
-			expect(mockRequestInfo.ctx.permissions).not.toContain('seasons:create');
+			expect(mockRequestInfo.ctx.permissions).not.toContain('categories:create');
 		});
 
-		it('override takes precedence over api key permissions', () => {
-			mockRequestInfo.ctx.apiKey = { permissions: ['recipes:upload'] };
-			mockRequestInfo.ctx.session = { permissionsOverride: ['ingredients:read'] };
+		it('override takes precedence over role-based permissions', () => {
+			mockRequestInfo.ctx.user = { id: 'user-123', role: 'ADMIN' };
+			mockRequestInfo.ctx.session = { permissionsOverride: ['categories:read'] };
 
 			permissionsMiddleware(mockRequestInfo as any);
 
-			expect(mockRequestInfo.ctx.permissions).toEqual(['ingredients:read']);
-			expect(mockRequestInfo.ctx.permissions).not.toContain('recipes:upload');
+			expect(mockRequestInfo.ctx.permissions).toEqual(['categories:read']);
+			expect(mockRequestInfo.ctx.permissions).not.toContain('categories:create');
 		});
 
 		it('falls through to role-based when session has no permissionsOverride', () => {
@@ -116,7 +111,7 @@ describe('permissionsMiddleware', () => {
 
 			permissionsMiddleware(mockRequestInfo as any);
 
-			expect(mockRequestInfo.ctx.permissions).toContain('seasons:create');
+			expect(mockRequestInfo.ctx.permissions).toContain('categories:create');
 		});
 
 		// [] is truthy in JS, so `if (ctx.session?.permissionsOverride)` takes the override
@@ -128,7 +123,7 @@ describe('permissionsMiddleware', () => {
 
 			permissionsMiddleware(mockRequestInfo as any);
 
-			expect(mockRequestInfo.ctx.permissions).toContain('recipes:create');
+			expect(mockRequestInfo.ctx.permissions).toContain('categories:generate');
 		});
 	});
 });

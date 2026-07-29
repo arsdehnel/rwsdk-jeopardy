@@ -5,7 +5,6 @@ const mockRequestInfo = {
 	ctx: {
 		user: null as { id: string; role?: string | null } | null,
 		permissions: [] as string[],
-		apiKey: undefined as { permissions: string[] } | undefined,
 	},
 };
 
@@ -22,13 +21,12 @@ describe('requirePermissions', () => {
 	beforeEach(() => {
 		mockRequestInfo.ctx.user = null;
 		mockRequestInfo.ctx.permissions = [];
-		mockRequestInfo.ctx.apiKey = undefined;
 	});
 
 	it('returns undefined when user has all required permissions', async () => {
-		mockRequestInfo.ctx.permissions = ['recipes:create', 'recipes:update'];
+		mockRequestInfo.ctx.permissions = ['categories:create', 'categories:update'];
 
-		const middleware = requirePermissions('recipes:create', 'recipes:update');
+		const middleware = requirePermissions('categories:create', 'categories:update');
 		const result = await middleware();
 
 		expect(result).toBeUndefined();
@@ -41,16 +39,16 @@ describe('requirePermissions', () => {
 	it('throws KADAccessError 403 when user is missing all required permissions', async () => {
 		mockRequestInfo.ctx.permissions = [];
 
-		const middleware = requirePermissions('recipes:create');
+		const middleware = requirePermissions('categories:create');
 
 		await expect(middleware()).rejects.toThrow(KADAccessError);
 		await expect(middleware()).rejects.toMatchObject({ code: 403 });
 	});
 
 	it('throws KADAccessError 403 when user is missing some required permissions', async () => {
-		mockRequestInfo.ctx.permissions = ['recipes:create'];
+		mockRequestInfo.ctx.permissions = ['categories:create'];
 
-		const middleware = requirePermissions('recipes:create', 'recipes:delete');
+		const middleware = requirePermissions('categories:create', 'categories:delete');
 
 		await expect(middleware()).rejects.toThrow(KADAccessError);
 		await expect(middleware()).rejects.toMatchObject({ code: 403 });
@@ -59,26 +57,24 @@ describe('requirePermissions', () => {
 	it('throws KADAccessError 403 when ctx.permissions is undefined', async () => {
 		mockRequestInfo.ctx.permissions = undefined as any;
 
-		const middleware = requirePermissions('recipes:create');
+		const middleware = requirePermissions('categories:create');
 
 		await expect(middleware()).rejects.toThrow(KADAccessError);
 	});
 
-	it('allows api key request with sufficient permissions', async () => {
-		mockRequestInfo.ctx.apiKey = { permissions: ['recipes:upload'] };
-		mockRequestInfo.ctx.permissions = ['recipes:upload'];
+	it('returns undefined when user has the required permission', async () => {
+		mockRequestInfo.ctx.permissions = ['categories:generate'];
 
-		const middleware = requirePermissions('recipes:upload');
+		const middleware = requirePermissions('categories:generate');
 		const result = await middleware();
 
 		expect(result).toBeUndefined();
 	});
 
-	it('throws KADAccessError 403 for api key request with insufficient permissions', async () => {
-		mockRequestInfo.ctx.apiKey = { permissions: ['recipes:upload'] };
-		mockRequestInfo.ctx.permissions = ['recipes:upload'];
+	it('throws KADAccessError 403 when user lacks the required permission', async () => {
+		mockRequestInfo.ctx.permissions = ['categories:generate'];
 
-		const middleware = requirePermissions('recipes:delete');
+		const middleware = requirePermissions('categories:delete');
 
 		await expect(middleware()).rejects.toThrow(KADAccessError);
 		await expect(middleware()).rejects.toMatchObject({ code: 403 });

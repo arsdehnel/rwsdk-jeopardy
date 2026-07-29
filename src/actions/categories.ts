@@ -2,11 +2,18 @@
 import { env } from 'cloudflare:workers';
 import { requestInfo, serverAction } from 'rwsdk/worker';
 import { requireAuthentication } from '@/interrupters';
-import { createCategory, createClue } from '@/repositories';
+import { createCategory, createClue, getCategories } from '@/repositories';
 import type { ActionState, CategoryWithClues, GeneratedCategory } from '@/types';
 import { errorResponse, successResponse } from './utils';
 
-const prompt = `I have a jeopardy-style game and a user is requesting a new category.  Can you provide a category title and five increasingly-difficult "answers" for which the contestants will have to provide the "question" in traditional Jeopardy style. Can you return the data in JSON with the top-level thing being a category object like this with clues as an array? Return it without the pretty-printed formatting and please make sure to return the full JSON so I can parse it. Also please double-check the accuracy to avoid hallucinations.
+function getPrompt(existingCategoryNames: string[]): string {
+	return `I have a jeopardy-style game and a user is requesting a new category. Some details for the request:
+	
+1. Can you provide a category title and five increasingly-difficult "answers" for which the contestants will have to provide the "question" in traditional Jeopardy style. 
+2. Can you return the data in JSON with the top-level thing being a category object like this with clues as an array? 
+3. Return it without the pretty-printed formatting and please make sure to return the full JSON and _only_ the JSON so I can parse it. 
+4. Please avoid any extra messages about the fact that you've double-checked the answers or anything.  JUST THE JSON PLEASE.
+4. Also please double-check the accuracy to avoid hallucinations.
 
 { 
 	"name": "Animal Kingdom",
@@ -17,7 +24,10 @@ const prompt = `I have a jeopardy-style game and a user is requesting a new cate
 		}
 	]
 }
+
+We have existing categories named ${existingCategoryNames.join(',')} so please avoid those topics
 `;
+}
 
 export const generateCategory = serverAction([requireAuthentication, _generateCategory]);
 export const saveCategory = serverAction([requireAuthentication, _saveCategory]);
@@ -25,6 +35,10 @@ export const saveCategory = serverAction([requireAuthentication, _saveCategory])
 export async function _generateCategory(): Promise<ActionState<GeneratedCategory>> {
 	try {
 		requestInfo.ctx.logger.info(`Initializing category generation`);
+
+		const existingCategories = await getCategories(requestInfo.ctx.logger);
+
+		const prompt = getPrompt(existingCategories.map(c => c.name));
 
 		const { response, usage } = await env.AI.run('@cf/mistral/mistral-7b-instruct-v0.2-lora', {
 			prompt,

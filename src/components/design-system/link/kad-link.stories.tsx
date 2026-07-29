@@ -14,26 +14,26 @@ type Story = StoryObj<typeof KADLink>;
 
 export const Visible: Story = {
 	args: {
-		href: '/recipes',
-		label: 'View Recipes',
-		requiredPermission: 'recipes:read',
-		userPermissions: ['recipes:read'],
+		href: '/games/new',
+		label: 'New Game',
+		requiredPermission: 'categories:read',
+		userPermissions: ['categories:read'],
 	},
 };
 
 export const Hidden: Story = {
 	args: {
-		href: '/recipes/new',
-		label: 'Add Recipe',
-		requiredPermission: 'recipes:create',
-		userPermissions: ['recipes:read'],
+		href: '/games/new',
+		label: 'Generate Category',
+		requiredPermission: 'categories:generate',
+		userPermissions: ['categories:read'],
 	},
 };
 
 export const ExternalLink: Story = {
 	args: {
-		href: 'https://example.com/seasonal-guide',
-		label: 'Seasonal Ingredient Guide',
+		href: 'https://example.com/jeopardy-guide',
+		label: 'How to Play Jeopardy',
 		requiredPermission: '__controls:read',
 		userPermissions: ['__controls:read'],
 		target: '_blank',
@@ -43,9 +43,9 @@ export const ExternalLink: Story = {
 
 export const JSXLabel: Story = {
 	args: {
-		href: '/ingredients',
-		label: <strong>Browse Ingredients</strong>,
-		requiredPermission: 'ingredients:read',
-		userPermissions: ['ingredients:read'],
+		href: '/games/new',
+		label: <strong>Browse Categories</strong>,
+		requiredPermission: 'categories:read',
+		userPermissions: ['categories:read'],
 	},
 };

@@ -37,7 +37,7 @@ export default function ClueSelect({
 								onOpenChange={(): void => toggleCategory(category.id)}
 							>
 								<div className="clue-select-category">
-									<h3>{category.title}</h3>
+									<h3>{category.name}</h3>
 									<Collapsible.Trigger asChild>
 										<button type="button" className="IconButton">
 											{openCategory === category.id ? <Cross2Icon /> : <RowSpacingIcon />}

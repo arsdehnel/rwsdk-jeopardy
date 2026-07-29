@@ -15,20 +15,20 @@ type Story = StoryObj<typeof KADButton>;
 export const Default: Story = {
 	args: {
 		isSubmitting: false,
-		label: 'Save Recipe',
+		label: 'Save Category',
 	},
 };
 
 export const Submitting: Story = {
 	args: {
 		isSubmitting: true,
-		label: 'Save Recipe',
+		label: 'Save Category',
 	},
 };
 
 export const LongLabel: Story = {
 	args: {
 		isSubmitting: false,
-		label: 'Save changes to this recipe and update all related seasonal ingredients',
+		label: 'Save changes to this category and update all related clues and point values',
 	},
 };

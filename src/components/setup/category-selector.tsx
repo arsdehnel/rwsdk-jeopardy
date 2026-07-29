@@ -18,6 +18,7 @@ export default function CategorySelector({
 
 	const triggerCategoryGeneration = async (): Promise<void> => {
 		setPending(true);
+		setErrors(undefined);
 		const generationResult = await generateCategory();
 		if (generationResult.errors) {
 			setErrors(JSON.stringify(generationResult.errors));
@@ -38,11 +39,19 @@ export default function CategorySelector({
 		}
 		console.log(`Save result: ${JSON.stringify(saveResult, null, 4)}`);
 		setPending(false);
+		setGeneratedCategory(undefined);
 	};
 
 	return (
 		<>
-			<p>Categories: {JSON.stringify(categories)}</p>
+			<p>
+				Existing Categories:
+				<ul>
+					{categories.map(c => {
+						return <li key={c.id}>{c.name}</li>;
+					})}
+				</ul>
+			</p>
 			<p>{pending ? <span>Pending, might take 30 seconds or so, please be patient.</span> : null}</p>
 			{errors && <p>{JSON.stringify(errors)}</p>}
 			{generatedCategory && (
