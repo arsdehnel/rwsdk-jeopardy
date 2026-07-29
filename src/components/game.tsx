@@ -7,7 +7,7 @@ import FinishedView from '@/views/finished';
 import HostView from '@/views/host';
 import SetupView from '@/views/setup';
 
-export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; sessionId: string }) {
+export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; sessionId: string }): React.ReactNode {
 	const {
 		connections,
 		role,
@@ -16,6 +16,7 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 		buzzerQueue,
 		usedClueIds,
 		scores,
+		hasDisplay,
 		registerConnection,
 		unregisterConnection,
 		correctClueResponse,
@@ -40,6 +41,7 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 				role={role}
 				startGame={startGame}
 				gameUrl={gameUrl}
+				hasDisplay={hasDisplay}
 			/>
 		);
 	}
@@ -51,8 +53,8 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 	if (!role) {
 		return (
 			<p>
-				You are not registered in this game but the game has started, please contact the host and have them revert it back
-				to setup stage.
+				You are not registered in this game but the game has started, please check with the host and have them revert it back to
+				setup stage so you can join.
 			</p>
 		);
 	}

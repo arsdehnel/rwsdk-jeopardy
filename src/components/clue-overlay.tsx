@@ -2,7 +2,7 @@
 
 import type { Clue } from '@/types';
 
-const ClueOverlay = ({ selectedClue }: { selectedClue: Clue | null }) => {
+const ClueOverlay = ({ selectedClue }: { selectedClue: Clue | null }): React.ReactNode => {
 	if (!selectedClue) {
 		return null;
 	}

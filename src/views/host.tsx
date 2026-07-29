@@ -26,7 +26,7 @@ export default function HostView({
 	setupGame: () => void;
 	finishGame: () => void;
 	expireClue: () => void;
-}) {
+}): React.ReactNode {
 	return (
 		<div className="view-host">
 			<section>
@@ -55,16 +55,16 @@ export default function HostView({
 				<div className="host-section-content">
 					{buzzerQueue.length > 0 && (
 						<>
-							<button type="submit" onClick={() => correctClueResponse()}>
+							<button type="submit" onClick={(): void => correctClueResponse()}>
 								✅ Response was correct, award points and reset buzzers
 							</button>
-							<button type="submit" onClick={() => wrongClueResponse()}>
+							<button type="submit" onClick={(): void => wrongClueResponse()}>
 								❌ Response was wrong, move to next in line
 							</button>
-							<button type="submit" onClick={() => resetBuzzers()}>
+							<button type="submit" onClick={(): void => resetBuzzers()}>
 								⚠️ Something went wrong, reset buzzers
 							</button>
-							<button type="submit" onClick={() => expireClue()}>
+							<button type="submit" onClick={(): void => expireClue()}>
 								⚠️ Nobody got it, expire clue
 							</button>
 						</>
@@ -72,7 +72,7 @@ export default function HostView({
 					<button
 						type="button"
 						className="clue-overlay-button"
-						onClick={() => {
+						onClick={(): void => {
 							abortClue();
 						}}
 					>
@@ -83,10 +83,10 @@ export default function HostView({
 			<section>
 				<h2>Game Options</h2>
 				<div className="host-section-content">
-					<button type="button" onClick={() => setupGame()}>
+					<button type="button" onClick={(): void => setupGame()}>
 						⬅️ Back to Setup
 					</button>
-					<button type="button" onClick={() => finishGame()}>
+					<button type="button" onClick={(): void => finishGame()}>
 						🎉 End Game
 					</button>
 				</div>

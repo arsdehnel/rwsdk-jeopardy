@@ -1,4 +1,4 @@
 pnpm generate
 pnpm biome:check
-pnpm type-check
+pnpm types:check
 pnpm test:run

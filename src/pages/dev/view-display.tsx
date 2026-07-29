@@ -4,8 +4,8 @@ import getCategories from '@/categories';
 import type { Connections } from '@/types';
 import DisplayView from '@/views/display';
 
-export default function DevViewDisplay({ ctx }: RequestInfo) {
-	const sessionId = ctx?.session.sessionId;
+export default function DevViewDisplay({ ctx }: RequestInfo): React.JSX.Element {
+	const sessionId = ctx?.session?.sessionId;
 	if (!sessionId) {
 		return <p>Session ID not found, please refresh the page.</p>;
 	}

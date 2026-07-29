@@ -11,9 +11,11 @@ export default function getCategories(): Category[] {
 	const categories: Category[] = rawCategories.map(ctgry => {
 		return {
 			...ctgry,
+			name: ctgry.title,
 			clues: ctgry.clues.map((clue, idx) => {
 				return {
 					...clue,
+					text: clue.clue,
 					value: (idx + 1) * 100,
 				};
 			}),

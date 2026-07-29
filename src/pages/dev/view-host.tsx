@@ -4,8 +4,8 @@ import getCategories from '@/categories';
 import type { Connections } from '@/types';
 import HostView from '@/views/host';
 
-export default function DevViewHost({ ctx }: RequestInfo) {
-	const sessionId = ctx?.session.sessionId;
+export default function DevViewHost({ ctx }: RequestInfo): React.JSX.Element {
+	const sessionId = ctx?.session?.sessionId;
 	if (!sessionId) {
 		return <p>Session ID not found, please refresh the page.</p>;
 	}
@@ -65,13 +65,13 @@ export default function DevViewHost({ ctx }: RequestInfo) {
 		<HostView
 			connections={connections}
 			buzzerQueue={buzzerQueue}
-			abortClue={() => {}}
-			correctClueResponse={() => {}}
-			finishGame={() => {}}
-			resetBuzzers={() => {}}
-			setupGame={() => {}}
-			wrongClueResponse={() => {}}
-			expireClue={() => {}}
+			abortClue={(): void => {}}
+			correctClueResponse={(): void => {}}
+			finishGame={(): void => {}}
+			resetBuzzers={(): void => {}}
+			setupGame={(): void => {}}
+			wrongClueResponse={(): void => {}}
+			expireClue={(): void => {}}
 			selectedClue={selectedClue}
 			scores={scores}
 		/>

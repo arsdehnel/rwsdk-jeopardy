@@ -11,6 +11,7 @@ export default function SetupView({
 	role,
 	startGame,
 	gameUrl,
+	hasDisplay,
 }: {
 	connections: Connections;
 	registerConnection: (connection: Connection) => void;
@@ -19,17 +20,15 @@ export default function SetupView({
 	role: string | undefined;
 	startGame: () => void;
 	gameUrl: string;
-}) {
+	hasDisplay: boolean;
+}): React.ReactNode {
 	if (!sessionId) {
 		return (
 			<>
 				<h1 className="welcome-title">RWSDK Jeopardy</h1>
 				<main>
 					<h2 className="page-title">Game Setup</h2>
-					<p>
-						Sorry but there is a bug we haven't fixed yet, can you refresh your page and hopefully this message will
-						go away.
-					</p>
+					<p>Sorry but there is a bug we haven't fixed yet, can you refresh your page and hopefully this message will go away.</p>
 				</main>
 			</>
 		);
@@ -41,8 +40,8 @@ export default function SetupView({
 			<main className="view-setup">
 				<h2 className="page-title">Game Setup</h2>
 				<p className="session-disclaimer">
-					We don't have logins at this point so we just assign you a randomly generated session ID. In case you need it
-					that ID for you is <code>{sessionId}</code>.
+					We don't have logins at this point so we just assign you a randomly generated session ID. In case you need it that ID
+					for you is <code>{sessionId}</code>.
 				</p>
 				<div className="registration-container">
 					<div className="user-registration">
@@ -53,6 +52,7 @@ export default function SetupView({
 							registerConnection={registerConnection}
 							unregisterConnection={unregisterConnection}
 							sessionId={sessionId}
+							hasDisplay={hasDisplay}
 						/>
 						{role === 'host' && (
 							<>
@@ -61,14 +61,16 @@ export default function SetupView({
 									As the host you get some debugging information while we're in alpha.
 									<pre>{JSON.stringify(connections, null, 4)}</pre>
 								</div>
-								<button type="button" onClick={() => startGame()}>
+								<button type="button" onClick={(): void => startGame()}>
 									Start Game
 								</button>
 							</>
 						)}
-					</div>
-					<div className="qr-code">
-						<QRCodeSVG value={gameUrl} size={300} />
+						{role === 'display' && (
+							<div className="qr-code">
+								<QRCodeSVG value={gameUrl} size={300} />
+							</div>
+						)}
 					</div>
 				</div>
 			</main>

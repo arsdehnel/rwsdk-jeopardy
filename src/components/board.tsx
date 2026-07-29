@@ -2,7 +2,7 @@
 import type { Category } from '@/types';
 import CategoryColumn from './category-column';
 
-export default function Board({ categories, usedClueIds }: { categories: Category[]; usedClueIds: string[] }) {
+export default function Board({ categories, usedClueIds }: { categories: Category[]; usedClueIds: string[] }): React.ReactNode {
 	return (
 		<div className="jeopardy-board">
 			{categories.map(category => (

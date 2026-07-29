@@ -3,6 +3,7 @@
 @import "./clue.less";
 @import "./clue-overlay.less";
 @import "./clue-select.less";
+@import "./setup-header.less";
 @import "./view-contestant.less";
 @import "./view-display.less";
 @import "./view-host.less";

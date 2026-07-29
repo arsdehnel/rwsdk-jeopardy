@@ -6,12 +6,12 @@ export default function CategoryColumn({
 	category,
 	usedClueIds,
 }: {
-	category: { title: string; clues: Clue[] };
+	category: { name: string; clues: Clue[] };
 	usedClueIds: string[];
-}) {
+}): React.ReactNode {
 	return (
 		<div className="jeopardy-category">
-			<h2>{category.title}</h2>
+			<h2>{category.name}</h2>
 			{category.clues.map(clue => {
 				return <ClueValueTile key={clue.id} value={clue.value} used={usedClueIds.includes(clue.id)} />;
 			})}

@@ -1,8 +1,34 @@
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
+import { createReactLogger } from '@/logger-react';
 import type { Clue, Connection, Connections, GamePhase, Role } from '@/types';
 import * as helpers from './helpers';
 
-export default function useGameState(sessionId: string = '') {
+const reactLogger = createReactLogger();
+
+export type GameState = {
+	connections: Connections;
+	registerConnection: (connection: Connection) => void;
+	unregisterConnection: (connectionId: string) => void;
+	role: Role | undefined;
+	hasDisplay: boolean;
+	selectedClue: Clue | null;
+	gamePhase: GamePhase;
+	buzzerQueue: string[];
+	correctClueResponse: () => void;
+	wrongClueResponse: () => void;
+	startGame: () => void;
+	setupGame: () => void;
+	finishGame: () => void;
+	resetBuzzers: () => void;
+	abortClue: () => void;
+	selectClue: (clue: Clue) => void;
+	buzzIn: (contestantSessionId: string) => void;
+	usedClueIds: string[];
+	expireClue: () => void;
+	scores: Record<string, number>;
+};
+
+export default function useGameState(sessionId: string = ''): GameState {
 	const [connections, setConnections] = useSyncedState<Connections>(
 		{ host: undefined, display: undefined, contestants: [] },
 		'connections',
@@ -13,39 +39,39 @@ export default function useGameState(sessionId: string = '') {
 	const [usedClueIds, setUsedClueIds] = useSyncedState<string[]>([], 'usedClueIds');
 	const [scores, setScores] = useSyncedState<Record<string, number>>({}, 'scores');
 
-	const registerConnection = (connection: Connection) => {
+	const registerConnection = (connection: Connection): void => {
 		setConnections(helpers.registerConnection(connections, connection));
 	};
 
-	const unregisterConnection = (connectionId: string) => {
+	const unregisterConnection = (connectionId: string): void => {
 		setConnections(helpers.unregisterConnection(connections, connectionId));
 	};
 
-	const correctClueResponse = () => {
+	const correctClueResponse = (): void => {
 		const next = helpers.correctClueResponse({ connections, selectedClue, gamePhase, buzzerQueue, usedClueIds, scores });
 		setSelectedClue(next.selectedClue);
 		setBuzzerQueue(next.buzzerQueue);
 		setUsedClueIds(next.usedClueIds);
 		setScores(next.scores);
-		console.log(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
+		reactLogger.info(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
 	};
 
-	const expireClue = () => {
+	const expireClue = (): void => {
 		const next = helpers.expireClue({ selectedClue, buzzerQueue, usedClueIds });
 		setSelectedClue(next.selectedClue);
 		setBuzzerQueue(next.buzzerQueue);
 		setUsedClueIds(next.usedClueIds);
-		console.log(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
+		reactLogger.info(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
 	};
 
-	const wrongClueResponse = () => {
+	const wrongClueResponse = (): void => {
 		const next = helpers.wrongClueResponse({ selectedClue, buzzerQueue, scores });
 		if (!selectedClue) {
 			return;
 		}
 		setBuzzerQueue(next.buzzerQueue);
 		setScores(next.scores);
-		console.log(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} incorrectly!`);
+		reactLogger.info(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} incorrectly!`);
 	};
 
 	let role: Role | undefined;
@@ -57,36 +83,38 @@ export default function useGameState(sessionId: string = '') {
 		role = 'contestant';
 	}
 
-	const startGame = () => {
+	const hasDisplay: boolean = !!connections.display;
+
+	const startGame = (): void => {
 		setGamePhase('active');
 	};
 
-	const setupGame = () => {
+	const setupGame = (): void => {
 		setGamePhase('setup');
 		setSelectedClue(null);
 		setBuzzerQueue([]);
 	};
 
-	const finishGame = () => {
+	const finishGame = (): void => {
 		setGamePhase('finished');
 		setSelectedClue(null);
 		setBuzzerQueue([]);
 	};
 
-	const resetBuzzers = () => {
+	const resetBuzzers = (): void => {
 		setBuzzerQueue([]);
 	};
 
-	const abortClue = () => {
+	const abortClue = (): void => {
 		setSelectedClue(null);
 		setBuzzerQueue([]);
 	};
 
-	const selectClue = (clue: Clue) => {
+	const selectClue = (clue: Clue): void => {
 		setSelectedClue(clue);
 	};
 
-	const buzzIn = (contestantSessionId: string) => {
+	const buzzIn = (contestantSessionId: string): void => {
 		if (buzzerQueue.includes(contestantSessionId)) {
 			return;
 		}
@@ -98,6 +126,7 @@ export default function useGameState(sessionId: string = '') {
 		registerConnection,
 		unregisterConnection,
 		role,
+		hasDisplay,
 		selectedClue,
 		gamePhase,
 		buzzerQueue,

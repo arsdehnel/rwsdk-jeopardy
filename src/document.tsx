@@ -1,6 +1,8 @@
+import type { DocumentProps } from 'rwsdk/router';
+import type { RequestInfo } from 'rwsdk/worker';
 import styles from './styles/main.css?url';
 
-export const Document: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+const AppDocument: React.FC<DocumentProps<RequestInfo>> = ({ children }: DocumentProps<RequestInfo>) => (
 	<html lang="en">
 		<head>
 			<meta charSet="utf-8" />
@@ -15,3 +17,5 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({ children }) 
 		</body>
 	</html>
 );
+
+export default AppDocument;
