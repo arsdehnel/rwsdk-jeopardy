@@ -60,7 +60,7 @@ export async function _generateCategory(): Promise<ActionState<GeneratedCategory
 			return errorResponse(err);
 		}
 	} catch (err) {
-		requestInfo.ctx.logger.error(`Unexpected error: ${err}`);
+		requestInfo.ctx.logger.error(`Unexpected error: ${err}${err instanceof Error && err.cause ? ` | cause: ${err.cause}` : ''}`);
 		return errorResponse(err);
 	}
 }
@@ -86,7 +86,7 @@ export async function _saveCategory(category: GeneratedCategory): Promise<Action
 
 		return successResponse<CategoryWithClues>(fullCategory);
 	} catch (err) {
-		requestInfo.ctx.logger.error(`Unexpected error: ${err}`);
+		requestInfo.ctx.logger.error(`Unexpected error: ${err}${err instanceof Error && err.cause ? ` | cause: ${err.cause}` : ''}`);
 		return errorResponse(err);
 	}
 }
