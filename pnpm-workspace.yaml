@@ -4,3 +4,5 @@ allowBuilds:
   less: false
   sharp: false
   workerd: true
+patchedDependencies:
+  solid-js@1.9.14: patches/solid-js@1.9.14.patch
