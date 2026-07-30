@@ -1,9 +1,9 @@
-import type { Clue, Connections, GamePhase } from '@/types';
+import type { Clue, Connections, GamePhaseEnum } from '@/types';
 
 type CorrectClueResponseGameState = {
 	connections: Connections;
 	selectedClue: Clue | null;
-	gamePhase: GamePhase;
+	gamePhase: GamePhaseEnum;
 	buzzerQueue: string[];
 	usedClueIds: string[];
 	scores: Record<string, number>;

@@ -31,7 +31,7 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 		expireClue,
 	} = useGameState(sessionId);
 
-	if (gamePhase === 'setup') {
+	if (gamePhase === 'SETUP') {
 		return (
 			<SetupView
 				connections={connections}
@@ -46,7 +46,7 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 		);
 	}
 
-	if (gamePhase === 'finished') {
+	if (gamePhase === 'FINISHED') {
 		return <FinishedView connections={connections} scores={scores} />;
 	}
 
@@ -61,7 +61,7 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 
 	const categories = getCategories();
 
-	// game mode active
+	// game mode PLAYING
 	if (role === 'display') {
 		return (
 			<DisplayView

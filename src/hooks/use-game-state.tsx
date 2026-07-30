@@ -1,6 +1,6 @@
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import { createReactLogger } from '@/logger-react';
-import type { Clue, Connection, Connections, GamePhase, Role } from '@/types';
+import type { Clue, Connection, Connections, GamePhaseEnum, Role } from '@/types';
 import * as helpers from './helpers';
 
 const reactLogger = createReactLogger();
@@ -12,7 +12,7 @@ export type GameState = {
 	role: Role | undefined;
 	hasDisplay: boolean;
 	selectedClue: Clue | null;
-	gamePhase: GamePhase;
+	gamePhase: GamePhaseEnum;
 	buzzerQueue: string[];
 	correctClueResponse: () => void;
 	wrongClueResponse: () => void;
@@ -34,7 +34,7 @@ export default function useGameState(sessionId: string = ''): GameState {
 		'connections',
 	);
 	const [selectedClue, setSelectedClue] = useSyncedState<Clue | null>(null, 'selectedClue');
-	const [gamePhase, setGamePhase] = useSyncedState<GamePhase>('setup', 'gamePhase');
+	const [gamePhase, setGamePhase] = useSyncedState<GamePhaseEnum>('SETUP', 'gamePhase');
 	const [buzzerQueue, setBuzzerQueue] = useSyncedState<string[]>([], 'buzzerQueue');
 	const [usedClueIds, setUsedClueIds] = useSyncedState<string[]>([], 'usedClueIds');
 	const [scores, setScores] = useSyncedState<Record<string, number>>({}, 'scores');
@@ -86,17 +86,17 @@ export default function useGameState(sessionId: string = ''): GameState {
 	const hasDisplay: boolean = !!connections.display;
 
 	const startGame = (): void => {
-		setGamePhase('active');
+		setGamePhase('PLAYING');
 	};
 
 	const setupGame = (): void => {
-		setGamePhase('setup');
+		setGamePhase('SETUP');
 		setSelectedClue(null);
 		setBuzzerQueue([]);
 	};
 
 	const finishGame = (): void => {
-		setGamePhase('finished');
+		setGamePhase('FINISHED');
 		setSelectedClue(null);
 		setBuzzerQueue([]);
 	};

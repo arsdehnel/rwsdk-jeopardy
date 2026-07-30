@@ -341,13 +341,13 @@ describe('scores', () => {
 describe('game phase transitions', () => {
 	it('starts in setup phase', () => {
 		const { result } = renderHook(() => useGameState());
-		expect(result.current.gamePhase).toBe('setup');
+		expect(result.current.gamePhase).toBe('SETUP');
 	});
 
-	it('transitions to active on startGame', () => {
+	it('transitions to PLAYING on startGame', () => {
 		const { result } = renderHook(() => useGameState());
 		act(() => result.current.startGame());
-		expect(result.current.gamePhase).toBe('active');
+		expect(result.current.gamePhase).toBe('PLAYING');
 	});
 
 	it('transitions to finished on finishGame and clears state', () => {
@@ -355,7 +355,7 @@ describe('game phase transitions', () => {
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
 		act(() => result.current.finishGame());
-		expect(result.current.gamePhase).toBe('finished');
+		expect(result.current.gamePhase).toBe('FINISHED');
 		expect(result.current.selectedClue).toBeNull();
 		expect(result.current.buzzerQueue).toHaveLength(0);
 	});
@@ -366,7 +366,7 @@ describe('game phase transitions', () => {
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
 		act(() => result.current.setupGame());
-		expect(result.current.gamePhase).toBe('setup');
+		expect(result.current.gamePhase).toBe('SETUP');
 		expect(result.current.selectedClue).toBeNull();
 		expect(result.current.buzzerQueue).toHaveLength(0);
 	});

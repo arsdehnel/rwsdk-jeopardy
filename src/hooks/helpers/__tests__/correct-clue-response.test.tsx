@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { correctClueResponse } from '@/hooks/helpers';
-import type { Connection, Connections, GamePhase } from '@/types';
+import type { Connection, Connections, GamePhaseEnum } from '@/types';
 
 const host: Connection = { id: 'host-1', name: 'Alice', role: 'host' };
 const display: Connection = { id: 'display-1', name: 'TV', role: 'display' };
@@ -16,7 +16,7 @@ const mockConnections: Connections = {
 const baseState = {
 	connections: mockConnections,
 	selectedClue: { id: 'clue-1', value: 200, clue: 'What is...', response: '...' },
-	gamePhase: 'active' as GamePhase,
+	gamePhase: 'PLAYING' as GamePhaseEnum,
 	buzzerQueue: ['player-1', 'player-2'],
 	usedClueIds: [],
 	scores: {},
@@ -94,7 +94,7 @@ describe('correctClueResponse', () => {
 
 	it('does not modify gamePhase', () => {
 		const result = correctClueResponse(baseState);
-		expect(result.gamePhase).toBe('active');
+		expect(result.gamePhase).toBe('PLAYING');
 	});
 
 	it('does not modify connections', () => {
