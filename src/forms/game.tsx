@@ -13,7 +13,7 @@ export default function GameForm({
 	categoryOptions,
 	userPermissions,
 }: {
-	game?: GameFormInput;
+	game?: GameWithEverything;
 	categoryOptions: { value: string; label: string }[];
 	userPermissions: Permission[];
 }): React.ReactNode {
@@ -21,18 +21,30 @@ export default function GameForm({
 
 	const phaseOptions = gamePhaseEnum.map(phase => ({ value: phase, label: phase }));
 	const stageOptions = gameStageEnum.map(stage => ({ value: stage, label: stage }));
+	const gameWithFlattedCategories: GameFormInput | undefined = {
+		...game,
+		stages:
+			game?.stages.map(stage => ({
+				...stage,
+				categories: stage.categories.map(c => c.categoryId),
+			})) ?? [],
+	};
 
 	const defaultGame: GameFormInput = {
 		phase: 'SETUP',
-		stage: 'SINGLE',
-		categories: [],
+		stages: [
+			{
+				stage: 'SINGLE',
+				categories: [],
+			},
+		],
 	};
 
 	const requiredPermission = game?.id ? 'games:update' : 'games:create';
 
 	const form = useAppForm({
 		formId: 'ingredient-season',
-		defaultValues: game ?? defaultGame,
+		defaultValues: gameWithFlattedCategories ?? defaultGame,
 		validators: {
 			onBlur: gamesSchemas.form,
 		},
@@ -52,16 +64,34 @@ export default function GameForm({
 				}}
 			>
 				{/* biome-ignore-start lint/nursery/useExplicitType: TanStack Form field render prop — parameter type is a deep internal generic impractical to annotate */}
-				<form.AppField name="stage">
-					{(field): React.ReactNode => <field.SelectInput label="Stage" options={stageOptions} required />}
+				<form.AppField name="stages" mode="array">
+					{(stagesField): React.ReactNode => (
+						<div>
+							{stagesField.state.value?.map((stage, idx) => (
+								<fieldset key={stage.id || `new-${idx}`}>
+									<form.AppField name={`stages[${idx}].stage`}>
+										{(stageField): React.ReactNode => (
+											<>
+												<legend>
+													Stage: <b>{stageField.state.value ? `${stageField.state.value} Jeopardy` : 'No Stage Set'}</b>
+												</legend>
+												<stageField.SelectInput label="Stage" options={stageOptions} required />
+												<form.AppField name={`stages[${idx}].categories`}>
+													{(field): React.ReactNode => (
+														<field.CheckboxGroupInput label="Categories" required options={categoryOptions} />
+													)}
+												</form.AppField>
+											</>
+										)}
+									</form.AppField>
+								</fieldset>
+							))}
+						</div>
+					)}
 				</form.AppField>
 				<form.AppField name="phase">
 					{(field): React.ReactNode => <field.SelectInput label="Phase" options={phaseOptions} required />}
 				</form.AppField>
-				<form.AppField name="categories">
-					{(field): React.ReactNode => <field.CheckboxGroupInput label="Categories" required options={categoryOptions} />}
-				</form.AppField>
-
 				{/* biome-ignore-end lint/nursery/useExplicitType: TanStack Form field render prop — parameter type is a deep internal generic impractical to annotate */}
 				{formState?.errors?._form && <p className="error">{formState.errors._form[0]}</p>}
 				{formState?.success && <p className="success">Game saved.</p>}

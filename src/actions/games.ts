@@ -1,8 +1,9 @@
 'use server';
 import { requestInfo, serverAction } from 'rwsdk/worker';
 import { requireAuthentication, requirePermissions } from '@/interrupters';
-import { createGame, createGameStage, createGameStageCategory, getGameById } from '@/repositories';
+import { getGameById, saveGameStageCategories } from '@/repositories';
 import { gamesSchemas } from '@/schemas';
+import { saveGameStages, saveGame as saveGameStep } from '@/steps';
 import type { ActionState, GameFormInput, GameWithEverything } from '@/types';
 import { errorResponse, successResponse } from './utils';
 
@@ -25,13 +26,15 @@ export async function _saveGame(game: GameFormInput): Promise<ActionState<GameWi
 	try {
 		requestInfo.ctx.logger.info(`Received game to be saved: ${JSON.stringify(game)}`);
 
-		const savedGame = await createGame(parsedGame, userId, ctx.logger);
-		const singleJeopardyStage = await createGameStage({ stage: parsedGame.stage ?? 'SINGLE' }, savedGame.id, userId, ctx.logger);
-		await Promise.all(
-			parsedGame.categories.map(async (categoryId: string, idx: number) => {
-				return await createGameStageCategory({ categoryId, position: idx }, singleJeopardyStage.id, userId, ctx.logger);
-			}),
-		);
+		const savedGame = await saveGameStep({ ownerId: userId, ...parsedGame }, userId, ctx.logger);
+		const savedStages = await saveGameStages(savedGame.id, parsedGame.stages, userId, ctx.logger);
+		for (const stage of savedStages) {
+			const parsedStage = parsedGame.stages.find(s => s.stage === stage.stage);
+			if (!parsedStage) {
+				throw new Error(`Stage ${stage.stage} not found in parsed game stages`);
+			}
+			await saveGameStageCategories(stage.id, parsedStage.categories, userId, ctx.logger);
+		}
 		const savedGameWithEverything = await getGameById(savedGame.id, ctx.logger);
 
 		return successResponse<GameWithEverything>(savedGameWithEverything);

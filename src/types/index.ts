@@ -11,6 +11,7 @@ export * from './games';
 export * from './kad-button';
 export * from './kad-link';
 export * from './kad-logger';
+export * from './kad-table';
 export * from './nav-item';
 export * from './permissions';
 export * from './role';

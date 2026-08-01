@@ -1,3 +1,4 @@
+import { eq } from 'drizzle-orm/sql/expressions/conditions';
 import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { gameStages } from '@/models';
@@ -29,4 +30,32 @@ export async function createGameStage(
 	}
 
 	return createdGameStages[0];
+}
+
+export async function updateGameStage(
+	gameStageId: string,
+	gameStage: GameStageRepoInput,
+	userId: string,
+	logger: KADLogger,
+): Promise<GameStageDBRead> {
+	if (!validateUuid(gameStageId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [gameStageId, 'Game Stage']);
+	}
+
+	logger.info(`Updating game stage ${gameStageId}`);
+
+	const updatedGameStages = await db
+		.update(gameStages)
+		.set({
+			...gameStage,
+			updatedBy: userId,
+		})
+		.where(eq(gameStages.id, gameStageId))
+		.returning();
+
+	if (updatedGameStages.length !== 1) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [updatedGameStages.length, 1, 'Game Stage']);
+	}
+
+	return updatedGameStages[0];
 }
