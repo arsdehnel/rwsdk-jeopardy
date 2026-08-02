@@ -39,10 +39,46 @@ function parseTaskOverrides(overrides: string | undefined): Map<string, LogLevel
 }
 
 function serializeError(err: Error): Record<string, unknown> {
-	if (err.cause instanceof Error) {
-		return { ...err, innerCause: serializeError(err.cause), message: err.message, stack: err.stack };
-	} else {
-		return { ...err, message: err.message, stack: err.stack };
+	const result: Record<string, unknown> = {
+		// Spread enumerable own properties (e.g. DrizzleQueryError.query, .params, .name,
+		// and .cause when set as an instance property via `this.cause = x`).
+		...err,
+		// Always explicitly include non-enumerable standard Error properties.
+		message: err.message,
+		stack: err.stack,
+	};
+
+	// Always serialize cause explicitly so it is never silently dropped.
+	// .cause can be enumerable (Drizzle pattern: `this.cause = x`) or non-enumerable
+	// (ES2022 pattern: `new Error(msg, { cause })`). Either way it is readable as
+	// err.cause, but JSON.stringify of a plain Error gives {} so we must serialize it.
+	if (err.cause !== undefined) {
+		result.cause = err.cause instanceof Error ? serializeError(err.cause) : err.cause;
+	}
+
+	return result;
+}
+
+// Walks up the call stack and returns "filename.ts:line" for the first frame
+// outside this file. Only meaningful in dev where source maps are active.
+function getCallerInfo(): string | undefined {
+	try {
+		const stack = new Error().stack;
+		if (!stack) return undefined;
+		for (const line of stack.split('\n')) {
+			const trimmed = line.trim();
+			if (!trimmed.startsWith('at ')) continue;
+			if (/logger\.[jt]s/.test(trimmed)) continue;
+			const matches = trimmed.match(/\(?([^()\s]+):(\d+):\d+\)?$/);
+			if (matches) {
+				const rawPath = matches[1].replace(/^file:\/\//, '');
+				const parts = rawPath.split('/');
+				return `${parts.slice(-2).join('/')}:${matches[2]}`;
+			}
+		}
+		return undefined;
+	} catch {
+		return undefined;
 	}
 }
 
@@ -52,6 +88,7 @@ function write(
 	minLevel: LogLevel,
 	bindings: Record<string, unknown>,
 	meta: Record<string, unknown> | undefined,
+	caller?: string,
 ): void {
 	if (LEVEL_ORDER[level] < LEVEL_ORDER[minLevel]) return;
 	const serializedMeta = meta
@@ -60,15 +97,16 @@ function write(
 	const entry = { level, message, timestamp: new Date().toISOString(), ...bindings, ...serializedMeta };
 	if (env.RWSDK_JEOPARDY_ENV === 'development') {
 		const { level, message, timestamp, ...rest } = entry;
+		const loc = caller ? ` [${caller}]` : '';
 		if (level.toUpperCase() === 'WARN') {
 			// biome-ignore lint/suspicious/noConsole: intentional single console.log point for the logger
-			console.log(chalk`{bold ${timestamp}} {yellow ${level.toUpperCase()}} {white ${message}}`);
+			console.log(chalk`{bold ${timestamp}} {yellow ${level.toUpperCase()}}${loc} {white ${message}}`);
 		} else if (level.toUpperCase() === 'ERROR') {
 			// biome-ignore lint/suspicious/noConsole: intentional single console.log point for the logger
-			console.log(chalk`{bold ${timestamp}} {red ${level.toUpperCase()}} {white ${message}}`);
+			console.log(chalk`{bold ${timestamp}} {red ${level.toUpperCase()}}${loc} {white ${message}}`);
 		} else {
 			// biome-ignore lint/suspicious/noConsole: intentional single console.log point for the logger
-			console.log(chalk`{bold ${timestamp}} {white ${level.toUpperCase()}} {white ${message}}`);
+			console.log(chalk`{bold ${timestamp}} {white ${level.toUpperCase()}}${loc} {white ${message}}`);
 		}
 
 		Object.entries(rest).forEach(([key, value]) => {
@@ -92,11 +130,16 @@ function write(
 }
 
 function buildLogger(bindings: Record<string, unknown>, level: LogLevel, taskOverrides: Map<string, LogLevel>): KADLogger {
+	const isDev = env.RWSDK_JEOPARDY_ENV === 'development';
 	return {
-		debug: (message: string, meta?: Record<string, unknown>) => write('debug', message, level, bindings, meta),
-		info: (message: string, meta?: Record<string, unknown>) => write('info', message, level, bindings, meta),
-		warn: (message: string, meta?: Record<string, unknown>) => write('warn', message, level, bindings, meta),
-		error: (message: string, meta?: Record<string, unknown>) => write('error', message, level, bindings, meta),
+		debug: (message: string, meta?: Record<string, unknown>) =>
+			write('debug', message, level, bindings, meta, isDev ? getCallerInfo() : undefined),
+		info: (message: string, meta?: Record<string, unknown>) =>
+			write('info', message, level, bindings, meta, isDev ? getCallerInfo() : undefined),
+		warn: (message: string, meta?: Record<string, unknown>) =>
+			write('warn', message, level, bindings, meta, isDev ? getCallerInfo() : undefined),
+		error: (message: string, meta?: Record<string, unknown>) =>
+			write('error', message, level, bindings, meta, isDev ? getCallerInfo() : undefined),
 		child(childBindings: Record<string, unknown>, levelOverride?: LogLevel): KADLogger {
 			const taskLevel = typeof childBindings.task === 'string' ? taskOverrides.get(childBindings.task) : undefined;
 			return buildLogger({ ...bindings, ...childBindings }, levelOverride ?? taskLevel ?? level, taskOverrides);
