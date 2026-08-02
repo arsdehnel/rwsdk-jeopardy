@@ -26,7 +26,7 @@ export async function _saveGame(game: GameFormInput): Promise<ActionState<GameWi
 	try {
 		requestInfo.ctx.logger.info(`Received game to be saved: ${JSON.stringify(game)}`);
 
-		const savedGame = await saveGameStep({ ownerId: userId, ...parsedGame }, userId, ctx.logger);
+		const savedGame = await saveGameStep({ ownerId: userId, currentStage: 'SINGLE', ...parsedGame }, userId, ctx.logger);
 		const savedStages = await saveGameStages(savedGame.id, parsedGame.stages, userId, ctx.logger);
 		for (const stage of savedStages) {
 			const parsedStage = parsedGame.stages.find(s => s.stage === stage.stage);
