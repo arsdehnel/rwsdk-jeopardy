@@ -39,7 +39,7 @@ export async function _saveGame(game: GameFormInput): Promise<ActionState<GameWi
 
 		return successResponse<GameWithEverything>(savedGameWithEverything);
 	} catch (err) {
-		requestInfo.ctx.logger.error(`Unexpected error: ${err}${err instanceof Error && err.cause ? ` | cause: ${err.cause}` : ''}`);
+		requestInfo.ctx.logger.error('Unexpected error', { err: err instanceof Error ? err : new Error(String(err)) });
 		return errorResponse(err);
 	}
 }
