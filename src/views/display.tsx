@@ -1,9 +1,8 @@
 'use client';
-import type getCategories from '@/categories';
 import Board from '@/components/board';
 import ClueOverlay from '@/components/clue-overlay';
 import Scoreboard from '@/components/scoreboard';
-import type { Clue, Connections } from '@/types';
+import type { CategoryDBRead, Clue, Connections } from '@/types';
 
 export default function DisplayView({
 	connections,
@@ -15,7 +14,7 @@ export default function DisplayView({
 }: {
 	connections: Connections;
 	selectedClue: Clue | null;
-	categories: ReturnType<typeof getCategories>;
+	categories: CategoryDBRead[];
 	usedClueIds: string[];
 	scores: Record<string, number>;
 	buzzerQueue: string[];
