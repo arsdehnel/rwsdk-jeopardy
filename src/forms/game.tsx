@@ -43,7 +43,7 @@ export default function GameForm({
 	const requiredPermission = game?.id ? 'games:update' : 'games:create';
 
 	const form = useAppForm({
-		formId: 'ingredient-season',
+		formId: 'game',
 		defaultValues: gameWithFlattedCategories ?? defaultGame,
 		validators: {
 			onBlur: gamesSchemas.form,
@@ -84,8 +84,22 @@ export default function GameForm({
 											</>
 										)}
 									</form.AppField>
+									<button type="button" onClick={(): void => stagesField.removeValue(idx)}>
+										Remove Stage
+									</button>
 								</fieldset>
 							))}
+							<button
+								type="button"
+								onClick={(): void =>
+									stagesField.pushValue({
+										stage: 'SINGLE',
+										categories: [],
+									})
+								}
+							>
+								Add Stage
+							</button>
 						</div>
 					)}
 				</form.AppField>
