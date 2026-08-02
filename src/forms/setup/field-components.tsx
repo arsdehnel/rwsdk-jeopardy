@@ -113,6 +113,7 @@ export function CheckboxGroupInput({
 					} else {
 						field.handleChange(current.filter(v => v !== e.target.value));
 					}
+					field.handleBlur();
 				}}
 			/>
 		</FieldComponent>
