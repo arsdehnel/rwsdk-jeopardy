@@ -1,4 +1,4 @@
-pnpm generate
+git lfs push origin HEAD
 pnpm biome:check
 pnpm types:check
 pnpm test:run
