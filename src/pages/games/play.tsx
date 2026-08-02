@@ -1,5 +1,6 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import GameClient from '@/components/game';
+import SetupLayout from '@/layouts/setup';
 import { getCategoriesForGameStage, getGameById } from '@/repositories';
 
 export default async function Pages__Games__Play({ params, ctx, request }: RequestInfo): Promise<React.JSX.Element> {
@@ -22,9 +23,13 @@ export default async function Pages__Games__Play({ params, ctx, request }: Reque
 		const categoryIds = currentStage?.categories.sort((a, b) => a.position - b.position).map(category => category.id) || [];
 		const categories = await getCategoriesForGameStage(categoryIds, game.currentStage, ctx.logger);
 
-		const gameUrl = new URL(`/games/${gameId}`, request.url).href;
+		const gameUrl = new URL(`/games/${gameId}/play`, request.url).href;
 
-		return <GameClient gameUrl={gameUrl} sessionId={sessionId} categories={categories} />;
+		return (
+			<SetupLayout pageTitle={`Play Game ${game.id}`} ctx={ctx} currentBasePage="games">
+				<GameClient gameUrl={gameUrl} sessionId={sessionId} categories={categories} />
+			</SetupLayout>
+		);
 	} catch (err) {
 		ctx.logger.error('Unexpected error in Pages__Games__Play', { err: err instanceof Error ? err : new Error(String(err)) });
 		return <p>Unexpected error occurred. Please try again later.</p>;
