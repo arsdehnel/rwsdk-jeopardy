@@ -11,7 +11,10 @@ const columns: KADTableColumn[] = [
 	{
 		key: 'actions',
 		label: '',
-		actions: [{ type: 'link', hrefProp: 'editUrl', label: 'Edit', requiredPermission: 'games:update' }],
+		actions: [
+			{ type: 'link', hrefProp: 'editUrl', label: 'Edit', requiredPermission: 'games:update' },
+			{ type: 'link', hrefProp: 'playUrl', label: 'Play', requiredPermission: 'games:update' },
+		],
 	},
 ];
 
@@ -20,7 +23,12 @@ export default async function Pages__Games__Listing({ ctx }: RequestInfo): Promi
 	const userId = ctx.user!.id;
 
 	const games = await getGamesByOwnerId(userId, ctx.logger);
-	const rows = games.map(g => ({ ...g, editUrl: `/games/${g.id}/edit` }));
+	const rows = games.map(g => ({
+		...g,
+		editUrl: `/games/${g.id}/edit`,
+		playUrl: `/games/${g.id}/play`,
+	}));
+
 	return (
 		<SetupLayout pageTitle="My Games" ctx={ctx} currentBasePage="games">
 			<KADTable userPermissions={ctx.permissions} columns={columns} data={rows} />
