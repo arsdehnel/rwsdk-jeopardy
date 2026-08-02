@@ -3,7 +3,7 @@ import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { games } from '@/models';
 import type { GameDBRead, GameRepoInput, GameWithEverything, KADLogger } from '@/types';
-import { validateUuid } from './utils';
+import { streamlineError, validateUuid } from './utils';
 
 export async function createGame(game: GameRepoInput, userId: string, logger: KADLogger): Promise<GameDBRead> {
 	logger.info(`Creating new game`);
@@ -53,19 +53,26 @@ export async function getGameById(gameId: string, logger: KADLogger): Promise<Ga
 	}
 
 	logger.debug(`Fetching game ${gameId}`);
-	const game = await db.query.games.findFirst({
-		where: {
-			id: { eq: gameId },
-			deletedAt: { isNull: true },
-		},
-		with: {
-			stages: {
-				with: {
-					categories: true,
+	let game: GameWithEverything | undefined;
+	try {
+		game = await db.query.games.findFirst({
+			where: {
+				id: { eq: gameId },
+				deletedAt: { isNull: true },
+			},
+			with: {
+				stages: {
+					with: {
+						categories: true,
+					},
 				},
 			},
-		},
-	});
+		});
+	} catch (err) {
+		const { message, error } = streamlineError(err);
+		logger.error(`Error fetching game ${gameId}${message}`, { err: error });
+		throw error;
+	}
 
 	if (!game) {
 		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [0, 1, 'Game']);
