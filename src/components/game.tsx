@@ -1,13 +1,23 @@
 'use client';
-import getCategories from '@/categories';
 import useGameState from '@/hooks/use-game-state';
+import type { CategoryDBRead, GameWithEverything } from '@/types';
 import ContestantView from '@/views/contestant';
 import DisplayView from '@/views/display';
 import FinishedView from '@/views/finished';
 import HostView from '@/views/host';
 import SetupView from '@/views/setup';
 
-export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; sessionId: string }): React.ReactNode {
+export default function GameClient({
+	gameUrl,
+	sessionId,
+	game,
+	categories,
+}: {
+	gameUrl: string;
+	sessionId: string;
+	game: GameWithEverything;
+	categories: CategoryDBRead[]; // Replace 'any[]' with the correct type for categories
+}): React.ReactNode {
 	const {
 		connections,
 		role,
@@ -59,8 +69,6 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 		);
 	}
 
-	const categories = getCategories();
-
 	// game mode PLAYING
 	if (role === 'display') {
 		return (
@@ -97,6 +105,7 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 		<ContestantView
 			selectedClue={selectedClue}
 			selectClue={selectClue}
+			game={game}
 			categories={categories}
 			buzzerQueue={buzzerQueue}
 			sessionId={sessionId}

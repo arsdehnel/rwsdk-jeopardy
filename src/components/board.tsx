@@ -1,8 +1,14 @@
 'use client';
-import type { Category } from '@/types';
+import type { CategoryDBRead } from '@/types';
 import CategoryColumn from './category-column';
 
-export default function Board({ categories, usedClueIds }: { categories: Category[]; usedClueIds: string[] }): React.ReactNode {
+export default function Board({
+	categories,
+	usedClueIds,
+}: {
+	categories: CategoryDBRead[];
+	usedClueIds: string[];
+}): React.ReactNode {
 	return (
 		<div className="jeopardy-board">
 			{categories.map(category => (
