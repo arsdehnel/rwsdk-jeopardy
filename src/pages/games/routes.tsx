@@ -8,6 +8,6 @@ import Pages__Games__Play from './play';
 export default [
 	route('/listing', [requireAuthentication, requirePermissions('games:read'), Pages__Games__Listing]),
 	route('/new', [requireAuthentication, requirePermissions('games:create'), Pages__Games__New]),
-	route('/play', [requireAuthentication, requirePermissions('games:read'), Pages__Games__Play]),
+	route('/:gameId/play', [requireAuthentication, requirePermissions('games:read'), Pages__Games__Play]),
 	route('/:gameId/edit', [requireAuthentication, requirePermissions('games:update'), Pages__Games__Edit]),
 ];
