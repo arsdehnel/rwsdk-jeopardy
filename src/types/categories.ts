@@ -24,3 +24,7 @@ export type CategoryRepoInput = Omit<
 export type CategoryWithClues = CategoryDBRead & {
 	clues: ClueDBRead[];
 };
+
+export type CategoryFilters = {
+	id?: string[];
+};
