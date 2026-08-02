@@ -1,12 +1,12 @@
 'use client';
-import type { Clue } from '@/types';
+import type { CategoryInGame } from '@/types';
 import ClueValueTile from './clue-value-tile';
 
 export default function CategoryColumn({
 	category,
 	usedClueIds,
 }: {
-	category: { name: string; clues: Clue[] };
+	category: CategoryInGame;
 	usedClueIds: string[];
 }): React.ReactNode {
 	return (

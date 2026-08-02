@@ -12,7 +12,7 @@ const mockConnections: Connections = { host, display, contestants: [player1, pla
 
 const baseState = {
 	connections: mockConnections,
-	selectedClue: { id: 'clue-1', value: 200, clue: 'What is...', response: '...' },
+	selectedClue: { id: 'clue-1', value: 200, text: 'What is...', response: '...' },
 	gamePhase: 'PLAYING' as GamePhaseEnum,
 	buzzerQueue: ['player-1', 'player-2'],
 	usedClueIds: [],

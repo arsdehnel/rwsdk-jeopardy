@@ -1,11 +1,5 @@
 import type { categories } from '@/models';
-import type { Clue, ClueDBRead } from './clue';
-
-export type Category = {
-	id: string;
-	name: string;
-	clues: Clue[];
-};
+import type { ClueDBRead, ClueInGame } from './clue';
 
 export type GeneratedCategory = {
 	name: string;
@@ -25,6 +19,6 @@ export type CategoryWithClues = CategoryDBRead & {
 	clues: ClueDBRead[];
 };
 
-export type CategoryFilters = {
-	id?: string[];
+export type CategoryInGame = Pick<CategoryDBRead, 'id' | 'name'> & {
+	clues: ClueInGame[];
 };

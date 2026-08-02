@@ -1,6 +1,6 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import GameClient from '@/components/game';
-import { getCategories, getGameById } from '@/repositories';
+import { getCategoriesForGameStage, getGameById } from '@/repositories';
 
 export default async function Pages__Games__Play({ params, ctx, request }: RequestInfo): Promise<React.JSX.Element> {
 	try {
@@ -19,12 +19,12 @@ export default async function Pages__Games__Play({ params, ctx, request }: Reque
 			return <p>Game not found</p>;
 		}
 		const currentStage = game.stages.find(stage => stage.stage === game.currentStage);
-		const categoryIds = currentStage?.categories.map(category => category.id) || [];
-		const categories = await getCategories({ id: categoryIds }, 100, 0, ctx.logger);
+		const categoryIds = currentStage?.categories.sort((a, b) => a.position - b.position).map(category => category.id) || [];
+		const categories = await getCategoriesForGameStage(categoryIds, game.currentStage, ctx.logger);
 
 		const gameUrl = new URL(`/games/${gameId}`, request.url).href;
 
-		return <GameClient gameUrl={gameUrl} sessionId={sessionId} game={game} categories={categories} />;
+		return <GameClient gameUrl={gameUrl} sessionId={sessionId} categories={categories} />;
 	} catch (err) {
 		ctx.logger.error('Unexpected error in Pages__Games__Play', { err: err instanceof Error ? err : new Error(String(err)) });
 		return <p>Unexpected error occurred. Please try again later.</p>;

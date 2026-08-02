@@ -10,7 +10,7 @@ export default async function Pages__Games__Edit({ ctx, params }: RequestInfo): 
 	try {
 		const gameId = params.gameId;
 		const game = await getGameById(gameId, ctx.logger);
-		const categories = await getCategories({}, 100, 0, ctx.logger);
+		const categories = await getCategories(ctx.logger);
 		return (
 			<SetupLayout pageTitle="Edit Game" ctx={ctx} currentBasePage="games">
 				<p>Edit Game {game.id}</p>

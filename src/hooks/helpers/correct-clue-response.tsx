@@ -1,8 +1,8 @@
-import type { Clue, Connections, GamePhaseEnum } from '@/types';
+import type { ClueInGame, Connections, GamePhaseEnum } from '@/types';
 
 type CorrectClueResponseGameState = {
 	connections: Connections;
-	selectedClue: Clue | null;
+	selectedClue: ClueInGame | null;
 	gamePhase: GamePhaseEnum;
 	buzzerQueue: string[];
 	usedClueIds: string[];

@@ -35,7 +35,7 @@ export async function _generateCategory(): Promise<ActionState<GeneratedCategory
 	try {
 		requestInfo.ctx.logger.info(`Initializing category generation`);
 
-		const existingCategories = await getCategories({}, 100, 0, requestInfo.ctx.logger);
+		const existingCategories = await getCategories(requestInfo.ctx.logger);
 
 		const prompt = getPrompt(existingCategories.map(c => c.name));
 

@@ -1,6 +1,7 @@
 export const KADRepositoryErrorTypes = {
 	UnexpectedRecordCount: 'unexpected-record-count',
 	InvalidUUID: 'invalid-uuid',
+	SingleInstanceError: 'single-instance-error',
 } as const;
 
 export class KADRepositoryError extends Error {
@@ -18,6 +19,11 @@ export class KADRepositoryError extends Error {
 			case KADRepositoryErrorTypes.InvalidUUID: {
 				const [value, entity] = details as [string, string];
 				message = `The value "${value}" is not a valid ID for a ${entity}`;
+				break;
+			}
+			case KADRepositoryErrorTypes.SingleInstanceError: {
+				const [singleInstanceMessage] = details as [string];
+				message = singleInstanceMessage;
 				break;
 			}
 			default:

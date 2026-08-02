@@ -1,6 +1,6 @@
 'use client';
 import useGameState from '@/hooks/use-game-state';
-import type { CategoryDBRead, GameWithEverything } from '@/types';
+import type { CategoryInGame } from '@/types';
 import ContestantView from '@/views/contestant';
 import DisplayView from '@/views/display';
 import FinishedView from '@/views/finished';
@@ -10,13 +10,11 @@ import SetupView from '@/views/setup';
 export default function GameClient({
 	gameUrl,
 	sessionId,
-	game,
 	categories,
 }: {
 	gameUrl: string;
 	sessionId: string;
-	game: GameWithEverything;
-	categories: CategoryDBRead[]; // Replace 'any[]' with the correct type for categories
+	categories: CategoryInGame[]; // Replace 'any[]' with the correct type for categories
 }): React.ReactNode {
 	const {
 		connections,
@@ -105,7 +103,6 @@ export default function GameClient({
 		<ContestantView
 			selectedClue={selectedClue}
 			selectClue={selectClue}
-			game={game}
 			categories={categories}
 			buzzerQueue={buzzerQueue}
 			sessionId={sessionId}

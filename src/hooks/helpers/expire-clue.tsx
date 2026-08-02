@@ -1,7 +1,7 @@
-import type { Clue } from '@/types';
+import type { ClueInGame } from '@/types';
 
 type ExpireClueGameState = {
-	selectedClue: Clue | null;
+	selectedClue: ClueInGame | null;
 	buzzerQueue: string[];
 	usedClueIds: string[];
 };

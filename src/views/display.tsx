@@ -2,7 +2,7 @@
 import Board from '@/components/board';
 import ClueOverlay from '@/components/clue-overlay';
 import Scoreboard from '@/components/scoreboard';
-import type { CategoryDBRead, Clue, Connections } from '@/types';
+import type { CategoryInGame, ClueInGame, Connections } from '@/types';
 
 export default function DisplayView({
 	connections,
@@ -13,8 +13,8 @@ export default function DisplayView({
 	buzzerQueue,
 }: {
 	connections: Connections;
-	selectedClue: Clue | null;
-	categories: CategoryDBRead[];
+	selectedClue: ClueInGame | null;
+	categories: CategoryInGame[];
 	usedClueIds: string[];
 	scores: Record<string, number>;
 	buzzerQueue: string[];

@@ -1,31 +1,59 @@
+import { isNull } from 'drizzle-orm/sql/expressions/conditions';
 import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { categories } from '@/models';
-import type { CategoryDBRead, CategoryFilters, CategoryRepoInput, KADLogger } from '@/types';
+import type { CategoryDBRead, CategoryInGame, CategoryRepoInput, GameStageEnum, KADLogger } from '@/types';
 
-// function buildCategoryWhere(filters: CategoryFilters): SQL<unknown> | undefined {
-// 	return and(filters.id ? inArray(categories.id, filters.id) : undefined, isNull(categories.deletedAt));
-// }
-
-// const remaining = await db.query.recipeIngredients.findMany({
-// 	where: (i, { and, eq, isNull }) => and(eq(i.recipeSectionId, testSectionId), isNull(i.deletedAt)),
-// });
-
-export async function getCategories(
-	filters: CategoryFilters,
-	limit: number,
-	offset: number,
+export async function getCategoriesForGameStage(
+	gameStageCategoryIds: string[],
+	gameStage: GameStageEnum,
 	logger: KADLogger,
-): Promise<CategoryDBRead[]> {
-	logger.info(`Fetching categories`);
-	// return await db.select().from(categories).where(buildCategoryWhere(filters)).limit(limit).offset(offset);
-	return await db.query.categories.findMany({
+): Promise<CategoryInGame[]> {
+	logger.info(`Fetching categories for game stage ${gameStageCategoryIds.join(', ')}`);
+	const categories = await db.query.categories.findMany({
 		where: {
 			deletedAt: { isNull: true },
+			id: { in: gameStageCategoryIds },
 		},
-		limit,
-		offset,
+		with: {
+			clues: {
+				where: {
+					deletedAt: { isNull: true },
+				},
+			},
+		},
 	});
+
+	let clueMultiplier: number = 0;
+	switch (gameStage) {
+		case 'SINGLE':
+			clueMultiplier = 1;
+			break;
+		case 'DOUBLE':
+			clueMultiplier = 2;
+			break;
+		case 'TRIPLE':
+			clueMultiplier = 3;
+			break;
+		default:
+			throw new KADRepositoryError(KADRepositoryErrorTypes.SingleInstanceError, [`Invalid game stage: ${gameStage}`]);
+	}
+
+	return categories.map(category => ({
+		id: category.id,
+		name: category.name,
+		clues: category.clues.map((clue, idx) => ({
+			id: clue.id,
+			text: clue.text,
+			response: clue.response,
+			value: (idx + 1) * clueMultiplier,
+		})),
+	}));
+}
+
+export async function getCategories(logger: KADLogger): Promise<CategoryDBRead[]> {
+	logger.info(`Fetching categories`);
+	return await db.select().from(categories).where(isNull(categories.deletedAt));
 }
 
 export async function createCategory(category: CategoryRepoInput, userId: string, logger: KADLogger): Promise<CategoryDBRead> {

@@ -1,12 +1,12 @@
 'use client';
-import type { CategoryDBRead } from '@/types';
+import type { CategoryInGame } from '@/types';
 import CategoryColumn from './category-column';
 
 export default function Board({
 	categories,
 	usedClueIds,
 }: {
-	categories: CategoryDBRead[];
+	categories: CategoryInGame[];
 	usedClueIds: string[];
 }): React.ReactNode {
 	return (

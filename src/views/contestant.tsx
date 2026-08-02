@@ -2,7 +2,7 @@
 import classnames from 'classnames';
 import Buzzer from '@/components/buzzer';
 import ClueSelect from '@/components/clue-select';
-import type { Category, Clue } from '@/types';
+import type { CategoryInGame, ClueInGame } from '@/types';
 
 export default function ContestantView({
 	selectClue,
@@ -13,9 +13,9 @@ export default function ContestantView({
 	buzzIn,
 	usedClueIds,
 }: {
-	selectClue: (clue: Clue) => void;
-	selectedClue: Clue | null;
-	categories: Category[];
+	selectClue: (clue: ClueInGame) => void;
+	selectedClue: ClueInGame | null;
+	categories: CategoryInGame[];
 	buzzerQueue: string[];
 	sessionId: string;
 	buzzIn: (contestantSessionId: string) => void;
