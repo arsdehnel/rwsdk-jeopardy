@@ -19,7 +19,11 @@ const LazyDevtools = import.meta.env.DEV
 
 export function FormDevtools(): React.ReactNode {
 	const [mounted, setMounted] = useState(false);
-	useEffect(() => setMounted(true), []);
+	useEffect(() => {
+		setMounted(true);
+		document.body.classList.add('tanstack-devtools-open');
+		return () => document.body.classList.remove('tanstack-devtools-open');
+	}, []);
 
 	if (!import.meta.env.DEV || !mounted) return null;
 	return (
