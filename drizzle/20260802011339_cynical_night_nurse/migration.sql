@@ -1,0 +1,1 @@
+ALTER TABLE `games` ADD `current_stage` text NOT NULL;
