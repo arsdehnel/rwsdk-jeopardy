@@ -1,17 +1,32 @@
 import { cloudflare } from '@cloudflare/vite-plugin';
 import { redwood } from 'rwsdk/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
-export default defineConfig({
-	css: {
-		modules: {
-			localsConvention: 'camelCase',
+export default defineConfig(({ mode }) => {
+	const env = loadEnv(mode, process.cwd(), '');
+	const tunnelHost = new URL(env.VITE_BASE_URL).host;
+
+	return {
+		css: {
+			modules: {
+				localsConvention: 'camelCase',
+			},
 		},
-	},
-	plugins: [
-		cloudflare({
-			viteEnvironment: { name: 'worker' },
-		}),
-		redwood(),
-	],
+		plugins: [
+			cloudflare({
+				viteEnvironment: { name: 'worker' },
+			}),
+			redwood(),
+		],
+		server: {
+			...(tunnelHost && {
+				cors: false,
+				allowedHosts: [tunnelHost],
+				hmr: {
+					host: tunnelHost,
+					protocol: 'wss',
+				},
+			}),
+		},
+	};
 });
