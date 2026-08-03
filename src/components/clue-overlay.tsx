@@ -1,15 +1,15 @@
 'use client';
 
-import type { Clue } from '@/types';
+import type { ClueInGame } from '@/types';
 
-const ClueOverlay = ({ selectedClue }: { selectedClue: Clue | null }): React.ReactNode => {
+const ClueOverlay = ({ selectedClue }: { selectedClue: ClueInGame | null }): React.ReactNode => {
 	if (!selectedClue) {
 		return null;
 	}
 
 	return (
 		<div className="clue-overlay">
-			<div className="clue-content">{selectedClue && <p>{selectedClue.clue}</p>}</div>
+			<div className="clue-content">{selectedClue && <p>{selectedClue.text}</p>}</div>
 		</div>
 	);
 };

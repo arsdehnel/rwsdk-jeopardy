@@ -1,13 +1,21 @@
 'use client';
-import getCategories from '@/categories';
 import useGameState from '@/hooks/use-game-state';
+import type { CategoryInGame } from '@/types';
 import ContestantView from '@/views/contestant';
 import DisplayView from '@/views/display';
 import FinishedView from '@/views/finished';
 import HostView from '@/views/host';
 import SetupView from '@/views/setup';
 
-export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; sessionId: string }): React.ReactNode {
+export default function GameClient({
+	gameUrl,
+	sessionId,
+	categories,
+}: {
+	gameUrl: string;
+	sessionId: string;
+	categories: CategoryInGame[]; // Replace 'any[]' with the correct type for categories
+}): React.ReactNode {
 	const {
 		connections,
 		role,
@@ -31,7 +39,7 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 		expireClue,
 	} = useGameState(sessionId);
 
-	if (gamePhase === 'setup') {
+	if (gamePhase === 'SETUP') {
 		return (
 			<SetupView
 				connections={connections}
@@ -46,7 +54,7 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 		);
 	}
 
-	if (gamePhase === 'finished') {
+	if (gamePhase === 'FINISHED') {
 		return <FinishedView connections={connections} scores={scores} />;
 	}
 
@@ -59,9 +67,7 @@ export default function GameClient({ gameUrl, sessionId }: { gameUrl: string; se
 		);
 	}
 
-	const categories = getCategories();
-
-	// game mode active
+	// game mode PLAYING
 	if (role === 'display') {
 		return (
 			<DisplayView

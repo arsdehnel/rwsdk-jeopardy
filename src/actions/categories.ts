@@ -12,8 +12,9 @@ function getPrompt(existingCategoryNames: string[]): string {
 1. Can you provide a category title and five increasingly-difficult "answers" for which the contestants will have to provide the "question" in traditional Jeopardy style. 
 2. Can you return the data in JSON with the top-level thing being a category object like this with clues as an array? 
 3. Return it without the pretty-printed formatting and please make sure to return the full JSON and _only_ the JSON so I can parse it. 
-4. Please avoid any extra messages about the fact that you've double-checked the answers or anything.  JUST THE JSON PLEASE.
 4. Also please double-check the accuracy to avoid hallucinations.
+5. We have existing categories named ${existingCategoryNames.join(',')} so please avoid those topics.
+6. Please avoid any extra messages about the fact that you've double-checked the answers or anything.  JUST THE JSON PLEASE.
 
 { 
 	"name": "Animal Kingdom",
@@ -24,8 +25,6 @@ function getPrompt(existingCategoryNames: string[]): string {
 		}
 	]
 }
-
-We have existing categories named ${existingCategoryNames.join(',')} so please avoid those topics
 `;
 }
 
@@ -61,7 +60,7 @@ export async function _generateCategory(): Promise<ActionState<GeneratedCategory
 			return errorResponse(err);
 		}
 	} catch (err) {
-		requestInfo.ctx.logger.error(`Unexpected error: ${err}`);
+		requestInfo.ctx.logger.error(`Unexpected error: ${err}${err instanceof Error && err.cause ? ` | cause: ${err.cause}` : ''}`);
 		return errorResponse(err);
 	}
 }
@@ -87,7 +86,7 @@ export async function _saveCategory(category: GeneratedCategory): Promise<Action
 
 		return successResponse<CategoryWithClues>(fullCategory);
 	} catch (err) {
-		requestInfo.ctx.logger.error(`Unexpected error: ${err}`);
+		requestInfo.ctx.logger.error(`Unexpected error: ${err}${err instanceof Error && err.cause ? ` | cause: ${err.cause}` : ''}`);
 		return errorResponse(err);
 	}
 }

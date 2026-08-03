@@ -1,6 +1,6 @@
 'use client';
 import Scoreboard from '@/components/scoreboard';
-import type { Clue, Connections } from '@/types';
+import type { ClueInGame, Connections } from '@/types';
 
 export default function HostView({
 	connections,
@@ -16,7 +16,7 @@ export default function HostView({
 	expireClue,
 }: {
 	connections: Connections;
-	selectedClue: Clue | null;
+	selectedClue: ClueInGame | null;
 	buzzerQueue: string[];
 	scores: Record<string, number>;
 	abortClue: () => void;
@@ -41,7 +41,7 @@ export default function HostView({
 					{selectedClue ? (
 						<>
 							<h3>Clue</h3>
-							<p>{selectedClue.clue}</p>
+							<p>{selectedClue.text}</p>
 							<h3>Response</h3>
 							<p>{selectedClue.response}</p>
 						</>

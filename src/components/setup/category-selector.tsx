@@ -44,14 +44,14 @@ export default function CategorySelector({
 
 	return (
 		<>
-			<p>
+			<div>
 				Existing Categories:
 				<ul>
 					{categories.map(c => {
 						return <li key={c.id}>{c.name}</li>;
 					})}
 				</ul>
-			</p>
+			</div>
 			<p>{pending ? <span>Pending, might take 30 seconds or so, please be patient.</span> : null}</p>
 			{errors && <p>{JSON.stringify(errors)}</p>}
 			{generatedCategory && (

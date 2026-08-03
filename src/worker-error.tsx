@@ -1,6 +1,8 @@
+import { env } from 'cloudflare:workers';
 import type { JSX } from 'react';
 import type { DefaultAppContext, RequestInfo } from 'rwsdk/worker';
 import { KADAccessError } from '@/classes';
+import { buildDevErrorMessage } from './actions/utils';
 import RootErrorHandler from './components/RootErrorHandler';
 
 /**
@@ -16,7 +18,13 @@ export function handlePageError(error: unknown, { request, ctx }: RequestInfo<De
 	const isActionRequest = new URL(request.url).searchParams.has('__rsc_action_id');
 
 	if (isActionRequest) {
-		const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+		const isDev = env.RWSDK_JEOPARDY_ENV !== 'production';
+		const message =
+			isDev && error instanceof Error
+				? buildDevErrorMessage(error)
+				: error instanceof Error
+					? error.message
+					: 'An unexpected error occurred';
 		const code = error instanceof KADAccessError ? error.code : 500;
 		return Response.json({ success: false, code, errors: { _form: [message] } }, { status: code });
 	}

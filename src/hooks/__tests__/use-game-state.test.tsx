@@ -1,14 +1,14 @@
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import useGameState from '@/hooks/use-game-state';
-import type { Clue, Connection } from '@/types';
+import type { ClueInGame, Connection } from '@/types';
 
 const host: Connection = { id: 'host-1', name: 'Alice', role: 'host' };
 const display: Connection = { id: 'display-1', name: 'TV', role: 'display' };
 const contestant1: Connection = { id: 'contestant-1', name: 'Bob', role: 'contestant' };
 const contestant2: Connection = { id: 'contestant-2', name: 'Carol', role: 'contestant' };
 
-const clue: Clue = { id: crypto.randomUUID(), value: 200, clue: 'This is a clue', response: 'What is an answer?' };
+const clue: ClueInGame = { id: crypto.randomUUID(), value: 200, text: 'This is a clue', response: 'What is an answer?' };
 
 describe('registerConnection', () => {
 	it('registers a host', () => {
@@ -285,7 +285,7 @@ describe('scores', () => {
 	});
 
 	it('accumulates points across multiple clues', () => {
-		const clue2: Clue = { id: crypto.randomUUID(), value: 400, clue: 'Another clue', response: 'What is another answer?' };
+		const clue2: ClueInGame = { id: crypto.randomUUID(), value: 400, text: 'Another clue', response: 'What is another answer?' };
 		const { result } = renderHook(() => useGameState());
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
@@ -341,13 +341,13 @@ describe('scores', () => {
 describe('game phase transitions', () => {
 	it('starts in setup phase', () => {
 		const { result } = renderHook(() => useGameState());
-		expect(result.current.gamePhase).toBe('setup');
+		expect(result.current.gamePhase).toBe('SETUP');
 	});
 
-	it('transitions to active on startGame', () => {
+	it('transitions to PLAYING on startGame', () => {
 		const { result } = renderHook(() => useGameState());
 		act(() => result.current.startGame());
-		expect(result.current.gamePhase).toBe('active');
+		expect(result.current.gamePhase).toBe('PLAYING');
 	});
 
 	it('transitions to finished on finishGame and clears state', () => {
@@ -355,7 +355,7 @@ describe('game phase transitions', () => {
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
 		act(() => result.current.finishGame());
-		expect(result.current.gamePhase).toBe('finished');
+		expect(result.current.gamePhase).toBe('FINISHED');
 		expect(result.current.selectedClue).toBeNull();
 		expect(result.current.buzzerQueue).toHaveLength(0);
 	});
@@ -366,7 +366,7 @@ describe('game phase transitions', () => {
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
 		act(() => result.current.setupGame());
-		expect(result.current.gamePhase).toBe('setup');
+		expect(result.current.gamePhase).toBe('SETUP');
 		expect(result.current.selectedClue).toBeNull();
 		expect(result.current.buzzerQueue).toHaveLength(0);
 	});

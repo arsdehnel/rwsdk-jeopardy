@@ -34,13 +34,25 @@
 		"worker:run": "rw-scripts worker-run"
 	},
 	"lint-staged": {
-		"*.{ts,tsx}": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true",
-		"*.{css,less}": "prettier --write"
+		"*": [
+			"biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
+		],
+		"package.json": [
+			"prettier --write"
+		],
+		"*.{css,less}": [
+			"prettier --write"
+		],
+		"worker-configuration.d.ts": []
 	},
 	"dependencies": {
 		"@radix-ui/react-icons": "^1.3.2",
 		"@simplewebauthn/browser": "^13.3.0",
 		"@simplewebauthn/server": "^13.3.2",
+		"@storybook/test": "^8.6.15",
+		"@tanstack/react-devtools": "^0.10.9",
+		"@tanstack/react-form": "^1.33.2",
+		"@tanstack/react-form-devtools": "^0.2.31",
 		"chalk": "^6.0.0",
 		"chalk-template": "^1.1.2",
 		"classnames": "^2.5.1",

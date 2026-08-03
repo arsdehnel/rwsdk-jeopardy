@@ -1,14 +1,19 @@
 import { expect, test } from '@playwright/experimental-ct-react';
-import getCategories from '@/categories';
-import type { Category, Clue } from '../../../src/types';
+import type { CategoryInGame, ClueInGame } from '../../../src/types';
 import ContestantView from '../../../src/views/contestant';
 
-const mockCategories: Category[] = getCategories();
+const mockCategories: CategoryInGame[] = [
+	{
+		id: 'category-1',
+		name: 'Sample Category',
+		clues: [],
+	},
+];
 
-const mockClue: Clue = {
+const mockClue: ClueInGame = {
 	id: 'clue-1',
 	value: 200,
-	clue: 'This is a sample clue?',
+	text: 'This is a sample clue?',
 	response: 'What is a sample answer?',
 };
 

@@ -2,15 +2,15 @@
 import { Cross2Icon, RowSpacingIcon } from '@radix-ui/react-icons';
 import { Collapsible } from 'radix-ui';
 import { useState } from 'react';
-import type { Category, Clue } from '@/types';
+import type { CategoryInGame, ClueInGame } from '@/types';
 
 export default function ClueSelect({
 	categories,
 	selectClue,
 	usedClueIds,
 }: {
-	categories: Category[];
-	selectClue: (clue: Clue) => void;
+	categories: CategoryInGame[];
+	selectClue: (clue: ClueInGame) => void;
 	usedClueIds: string[];
 }): React.ReactNode {
 	const [openCategory, setOpenCategory] = useState('');
@@ -46,7 +46,7 @@ export default function ClueSelect({
 								</div>
 								<Collapsible.Content>
 									<ul className="clue-select-clue-options">
-										{category.clues.map((clue: Clue) => {
+										{category.clues.map(clue => {
 											return (
 												<li key={clue.id}>
 													<button type="button" onClick={(): void => selectClue(clue)} disabled={usedClueIds.includes(clue.id)}>
