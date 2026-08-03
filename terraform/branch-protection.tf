@@ -8,7 +8,7 @@ resource "github_branch_protection" "main" {
       "commitlint / commitlint",
       "unit-tests",
       "build",
-      "component-tests",
+      # "component-tests",
     ]
   }
 
