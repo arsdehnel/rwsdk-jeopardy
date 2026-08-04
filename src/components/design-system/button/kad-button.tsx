@@ -7,14 +7,15 @@ export default function KADButton({
 	label,
 	requiredPermission,
 	userPermissions,
+	children,
 	...other
 }: KADButtonType): React.ReactNode {
 	if (!userPermissions?.includes(requiredPermission)) {
 		return null;
 	}
 	return (
-		<button type="submit" disabled={isSubmitting} className={styleClasses['kad-button']} {...other}>
-			{label}
+		<button type="submit" disabled={isSubmitting} {...other} className={styleClasses.kadButton}>
+			{label ?? children}
 		</button>
 	);
 }

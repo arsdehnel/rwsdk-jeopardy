@@ -1,6 +1,6 @@
 'use client';
 import useGameState from '@/hooks/use-game-state';
-import type { CategoryInGame } from '@/types';
+import type { CategoryInGame, Permission } from '@/types';
 import ContestantView from '@/views/contestant';
 import DisplayView from '@/views/display';
 import FinishedView from '@/views/finished';
@@ -11,11 +11,14 @@ export default function GameClient({
 	gameUrl,
 	sessionId,
 	categories,
+	userPermissions,
 }: {
 	gameUrl: string;
 	sessionId: string;
 	categories: CategoryInGame[]; // Replace 'any[]' with the correct type for categories
+	userPermissions: Permission[];
 }): React.ReactNode {
+	console.log(userPermissions);
 	const {
 		connections,
 		role,
@@ -50,6 +53,7 @@ export default function GameClient({
 				startGame={startGame}
 				gameUrl={gameUrl}
 				hasDisplay={hasDisplay}
+				userPermissions={userPermissions}
 			/>
 		);
 	}

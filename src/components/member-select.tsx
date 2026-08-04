@@ -1,7 +1,8 @@
 'use client';
 import { useState } from 'react';
 
-import type { Connection, Connections, Role } from '@/types';
+import type { Connection, Connections, Permission, Role } from '@/types';
+import { KADButton } from './design-system';
 
 export default function MemberSelect({
 	connections,
@@ -10,6 +11,7 @@ export default function MemberSelect({
 	unregisterConnection,
 	sessionId,
 	hasDisplay,
+	userPermissions,
 }: {
 	connections: Connections;
 	role: string | undefined;
@@ -17,6 +19,7 @@ export default function MemberSelect({
 	unregisterConnection: (connectionId: string) => void;
 	sessionId: string;
 	hasDisplay: boolean;
+	userPermissions: Permission[];
 }): React.ReactNode {
 	const [name, setName] = useState('');
 	const [selectedRole, setSelectedRole] = useState<Role>('host');
@@ -68,6 +71,13 @@ export default function MemberSelect({
 		);
 	}
 
+	let buttonDisabled = true;
+	if (selectedRole === 'host') {
+		buttonDisabled = false;
+	} else if (selectedRole === 'contestant' && name) {
+		buttonDisabled = false;
+	}
+
 	return (
 		<>
 			<p>Who are you?</p>
@@ -94,16 +104,18 @@ export default function MemberSelect({
 						/>
 					</>
 				)}
-				<button
+				<KADButton
 					className="registration-button"
 					type="button"
-					disabled={!name || !selectedRole}
+					disabled={buttonDisabled}
+					userPermissions={userPermissions}
+					requiredPermission="games:register"
 					onClick={(): void => {
 						registerConnection({ id: sessionId, name, role: selectedRole });
 					}}
 				>
 					Register for this game
-				</button>
+				</KADButton>
 			</div>
 		</>
 	);
