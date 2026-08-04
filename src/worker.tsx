@@ -7,6 +7,7 @@ import Document from '@/document';
 import headersMiddleware from '@/middleware/headers';
 import sessionMiddleware from '@/middleware/session';
 import authRoutes from '@/pages/auth/routes';
+import devRoutes from '@/pages/dev/routes';
 import gamesRoutes from '@/pages/games/routes';
 import Pages__Home from '@/pages/home';
 import profileRoutes from '@/pages/profile/routes';
@@ -32,8 +33,9 @@ export default defineApp([
 		except<RequestInfo<DefaultAppContext>>(handlePageError),
 		route('/', Pages__Home),
 		prefix('/auth', authRoutes),
-		prefix('/profile', profileRoutes),
+		prefix('/dev', devRoutes),
 		prefix('/games', gamesRoutes),
+		prefix('/profile', profileRoutes),
 		route('*', Pages__not_found),
 	]),
 ]);

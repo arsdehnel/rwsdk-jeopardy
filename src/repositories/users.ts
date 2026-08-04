@@ -3,7 +3,7 @@ import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { users } from '@/models';
 import type { KADLogger, UserDBRead, UserWriteInput } from '@/types';
-import { validateUuid } from './utils';
+import { streamlineError, validateUuid } from './utils';
 
 export async function getUsers(logger: KADLogger, includeDeleted = false): Promise<UserDBRead[]> {
 	logger.debug('Fetching all users');
@@ -71,20 +71,28 @@ export async function deleteUser(id: string, actingUserId: string | null, logger
 	return deleted[0];
 }
 
-export async function getUserById(id: string, logger: KADLogger): Promise<UserDBRead> {
-	if (!validateUuid(id)) {
-		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [id, 'User']);
+export async function getUserById(userId: string, logger: KADLogger): Promise<UserDBRead> {
+	if (!validateUuid(userId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [userId, 'User']);
 	}
 
-	logger.debug(`Fetching user ${id}`);
-	const matchedUsers = await db
-		.select()
-		.from(users)
-		.where(and(eq(users.id, id), isNull(users.deletedAt)));
-
-	if (matchedUsers.length !== 1) {
-		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [matchedUsers.length, 1, 'User']);
+	logger.debug(`Fetching user ${userId}`);
+	let user: UserDBRead | undefined;
+	try {
+		const matchedUsers = await db
+			.select()
+			.from(users)
+			.where(and(eq(users.id, userId), isNull(users.deletedAt)));
+		user = matchedUsers[0];
+	} catch (err) {
+		const { message, error } = streamlineError(err);
+		logger.error(`Error fetching user ${userId}${message}`, { err: error });
+		throw error;
 	}
 
-	return matchedUsers[0];
+	if (!user) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [0, 1, 'User']);
+	}
+
+	return user;
 }
