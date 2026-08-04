@@ -39,6 +39,8 @@ export async function getCategoriesForGameStage(
 			throw new KADRepositoryError(KADRepositoryErrorTypes.SingleInstanceError, [`Invalid game stage: ${gameStage}`]);
 	}
 
+	logger.debug(`Fetched ${categories.length} categories for game stage ${gameStageCategoryIds.join(', ')}`);
+
 	return categories.map(category => ({
 		id: category.id,
 		name: category.name,
