@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { Connection, Connections, Permission, Role } from '@/types';
 import { KADButton } from './design-system';
@@ -21,11 +21,17 @@ export default function MemberSelect({
 	hasDisplay: boolean;
 	userPermissions: Permission[];
 }): React.ReactNode {
-	const [name, setName] = useState('');
-	const [selectedRole, setSelectedRole] = useState<Role>('host');
-
 	const gameHasHost = connections.host && connections.host !== null;
 	const gameHasDisplay = connections.display && connections.display !== null;
+	const defaultRole: Role = !gameHasHost ? 'host' : !gameHasDisplay ? 'display' : 'contestant';
+	const [name, setName] = useState('');
+	const [selectedRole, setSelectedRole] = useState<Role>(defaultRole);
+
+	useEffect(() => {
+		if (!gameHasHost && !gameHasDisplay) {
+			setSelectedRole('contestant');
+		}
+	}, [gameHasHost, gameHasDisplay]);
 
 	if (role) {
 		let registrationNote: string = `Welcome contestant ${name}!`;
@@ -82,16 +88,20 @@ export default function MemberSelect({
 		<>
 			<p>Who are you?</p>
 			<div className="member-select">
-				<label htmlFor="role">Role:</label>
-				<select
-					id="role"
-					value={selectedRole}
-					onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => setSelectedRole(e.target.value as Role)}
-				>
-					{!gameHasHost && <option value="host">Host</option>}
-					{!gameHasDisplay && <option value="display">Display</option>}
-					<option value="contestant">Contestant</option>
-				</select>
+				{(!gameHasHost || !gameHasDisplay) && (
+					<>
+						<label htmlFor="role">Role:</label>
+						<select
+							id="role"
+							value={selectedRole}
+							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => setSelectedRole(e.target.value as Role)}
+						>
+							{!gameHasHost && <option value="host">Host</option>}
+							{!gameHasDisplay && <option value="display">Display</option>}
+							<option value="contestant">Contestant</option>
+						</select>
+					</>
+				)}
 				{selectedRole === 'contestant' && (
 					<>
 						<label htmlFor="name">Name:</label>
@@ -104,6 +114,7 @@ export default function MemberSelect({
 						/>
 					</>
 				)}
+				{selectedRole}
 				<KADButton
 					className="registration-button"
 					type="button"
