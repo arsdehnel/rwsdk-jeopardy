@@ -1,3 +1,7 @@
 .kad-button {
 	border: 1px solid gold;
+	&:disabled {
+		opacity: 0.5;
+		background: grey;
+	}
 }

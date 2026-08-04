@@ -1,7 +1,7 @@
 'use client';
 import { QRCodeSVG } from 'qrcode.react';
 import MemberSelect from '@/components/member-select';
-import type { Connection, Connections } from '@/types';
+import type { Connection, Connections, Permission } from '@/types';
 
 export default function SetupView({
 	connections,
@@ -12,6 +12,7 @@ export default function SetupView({
 	startGame,
 	gameUrl,
 	hasDisplay,
+	userPermissions,
 }: {
 	connections: Connections;
 	registerConnection: (connection: Connection) => void;
@@ -21,6 +22,7 @@ export default function SetupView({
 	startGame: () => void;
 	gameUrl: string;
 	hasDisplay: boolean;
+	userPermissions: Permission[];
 }): React.ReactNode {
 	if (!sessionId) {
 		return (
@@ -38,6 +40,7 @@ export default function SetupView({
 					unregisterConnection={unregisterConnection}
 					sessionId={sessionId}
 					hasDisplay={hasDisplay}
+					userPermissions={userPermissions}
 				/>
 				{role === 'host' && (
 					<>

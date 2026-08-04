@@ -28,6 +28,8 @@ const permissions = {
 		read: ['*'],
 		create: ['BASIC', 'ADMIN'],
 		update: ['BASIC', 'ADMIN'],
+		register: ['*'],
+		unregister: ['*'],
 	},
 	profile: {
 		read: ['ADMIN', 'BASIC'],
