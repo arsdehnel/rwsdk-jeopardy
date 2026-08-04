@@ -91,6 +91,31 @@ function FieldError({
 	);
 }
 
+export function RadioGroupInput({
+	label,
+	required = false,
+	options,
+}: {
+	label: string;
+	required?: boolean;
+	options: Array<{ value: string; label: string }>;
+}): React.ReactNode {
+	const field = useFieldContext<string>();
+	return (
+		<FieldComponent label={label} required={required} name={field.name} meta={field.state.meta} controlGroup>
+			<KADFormInput.KADRadioGroup
+				label={label}
+				options={options}
+				value={field.state.value}
+				onChange={(value: string) => {
+					field.handleChange(value);
+					field.handleBlur();
+				}}
+			/>
+		</FieldComponent>
+	);
+}
+
 export function CheckboxGroupInput({
 	label,
 	required = false,
