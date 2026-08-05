@@ -1,5 +1,6 @@
 'use client';
 import classnames from 'classnames';
+import locales from '@/locales';
 
 export default function Buzzer({
 	buzzIn,
@@ -13,13 +14,13 @@ export default function Buzzer({
 	const someoneHasBuzzedIn = buzzerQueue.length > 0;
 	const buzzerPosition = buzzerQueue.indexOf(sessionId);
 	const currentHasBuzzedIn = buzzerQueue.includes(sessionId);
-	let buzzerText = 'Buzz In';
+	let buzzerText = locales.buzzerText.initial;
 	if (someoneHasBuzzedIn && !currentHasBuzzedIn) {
-		buzzerText = 'Get in line';
+		buzzerText = locales.buzzerText.inQueue;
 	} else if (buzzerPosition === 0) {
-		buzzerText = 'Your turn to answer';
+		buzzerText = locales.buzzerText.yourTurn;
 	} else if (buzzerPosition > 0) {
-		buzzerText = `Your are in position ${buzzerPosition + 1} in the queue`;
+		buzzerText = locales.buzzerText.inQueue;
 	}
 
 	return (
