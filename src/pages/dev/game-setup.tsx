@@ -8,5 +8,13 @@ export default function Pages__Dev__Game_Setup({ ctx, request }: RequestInfo): R
 	const gameUrl = new URL(`/games/${gameId}/play`, request.url).href;
 	const categories: CategoryInGame[] = [];
 
-	return <GameClient gameUrl={gameUrl} sessionId={sessionId} categories={categories} userPermissions={['games:register']} />;
+	return (
+		<GameClient
+			gameUrl={gameUrl}
+			gameId={gameId}
+			sessionId={sessionId}
+			categories={categories}
+			userPermissions={['games:register']}
+		/>
+	);
 }
