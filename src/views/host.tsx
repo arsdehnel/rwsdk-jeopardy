@@ -76,7 +76,7 @@ export default function HostView({
 							abortClue();
 						}}
 					>
-						⚠️ Oops, something went wrong, go back to the board
+						⚠️ Click this if something went wrong and you need to go back to the board
 					</button>
 				</div>
 			</section>
