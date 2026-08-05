@@ -9,16 +9,17 @@ import SetupView from '@/views/setup';
 
 export default function GameClient({
 	gameUrl,
+	gameId,
 	sessionId,
 	categories,
 	userPermissions,
 }: {
 	gameUrl: string;
+	gameId: string;
 	sessionId: string;
 	categories: CategoryInGame[]; // Replace 'any[]' with the correct type for categories
 	userPermissions: Permission[];
 }): React.ReactNode {
-	console.log(userPermissions);
 	const {
 		connections,
 		role,
@@ -40,7 +41,7 @@ export default function GameClient({
 		selectClue,
 		buzzIn,
 		expireClue,
-	} = useGameState(sessionId);
+	} = useGameState(sessionId, gameId);
 
 	if (gamePhase === 'SETUP') {
 		return (

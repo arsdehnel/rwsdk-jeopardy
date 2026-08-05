@@ -28,16 +28,17 @@ export type GameState = {
 	scores: Record<string, number>;
 };
 
-export default function useGameState(sessionId: string = ''): GameState {
+export default function useGameState(sessionId: string, gameId: string): GameState {
 	const [connections, setConnections] = useSyncedState<Connections>(
 		{ host: undefined, display: undefined, contestants: [] },
 		'connections',
+		gameId,
 	);
-	const [selectedClue, setSelectedClue] = useSyncedState<ClueInGame | null>(null, 'selectedClue');
-	const [gamePhase, setGamePhase] = useSyncedState<GamePhaseEnum>('SETUP', 'gamePhase');
-	const [buzzerQueue, setBuzzerQueue] = useSyncedState<string[]>([], 'buzzerQueue');
-	const [usedClueIds, setUsedClueIds] = useSyncedState<string[]>([], 'usedClueIds');
-	const [scores, setScores] = useSyncedState<Record<string, number>>({}, 'scores');
+	const [selectedClue, setSelectedClue] = useSyncedState<ClueInGame | null>(null, 'selectedClue', gameId);
+	const [gamePhase, setGamePhase] = useSyncedState<GamePhaseEnum>('SETUP', 'gamePhase', gameId);
+	const [buzzerQueue, setBuzzerQueue] = useSyncedState<string[]>([], 'buzzerQueue', gameId);
+	const [usedClueIds, setUsedClueIds] = useSyncedState<string[]>([], 'usedClueIds', gameId);
+	const [scores, setScores] = useSyncedState<Record<string, number>>({}, 'scores', gameId);
 
 	const registerConnection = (connection: Connection): void => {
 		setConnections(helpers.registerConnection(connections, connection));

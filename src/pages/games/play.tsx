@@ -28,7 +28,13 @@ export default async function Pages__Games__Play({ params, ctx, request }: Reque
 
 		return (
 			<SetupLayout pageTitle={`Play Game ${game.id}`} ctx={ctx} currentBasePage="games">
-				<GameClient gameUrl={gameUrl} sessionId={sessionId} categories={categories} userPermissions={ctx.permissions} />
+				<GameClient
+					gameUrl={gameUrl}
+					gameId={gameId}
+					sessionId={sessionId}
+					categories={categories}
+					userPermissions={ctx.permissions}
+				/>
 			</SetupLayout>
 		);
 	} catch (err) {
