@@ -55,10 +55,21 @@ export default function SetupView({
 					</>
 				)}
 				{role === 'display' && (
-					<div className="qr-code">
-						<QRCodeSVG value={gameUrl} size={300} />
-					</div>
+					<>
+						<div className="qr-code">
+							<QRCodeSVG value={gameUrl} size={300} />
+						</div>
+						<div className="contestant-list">
+							<h3>Contestants</h3>
+							<ul>
+								{connections.contestants.map(contestant => (
+									<li key={contestant.id}>{contestant.name}</li>
+								))}
+							</ul>
+						</div>
+					</>
 				)}
+				{role === 'contestant' && <div className="contestant-list"></div>}
 			</div>
 		</div>
 	);
