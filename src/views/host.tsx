@@ -66,9 +66,12 @@ export default function HostView({
 							</button>
 						</>
 					)}
-					<button type="submit" onClick={(): void => expireClue()}>
-						❌ Nobody got it, expire clue
-					</button>
+					{selectedClue && (
+						<button type="submit" onClick={(): void => expireClue()}>
+							❌ Nobody got it, expire clue
+						</button>
+					)}
+
 					<button
 						type="button"
 						className="clue-overlay-button"
