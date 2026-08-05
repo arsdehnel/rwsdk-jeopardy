@@ -1,5 +1,7 @@
 'use client';
+import { useEffect } from 'react';
 import useGameState from '@/hooks/use-game-state';
+import { gamePhaseEnum } from '@/models';
 import type { CategoryInGame, Permission } from '@/types';
 import ContestantView from '@/views/contestant';
 import DisplayView from '@/views/display';
@@ -42,6 +44,16 @@ export default function GameClient({
 		buzzIn,
 		expireClue,
 	} = useGameState(sessionId, gameId);
+
+	useEffect(() => {
+		gamePhaseEnum.forEach((phase: string) => {
+			if (phase !== gamePhase) {
+				document.querySelector('body')?.classList.remove(`game-phase-${phase.toLowerCase()}`);
+			} else {
+				document.querySelector('body')?.classList.add(`game-phase-${phase.toLowerCase()}`);
+			}
+		});
+	}, [gamePhase]);
 
 	if (gamePhase === 'SETUP') {
 		return (
