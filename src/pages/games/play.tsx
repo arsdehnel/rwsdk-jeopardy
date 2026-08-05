@@ -20,7 +20,8 @@ export default async function Pages__Games__Play({ params, ctx, request }: Reque
 			return <p>Game not found</p>;
 		}
 		const currentStage = game.stages.find(stage => stage.stage === game.currentStage);
-		const categoryIds = currentStage?.categories.sort((a, b) => a.position - b.position).map(category => category.id) || [];
+		const categoryIds =
+			currentStage?.categories.sort((a, b) => a.position - b.position).map(gmStgCtgry => gmStgCtgry.categoryId) || [];
 		const categories = await getCategoriesForGameStage(categoryIds, game.currentStage, ctx.logger);
 
 		const gameUrl = new URL(`/games/${gameId}/play`, request.url).href;
