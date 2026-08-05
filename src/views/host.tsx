@@ -64,11 +64,11 @@ export default function HostView({
 							<button type="submit" onClick={(): void => resetBuzzers()}>
 								⚠️ Something went wrong, reset buzzers
 							</button>
-							<button type="submit" onClick={(): void => expireClue()}>
-								⚠️ Nobody got it, expire clue
-							</button>
 						</>
 					)}
+					<button type="submit" onClick={(): void => expireClue()}>
+						❌ Nobody got it, expire clue
+					</button>
 					<button
 						type="button"
 						className="clue-overlay-button"
