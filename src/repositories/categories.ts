@@ -27,13 +27,13 @@ export async function getCategoriesForGameStage(
 	let clueMultiplier: number = 0;
 	switch (gameStage) {
 		case 'SINGLE':
-			clueMultiplier = 1;
+			clueMultiplier = 100;
 			break;
 		case 'DOUBLE':
-			clueMultiplier = 2;
+			clueMultiplier = 200;
 			break;
 		case 'TRIPLE':
-			clueMultiplier = 3;
+			clueMultiplier = 300;
 			break;
 		default:
 			throw new KADRepositoryError(KADRepositoryErrorTypes.SingleInstanceError, [`Invalid game stage: ${gameStage}`]);
