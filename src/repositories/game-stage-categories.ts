@@ -133,19 +133,18 @@ export async function saveGameStageCategories(
 
 	// Phase 2: apply final positions to existing categories and insert new ones.
 	// All existing categories are now at negative positions, so no constraint conflicts can occur.
-	const phase2UpdatesStatements = gscsToUpdate.map(gmStgCtgry => {
-		const position = categoryIds.indexOf(gmStgCtgry.categoryId);
-		return db
+	const phase2UpdatesStatements = gscsToUpdate.map(gmStgCtgry =>
+		db
 			.update(gameStageCategories)
 			.set({
-				position: position >= 0 ? position : gmStgCtgry.position,
+				position: categoryIds.indexOf(gmStgCtgry.categoryId),
 				categoryId: gmStgCtgry.categoryId,
 				updatedAt: sql`(datetime('now', 'localtime'))`,
 				updatedBy: userId,
 			})
 			.where(eq(gameStageCategories.id, gmStgCtgry.id))
-			.returning();
-	}) as BatchItem<'sqlite'>[];
+			.returning(),
+	) as BatchItem<'sqlite'>[];
 
 	const phase2InsertsStatements = categoryIds
 		.filter(categoryId => !gscsToUpdate.some(category => category.categoryId === categoryId))
