@@ -1,0 +1,1436 @@
+{
+	"version": "7",
+	"dialect": "sqlite",
+	"id": "9ddcbef1-db35-48cc-af6b-e0ba5ccd1a8a",
+	"prevIds": ["dc321391-eb4c-46b7-8055-a5f7b36c25d2"],
+	"ddl": [
+		{
+			"name": "categories",
+			"entityType": "tables"
+		},
+		{
+			"name": "clues",
+			"entityType": "tables"
+		},
+		{
+			"name": "credentials",
+			"entityType": "tables"
+		},
+		{
+			"name": "game_stage_categories",
+			"entityType": "tables"
+		},
+		{
+			"name": "game_stages",
+			"entityType": "tables"
+		},
+		{
+			"name": "games",
+			"entityType": "tables"
+		},
+		{
+			"name": "users",
+			"entityType": "tables"
+		},
+		{
+			"name": "verifications",
+			"entityType": "tables"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "categories"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "name",
+			"entityType": "columns",
+			"table": "categories"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "last_verified_at",
+			"entityType": "columns",
+			"table": "categories"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "(datetime('now', 'localtime'))",
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "categories"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "created_by",
+			"entityType": "columns",
+			"table": "categories"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "categories"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_by",
+			"entityType": "columns",
+			"table": "categories"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_at",
+			"entityType": "columns",
+			"table": "categories"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_by",
+			"entityType": "columns",
+			"table": "categories"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "clues"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "category_id",
+			"entityType": "columns",
+			"table": "clues"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "text",
+			"entityType": "columns",
+			"table": "clues"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "response",
+			"entityType": "columns",
+			"table": "clues"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "last_verified_at",
+			"entityType": "columns",
+			"table": "clues"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "(datetime('now', 'localtime'))",
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "clues"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "created_by",
+			"entityType": "columns",
+			"table": "clues"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "clues"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_by",
+			"entityType": "columns",
+			"table": "clues"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_at",
+			"entityType": "columns",
+			"table": "clues"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_by",
+			"entityType": "columns",
+			"table": "clues"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "user_id",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "credential_id",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "blob",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "public_key",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "0",
+			"generated": null,
+			"name": "counter",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "name",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "last_used_at",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "(datetime('now', 'localtime'))",
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "created_by",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_by",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_at",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_by",
+			"entityType": "columns",
+			"table": "credentials"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "game_stage_categories"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "game_stage_id",
+			"entityType": "columns",
+			"table": "game_stage_categories"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "category_id",
+			"entityType": "columns",
+			"table": "game_stage_categories"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "position",
+			"entityType": "columns",
+			"table": "game_stage_categories"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "(datetime('now', 'localtime'))",
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "game_stage_categories"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "created_by",
+			"entityType": "columns",
+			"table": "game_stage_categories"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "game_stage_categories"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_by",
+			"entityType": "columns",
+			"table": "game_stage_categories"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_at",
+			"entityType": "columns",
+			"table": "game_stage_categories"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_by",
+			"entityType": "columns",
+			"table": "game_stage_categories"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "game_stages"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "game_id",
+			"entityType": "columns",
+			"table": "game_stages"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "'SINGLE'",
+			"generated": null,
+			"name": "stage",
+			"entityType": "columns",
+			"table": "game_stages"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "(datetime('now', 'localtime'))",
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "game_stages"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "created_by",
+			"entityType": "columns",
+			"table": "game_stages"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "game_stages"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_by",
+			"entityType": "columns",
+			"table": "game_stages"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_at",
+			"entityType": "columns",
+			"table": "game_stages"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_by",
+			"entityType": "columns",
+			"table": "game_stages"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "games"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "owner_id",
+			"entityType": "columns",
+			"table": "games"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "'SETUP'",
+			"generated": null,
+			"name": "phase",
+			"entityType": "columns",
+			"table": "games"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "current_stage",
+			"entityType": "columns",
+			"table": "games"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "(datetime('now', 'localtime'))",
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "games"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "created_by",
+			"entityType": "columns",
+			"table": "games"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "games"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_by",
+			"entityType": "columns",
+			"table": "games"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_at",
+			"entityType": "columns",
+			"table": "games"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_by",
+			"entityType": "columns",
+			"table": "games"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "users"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "username",
+			"entityType": "columns",
+			"table": "users"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "'BASIC'",
+			"generated": null,
+			"name": "role",
+			"entityType": "columns",
+			"table": "users"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "(datetime('now', 'localtime'))",
+			"generated": null,
+			"name": "created_at",
+			"entityType": "columns",
+			"table": "users"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "created_by",
+			"entityType": "columns",
+			"table": "users"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_at",
+			"entityType": "columns",
+			"table": "users"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updated_by",
+			"entityType": "columns",
+			"table": "users"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_at",
+			"entityType": "columns",
+			"table": "users"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deleted_by",
+			"entityType": "columns",
+			"table": "users"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "id",
+			"entityType": "columns",
+			"table": "verifications"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "categoryId",
+			"entityType": "columns",
+			"table": "verifications"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "clueId",
+			"entityType": "columns",
+			"table": "verifications"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "createdAt",
+			"entityType": "columns",
+			"table": "verifications"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "createdBy",
+			"entityType": "columns",
+			"table": "verifications"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updatedAt",
+			"entityType": "columns",
+			"table": "verifications"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "updatedBy",
+			"entityType": "columns",
+			"table": "verifications"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deletedAt",
+			"entityType": "columns",
+			"table": "verifications"
+		},
+		{
+			"type": "text",
+			"notNull": false,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "deletedBy",
+			"entityType": "columns",
+			"table": "verifications"
+		},
+		{
+			"columns": ["created_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_categories_created_by_users_id_fk",
+			"entityType": "fks",
+			"table": "categories"
+		},
+		{
+			"columns": ["updated_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_categories_updated_by_users_id_fk",
+			"entityType": "fks",
+			"table": "categories"
+		},
+		{
+			"columns": ["deleted_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_categories_deleted_by_users_id_fk",
+			"entityType": "fks",
+			"table": "categories"
+		},
+		{
+			"columns": ["category_id"],
+			"tableTo": "categories",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_clues_category_id_categories_id_fk",
+			"entityType": "fks",
+			"table": "clues"
+		},
+		{
+			"columns": ["created_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_clues_created_by_users_id_fk",
+			"entityType": "fks",
+			"table": "clues"
+		},
+		{
+			"columns": ["updated_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_clues_updated_by_users_id_fk",
+			"entityType": "fks",
+			"table": "clues"
+		},
+		{
+			"columns": ["deleted_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_clues_deleted_by_users_id_fk",
+			"entityType": "fks",
+			"table": "clues"
+		},
+		{
+			"columns": ["user_id"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "CASCADE",
+			"nameExplicit": false,
+			"name": "fk_credentials_user_id_users_id_fk",
+			"entityType": "fks",
+			"table": "credentials"
+		},
+		{
+			"columns": ["created_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_credentials_created_by_users_id_fk",
+			"entityType": "fks",
+			"table": "credentials"
+		},
+		{
+			"columns": ["updated_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_credentials_updated_by_users_id_fk",
+			"entityType": "fks",
+			"table": "credentials"
+		},
+		{
+			"columns": ["deleted_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_credentials_deleted_by_users_id_fk",
+			"entityType": "fks",
+			"table": "credentials"
+		},
+		{
+			"columns": ["game_stage_id"],
+			"tableTo": "game_stages",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_game_stage_categories_game_stage_id_game_stages_id_fk",
+			"entityType": "fks",
+			"table": "game_stage_categories"
+		},
+		{
+			"columns": ["category_id"],
+			"tableTo": "categories",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_game_stage_categories_category_id_categories_id_fk",
+			"entityType": "fks",
+			"table": "game_stage_categories"
+		},
+		{
+			"columns": ["created_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_game_stage_categories_created_by_users_id_fk",
+			"entityType": "fks",
+			"table": "game_stage_categories"
+		},
+		{
+			"columns": ["updated_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_game_stage_categories_updated_by_users_id_fk",
+			"entityType": "fks",
+			"table": "game_stage_categories"
+		},
+		{
+			"columns": ["deleted_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_game_stage_categories_deleted_by_users_id_fk",
+			"entityType": "fks",
+			"table": "game_stage_categories"
+		},
+		{
+			"columns": ["game_id"],
+			"tableTo": "games",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_game_stages_game_id_games_id_fk",
+			"entityType": "fks",
+			"table": "game_stages"
+		},
+		{
+			"columns": ["created_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_game_stages_created_by_users_id_fk",
+			"entityType": "fks",
+			"table": "game_stages"
+		},
+		{
+			"columns": ["updated_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_game_stages_updated_by_users_id_fk",
+			"entityType": "fks",
+			"table": "game_stages"
+		},
+		{
+			"columns": ["deleted_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_game_stages_deleted_by_users_id_fk",
+			"entityType": "fks",
+			"table": "game_stages"
+		},
+		{
+			"columns": ["owner_id"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_games_owner_id_users_id_fk",
+			"entityType": "fks",
+			"table": "games"
+		},
+		{
+			"columns": ["created_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_games_created_by_users_id_fk",
+			"entityType": "fks",
+			"table": "games"
+		},
+		{
+			"columns": ["updated_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_games_updated_by_users_id_fk",
+			"entityType": "fks",
+			"table": "games"
+		},
+		{
+			"columns": ["deleted_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_games_deleted_by_users_id_fk",
+			"entityType": "fks",
+			"table": "games"
+		},
+		{
+			"columns": ["created_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_users_created_by_users_id_fk",
+			"entityType": "fks",
+			"table": "users"
+		},
+		{
+			"columns": ["updated_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_users_updated_by_users_id_fk",
+			"entityType": "fks",
+			"table": "users"
+		},
+		{
+			"columns": ["deleted_by"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_users_deleted_by_users_id_fk",
+			"entityType": "fks",
+			"table": "users"
+		},
+		{
+			"columns": ["categoryId"],
+			"tableTo": "categories",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "CASCADE",
+			"nameExplicit": false,
+			"name": "fk_verifications_categoryId_categories_id_fk",
+			"entityType": "fks",
+			"table": "verifications"
+		},
+		{
+			"columns": ["clueId"],
+			"tableTo": "clues",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "CASCADE",
+			"nameExplicit": false,
+			"name": "fk_verifications_clueId_clues_id_fk",
+			"entityType": "fks",
+			"table": "verifications"
+		},
+		{
+			"columns": ["createdBy"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_verifications_createdBy_users_id_fk",
+			"entityType": "fks",
+			"table": "verifications"
+		},
+		{
+			"columns": ["updatedBy"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_verifications_updatedBy_users_id_fk",
+			"entityType": "fks",
+			"table": "verifications"
+		},
+		{
+			"columns": ["deletedBy"],
+			"tableTo": "users",
+			"columnsTo": ["id"],
+			"onUpdate": "NO ACTION",
+			"onDelete": "NO ACTION",
+			"nameExplicit": false,
+			"name": "fk_verifications_deletedBy_users_id_fk",
+			"entityType": "fks",
+			"table": "verifications"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "categories_pk",
+			"table": "categories",
+			"entityType": "pks"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "clues_pk",
+			"table": "clues",
+			"entityType": "pks"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "credentials_pk",
+			"table": "credentials",
+			"entityType": "pks"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "game_stage_categories_pk",
+			"table": "game_stage_categories",
+			"entityType": "pks"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "game_stages_pk",
+			"table": "game_stages",
+			"entityType": "pks"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "games_pk",
+			"table": "games",
+			"entityType": "pks"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "users_pk",
+			"table": "users",
+			"entityType": "pks"
+		},
+		{
+			"columns": ["id"],
+			"nameExplicit": false,
+			"name": "verifications_pk",
+			"table": "verifications",
+			"entityType": "pks"
+		},
+		{
+			"columns": [
+				{
+					"value": "name",
+					"isExpression": false
+				}
+			],
+			"isUnique": true,
+			"where": null,
+			"origin": "manual",
+			"name": "categories_name_idx",
+			"entityType": "indexes",
+			"table": "categories"
+		},
+		{
+			"columns": [
+				{
+					"value": "category_id",
+					"isExpression": false
+				}
+			],
+			"isUnique": false,
+			"where": null,
+			"origin": "manual",
+			"name": "clues_category_id_idx",
+			"entityType": "indexes",
+			"table": "clues"
+		},
+		{
+			"columns": [
+				{
+					"value": "user_id",
+					"isExpression": false
+				}
+			],
+			"isUnique": false,
+			"where": null,
+			"origin": "manual",
+			"name": "credentials_user_id_idx",
+			"entityType": "indexes",
+			"table": "credentials"
+		},
+		{
+			"columns": [
+				{
+					"value": "user_id",
+					"isExpression": false
+				},
+				{
+					"value": "credential_id",
+					"isExpression": false
+				}
+			],
+			"isUnique": false,
+			"where": null,
+			"origin": "manual",
+			"name": "credentials_user_credential_idx",
+			"entityType": "indexes",
+			"table": "credentials"
+		},
+		{
+			"columns": [
+				{
+					"value": "game_stage_id",
+					"isExpression": false
+				}
+			],
+			"isUnique": false,
+			"where": null,
+			"origin": "manual",
+			"name": "game_stage_categories_game_stage_id_idx",
+			"entityType": "indexes",
+			"table": "game_stage_categories"
+		},
+		{
+			"columns": [
+				{
+					"value": "game_stage_id",
+					"isExpression": false
+				},
+				{
+					"value": "category_id",
+					"isExpression": false
+				}
+			],
+			"isUnique": true,
+			"where": "\"deleted_at\" IS NULL",
+			"origin": "manual",
+			"name": "game_stage_categories_game_stage_id_category_id_idx",
+			"entityType": "indexes",
+			"table": "game_stage_categories"
+		},
+		{
+			"columns": [
+				{
+					"value": "game_stage_id",
+					"isExpression": false
+				},
+				{
+					"value": "position",
+					"isExpression": false
+				}
+			],
+			"isUnique": true,
+			"where": "\"deleted_at\" IS NULL",
+			"origin": "manual",
+			"name": "game_stage_categories_game_stage_id_position_idx",
+			"entityType": "indexes",
+			"table": "game_stage_categories"
+		},
+		{
+			"columns": [
+				{
+					"value": "game_id",
+					"isExpression": false
+				}
+			],
+			"isUnique": false,
+			"where": null,
+			"origin": "manual",
+			"name": "game_stages_game_id_idx",
+			"entityType": "indexes",
+			"table": "game_stages"
+		},
+		{
+			"columns": [
+				{
+					"value": "owner_id",
+					"isExpression": false
+				}
+			],
+			"isUnique": false,
+			"where": null,
+			"origin": "manual",
+			"name": "games_owner_id_idx",
+			"entityType": "indexes",
+			"table": "games"
+		},
+		{
+			"columns": [
+				{
+					"value": "username",
+					"isExpression": false
+				}
+			],
+			"isUnique": true,
+			"where": null,
+			"origin": "manual",
+			"name": "users_username_idx",
+			"entityType": "indexes",
+			"table": "users"
+		},
+		{
+			"columns": [
+				{
+					"value": "categoryId",
+					"isExpression": false
+				}
+			],
+			"isUnique": false,
+			"where": null,
+			"origin": "manual",
+			"name": "verifications_category_id_idx",
+			"entityType": "indexes",
+			"table": "verifications"
+		},
+		{
+			"columns": [
+				{
+					"value": "clueId",
+					"isExpression": false
+				}
+			],
+			"isUnique": false,
+			"where": null,
+			"origin": "manual",
+			"name": "verifications_clue_id_idx",
+			"entityType": "indexes",
+			"table": "verifications"
+		},
+		{
+			"columns": ["credential_id"],
+			"nameExplicit": false,
+			"name": "credentials_credential_id_unique",
+			"entityType": "uniques",
+			"table": "credentials"
+		}
+	],
+	"renames": []
+}

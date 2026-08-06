@@ -114,6 +114,15 @@ describe('createCredential', () => {
 		await expect(createCredential(createCredentialData(user.id, { credentialId }), user.id, logger)).rejects.toThrow();
 	});
 
+	it('throws when actingUserId is not a valid UUID', async () => {
+		const user = await createUser('testuser', null, logger);
+		const credData = createCredentialData(user.id);
+
+		await expect(createCredential(credData, 'not-a-uuid', logger)).rejects.toThrow(
+			'The value "not-a-uuid" is not a valid ID for a Acting User ID',
+		);
+	});
+
 	it('leaves credentials intact when user is soft deleted', async () => {
 		const user = await createUser('tobedeleted', null, logger);
 		await createCredential(createCredentialData(user.id), user.id, logger);
