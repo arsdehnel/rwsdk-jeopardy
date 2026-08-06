@@ -1,4 +1,4 @@
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { games } from '@/models';
@@ -80,6 +80,26 @@ export async function getGameById(gameId: string, logger: KADLogger): Promise<Ga
 
 	logger.debug(`Fetched recipe ${gameId}`);
 	return game;
+}
+
+export async function deleteGame(gameId: string, userId: string, logger: KADLogger): Promise<GameDBRead> {
+	if (!validateUuid(gameId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [gameId, 'Game']);
+	}
+
+	logger.debug(`Deleting game ${gameId}`);
+	const deleted = await db
+		.update(games)
+		.set({ deletedAt: sql`(datetime('now', 'localtime'))`, deletedBy: userId })
+		.where(eq(games.id, gameId))
+		.returning();
+
+	if (deleted.length !== 1) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [deleted.length, 1, 'Game']);
+	}
+
+	logger.info(`Deleted game ${gameId}`);
+	return deleted[0];
 }
 
 export async function getGamesByOwnerId(ownerId: string, logger: KADLogger): Promise<GameDBRead[]> {

@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { defineRelations, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import { blob, index, integer, snakeCase, text } from 'drizzle-orm/sqlite-core';
 import { users } from './users';
 
@@ -31,22 +31,3 @@ export const credentials = snakeCase.table(
 		index('credentials_user_credential_idx').on(table.userId, table.credentialId),
 	],
 );
-
-export const credentialsRelations = defineRelations({ credentials, users }, r => ({
-	users: {
-		credentials: r.many.credentials({
-			from: r.users.id,
-			to: r.credentials.userId,
-			where: {
-				deletedAt: { isNull: true },
-			},
-		}),
-	},
-	credentials: {
-		owner: r.one.users({
-			from: r.credentials.userId,
-			to: r.users.id,
-			optional: false,
-		}),
-	},
-}));

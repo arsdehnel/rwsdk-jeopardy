@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { defineRelations, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import { type AnySQLiteColumn, index, snakeCase, text } from 'drizzle-orm/sqlite-core';
 import { gameStageEnum } from './enums';
 import { games } from './games';
@@ -26,22 +26,3 @@ export const gameStages = snakeCase.table(
 	},
 	table => [index('game_stages_game_id_idx').on(table.gameId)],
 );
-
-export const gameStagesRelations = defineRelations({ games, gameStages }, r => ({
-	games: {
-		stages: r.many.gameStages({
-			from: r.games.id,
-			to: r.gameStages.gameId,
-			where: {
-				deletedAt: { isNull: true },
-			},
-		}),
-	},
-	gameStages: {
-		game: r.one.games({
-			from: r.gameStages.gameId,
-			to: r.games.id,
-			optional: false,
-		}),
-	},
-}));

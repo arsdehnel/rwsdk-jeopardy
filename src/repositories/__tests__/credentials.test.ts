@@ -114,6 +114,15 @@ describe('createCredential', () => {
 		await expect(createCredential(createCredentialData(user.id, { credentialId }), user.id, logger)).rejects.toThrow();
 	});
 
+	it('throws when actingUserId is not a valid UUID', async () => {
+		const user = await createUser('testuser', null, logger);
+		const credData = createCredentialData(user.id);
+
+		await expect(createCredential(credData, 'not-a-uuid', logger)).rejects.toThrow(
+			'The value "not-a-uuid" is not a valid ID for a Acting User ID',
+		);
+	});
+
 	it('leaves credentials intact when user is soft deleted', async () => {
 		const user = await createUser('tobedeleted', null, logger);
 		await createCredential(createCredentialData(user.id), user.id, logger);
@@ -300,6 +309,14 @@ describe('deleteCredential', () => {
 		await expect(deleteCredential('not-a-uuid', 'some-user-id', logger)).rejects.toThrow(
 			'The value "not-a-uuid" is not a valid ID for a Credential',
 		);
+	});
+
+	it('makes deleted credential invisible to getCredentialById', async () => {
+		const user = await createUser('testuser', null, logger);
+		const created = await createCredential(createCredentialData(user.id), user.id, logger);
+		await deleteCredential(created.id, user.id, logger);
+
+		await expect(getCredentialById(created.credentialId, logger)).rejects.toThrow('Expected 1 Credential record(s), but found 0');
 	});
 });
 

@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { defineRelations, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import { type AnySQLiteColumn, index, snakeCase, text } from 'drizzle-orm/sqlite-core';
 import { categories } from './categories';
 import { users } from './users';
@@ -15,6 +15,7 @@ export const clues = snakeCase.table(
 			.references((): AnySQLiteColumn => categories.id),
 		text: text().notNull(),
 		response: text().notNull(),
+		lastVerifiedAt: text(),
 		createdAt: text().notNull().default(sql`(datetime('now', 'localtime'))`),
 		createdBy: text()
 			.notNull()
@@ -26,22 +27,3 @@ export const clues = snakeCase.table(
 	},
 	table => [index('clues_category_id_idx').on(table.categoryId)],
 );
-
-export const cluesRelations = defineRelations({ clues, categories }, r => ({
-	categories: {
-		clues: r.many.clues({
-			from: r.categories.id,
-			to: r.clues.categoryId,
-			where: {
-				deletedAt: { isNull: true },
-			},
-		}),
-	},
-	clues: {
-		category: r.one.categories({
-			from: r.clues.categoryId,
-			to: r.categories.id,
-			optional: false,
-		}),
-	},
-}));

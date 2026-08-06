@@ -93,38 +93,38 @@ export async function saveGameStageCategories(
 	logger.debug(`Updating game stage categories for stage ${stageId}`);
 
 	// get existing instructions for the cooking method (must happen before batch so we know what to mutate)
-	const existingCategories = await db
+	const existingGSCs = await db
 		.select()
 		.from(gameStageCategories)
 		.where(and(eq(gameStageCategories.gameStageId, stageId), isNull(gameStageCategories.deletedAt)));
 
-	logger.debug(`Found ${existingCategories.length} existing categories for stage ${stageId}`);
+	logger.debug(`Found ${existingGSCs.length} existing categories for stage ${stageId}`);
 
 	// soft-delete removed categories
-	const removedCategoryIds = existingCategories.map(i => i.id).filter(id => !categoryIds.includes(id));
+	const gscsToRemove = existingGSCs.filter(gmStgCtgry => !categoryIds.includes(gmStgCtgry.categoryId)).map(gsc => gsc.id);
 
-	logger.debug(`Soft-deleting ${removedCategoryIds.length} removed categories for stage ${stageId}`);
+	logger.debug(`Soft-deleting ${gscsToRemove.length} removed categories for stage ${stageId}`);
 
 	// Phase 1: move all existing categories being updated to temporary negative positions.
 	// This clears the positive number space so Phase 2 can assign final values without hitting
 	// the (stageId, position) unique constraint.
-	const existingUpdates = existingCategories.filter(category => categoryIds.includes(category.id));
+	const gscsToUpdate = existingGSCs.filter(gmStgCtgry => categoryIds.includes(gmStgCtgry.categoryId));
 
 	// All mutations are batched into a single D1 batch call (D1 does not support BEGIN transactions).
 	// Statements execute sequentially within the batch, so Phase 1 completes before Phase 2 runs,
 	// preserving the two-phase position swap. The batch result array mirrors statement order,
 	// so we track the counts of each phase to slice out the Phase 2 returning() rows at the end.
-	const deleteCount = removedCategoryIds.length;
-	const phase1Count = existingUpdates.length;
+	const deleteCount = gscsToRemove.length;
+	const phase1Count = gscsToUpdate.length;
 
-	const deleteStatements = removedCategoryIds.map(id =>
+	const deleteStatements = gscsToRemove.map(id =>
 		db
 			.update(gameStageCategories)
 			.set({ deletedAt: sql`(datetime('now', 'localtime'))`, deletedBy: userId })
 			.where(eq(gameStageCategories.id, id)),
 	) as BatchItem<'sqlite'>[];
 
-	const phase1Statements = existingUpdates.map((category, index) =>
+	const phase1Statements = gscsToUpdate.map((category, index) =>
 		db
 			.update(gameStageCategories)
 			.set({ position: -(index + 1) })
@@ -133,29 +133,28 @@ export async function saveGameStageCategories(
 
 	// Phase 2: apply final positions to existing categories and insert new ones.
 	// All existing categories are now at negative positions, so no constraint conflicts can occur.
-	const phase2UpdatesStatements = existingUpdates.map(category => {
-		const position = categoryIds.indexOf(category.id);
-		return db
+	const phase2UpdatesStatements = gscsToUpdate.map(gmStgCtgry =>
+		db
 			.update(gameStageCategories)
 			.set({
-				position: position >= 0 ? position : category.position,
-				categoryId: category.categoryId,
+				position: categoryIds.indexOf(gmStgCtgry.categoryId),
+				categoryId: gmStgCtgry.categoryId,
 				updatedAt: sql`(datetime('now', 'localtime'))`,
 				updatedBy: userId,
 			})
-			.where(eq(gameStageCategories.id, category.id))
-			.returning();
-	}) as BatchItem<'sqlite'>[];
+			.where(eq(gameStageCategories.id, gmStgCtgry.id))
+			.returning(),
+	) as BatchItem<'sqlite'>[];
 
 	const phase2InsertsStatements = categoryIds
-		.filter(categoryId => !existingUpdates.some(category => category.categoryId === categoryId))
-		.map((categoryId, index) =>
+		.filter(categoryId => !gscsToUpdate.some(category => category.categoryId === categoryId))
+		.map(categoryId =>
 			db
 				.insert(gameStageCategories)
 				.values({
 					gameStageId: stageId,
 					categoryId,
-					position: index,
+					position: categoryIds.indexOf(categoryId),
 					createdBy: userId,
 				})
 				.returning(),

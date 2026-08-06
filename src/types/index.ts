@@ -17,3 +17,4 @@ export * from './permissions';
 export * from './role';
 export * from './sessions';
 export * from './users';
+export * from './verifications';

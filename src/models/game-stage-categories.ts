@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { defineRelations, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import { type AnySQLiteColumn, index, int, snakeCase, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 import { categories } from './categories';
 import { gameStages } from './game-stages';
@@ -37,22 +37,3 @@ export const gameStageCategories = snakeCase.table(
 			.where(sql`"deleted_at" IS NULL`),
 	],
 );
-
-export const gameStageCategoriesRelations = defineRelations({ gameStages, gameStageCategories }, r => ({
-	gameStages: {
-		categories: r.many.gameStageCategories({
-			from: r.gameStages.id,
-			to: r.gameStageCategories.gameStageId,
-			where: {
-				deletedAt: { isNull: true },
-			},
-		}),
-	},
-	gameStageCategories: {
-		stage: r.one.gameStages({
-			from: r.gameStageCategories.gameStageId,
-			to: r.gameStages.id,
-			optional: false,
-		}),
-	},
-}));

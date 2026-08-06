@@ -1,8 +1,10 @@
-import { isNull } from 'drizzle-orm/sql/expressions/conditions';
+import { eq, isNull } from 'drizzle-orm/sql/expressions/conditions';
+import { sql } from 'drizzle-orm/sql/sql';
 import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
-import { categories } from '@/models';
-import type { CategoryDBRead, CategoryInGame, CategoryRepoInput, GameStageEnum, KADLogger } from '@/types';
+import { categories, verifications } from '@/models';
+import type { CategoryDBRead, CategoryInGame, CategoryRepoInput, GameStageEnum, KADLogger, VerificationDBRead } from '@/types';
+import { validateUuid } from './utils';
 
 export async function getCategoriesForGameStage(
 	gameStageCategoryIds: string[],
@@ -74,4 +76,60 @@ export async function createCategory(category: CategoryRepoInput, userId: string
 	}
 
 	return createdCategories[0];
+}
+
+export async function deleteCategory(categoryId: string, userId: string, logger: KADLogger): Promise<CategoryDBRead> {
+	if (!validateUuid(categoryId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [categoryId, 'Category']);
+	}
+
+	logger.debug(`Deleting category ${categoryId}`);
+	const deleted = await db
+		.update(categories)
+		.set({ deletedAt: sql`(datetime('now', 'localtime'))`, deletedBy: userId })
+		.where(eq(categories.id, categoryId))
+		.returning();
+
+	if (deleted.length !== 1) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [deleted.length, 1, 'Category']);
+	}
+
+	logger.info(`Deleted category ${categoryId}`);
+	return deleted[0];
+}
+
+export async function verifyCategory(
+	categoryId: string,
+	userId: string,
+	logger: KADLogger,
+): Promise<{ category: CategoryDBRead; verification: VerificationDBRead }> {
+	if (!validateUuid(categoryId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [categoryId, 'Category']);
+	}
+	logger.debug(`Verifying category ${categoryId}`);
+
+	const [verificationRecord] = await db
+		.insert(verifications)
+		.values({
+			categoryId,
+			createdBy: userId,
+		})
+		.returning();
+
+	const [updatedCategory] = await db
+		.update(categories)
+		.set({
+			lastVerifiedAt: verificationRecord.createdAt,
+			updatedAt: verificationRecord.createdAt,
+			updatedBy: userId,
+		})
+		.where(eq(categories.id, categoryId))
+		.returning();
+
+	logger.info(`Marked category ${categoryId} as verified`);
+
+	return {
+		category: updatedCategory,
+		verification: verificationRecord,
+	};
 }
