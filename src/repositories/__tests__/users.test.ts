@@ -213,6 +213,13 @@ describe('deleteUser', () => {
 	it('throws when id is not a valid uuid', async () => {
 		await expect(deleteUser('not-a-uuid', null, logger)).rejects.toThrow('The value "not-a-uuid" is not a valid ID for a User');
 	});
+
+	it('makes deleted user invisible to getUserById', async () => {
+		const user = await createUser('tobedeleted', null, logger);
+		await deleteUser(user.id, null, logger);
+
+		await expect(getUserById(user.id, logger)).rejects.toThrow('Expected 1 User record(s), but found 0');
+	});
 });
 
 describe('updateUser', () => {

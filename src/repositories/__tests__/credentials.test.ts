@@ -310,6 +310,14 @@ describe('deleteCredential', () => {
 			'The value "not-a-uuid" is not a valid ID for a Credential',
 		);
 	});
+
+	it('makes deleted credential invisible to getCredentialById', async () => {
+		const user = await createUser('testuser', null, logger);
+		const created = await createCredential(createCredentialData(user.id), user.id, logger);
+		await deleteCredential(created.id, user.id, logger);
+
+		await expect(getCredentialById(created.credentialId, logger)).rejects.toThrow('Expected 1 Credential record(s), but found 0');
+	});
 });
 
 describe('updateCredentialCounter', () => {

@@ -1,4 +1,5 @@
 import { eq, isNull } from 'drizzle-orm/sql/expressions/conditions';
+import { sql } from 'drizzle-orm/sql/sql';
 import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { categories, verifications } from '@/models';
@@ -75,6 +76,26 @@ export async function createCategory(category: CategoryRepoInput, userId: string
 	}
 
 	return createdCategories[0];
+}
+
+export async function deleteCategory(categoryId: string, userId: string, logger: KADLogger): Promise<CategoryDBRead> {
+	if (!validateUuid(categoryId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [categoryId, 'Category']);
+	}
+
+	logger.debug(`Deleting category ${categoryId}`);
+	const deleted = await db
+		.update(categories)
+		.set({ deletedAt: sql`(datetime('now', 'localtime'))`, deletedBy: userId })
+		.where(eq(categories.id, categoryId))
+		.returning();
+
+	if (deleted.length !== 1) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [deleted.length, 1, 'Category']);
+	}
+
+	logger.info(`Deleted category ${categoryId}`);
+	return deleted[0];
 }
 
 export async function verifyCategory(

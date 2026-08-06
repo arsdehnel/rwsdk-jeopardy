@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createNoopLogger } from '@/logger';
 import { resetDb } from '../../../tests/mocks/db';
-import { createCategory, getCategories, getCategoriesForGameStage, verifyCategory } from '../categories';
-import { createClue } from '../clues';
+import { createCategory, deleteCategory, getCategories, getCategoriesForGameStage, verifyCategory } from '../categories';
+import { createClue, deleteClue } from '../clues';
 import { createUser } from '../users';
 
 const logger = createNoopLogger();
@@ -181,5 +181,95 @@ describe('getCategoriesForGameStage', () => {
 	it('returns empty array when given an empty ID list', async () => {
 		const result = await getCategoriesForGameStage([], 'SINGLE', logger);
 		expect(result).toEqual([]);
+	});
+
+	it('returns all matching categories when multiple IDs are passed', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat1 = await createCategory({ name: 'Multi1' }, user.id, logger);
+		const cat2 = await createCategory({ name: 'Multi2' }, user.id, logger);
+		const cat3 = await createCategory({ name: 'Multi3' }, user.id, logger);
+
+		const result = await getCategoriesForGameStage([cat1.id, cat2.id, cat3.id], 'SINGLE', logger);
+
+		const ids = result.map(r => r.id);
+		expect(ids).toContain(cat1.id);
+		expect(ids).toContain(cat2.id);
+		expect(ids).toContain(cat3.id);
+	});
+
+	it('excludes soft-deleted categories', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat1 = await createCategory({ name: 'Active' }, user.id, logger);
+		const cat2 = await createCategory({ name: 'Deleted' }, user.id, logger);
+		await deleteCategory(cat2.id, user.id, logger);
+
+		const result = await getCategoriesForGameStage([cat1.id, cat2.id], 'SINGLE', logger);
+
+		const ids = result.map(r => r.id);
+		expect(ids).toContain(cat1.id);
+		expect(ids).not.toContain(cat2.id);
+	});
+
+	it('excludes soft-deleted clues within a category', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'WithClues' }, user.id, logger);
+		await createClue({ categoryId: cat.id, text: 'Keep this', response: 'Kept' }, user.id, logger);
+		const deletedClue = await createClue({ categoryId: cat.id, text: 'Delete this', response: 'Gone' }, user.id, logger);
+		await deleteClue(deletedClue.id, user.id, logger);
+
+		const result = await getCategoriesForGameStage([cat.id], 'SINGLE', logger);
+
+		expect(result[0].clues).toHaveLength(1);
+		expect(result[0].clues[0].text).toBe('Keep this');
+	});
+});
+
+describe('deleteCategory', () => {
+	it('throws when categoryId is not a valid UUID', async () => {
+		const user = await createUser('testuser', null, logger);
+
+		await expect(deleteCategory('not-a-uuid', user.id, logger)).rejects.toThrow(
+			'The value "not-a-uuid" is not a valid ID for a Category',
+		);
+	});
+
+	it('throws when category does not exist', async () => {
+		const user = await createUser('testuser', null, logger);
+
+		await expect(deleteCategory(crypto.randomUUID(), user.id, logger)).rejects.toThrow(
+			'Expected 1 Category record(s), but found 0',
+		);
+	});
+
+	it('soft-deletes category and returns it with deletedAt and deletedBy set', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'ToDelete' }, user.id, logger);
+
+		const deleted = await deleteCategory(cat.id, user.id, logger);
+
+		expect(deleted.id).toBe(cat.id);
+		expect(deleted.deletedAt).not.toBeNull();
+		expect(deleted.deletedBy).toBe(user.id);
+	});
+
+	it('excludes deleted category from getCategories', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'GoneCategory' }, user.id, logger);
+		await deleteCategory(cat.id, user.id, logger);
+
+		const result = await getCategories(logger);
+
+		expect(result.map(c => c.id)).not.toContain(cat.id);
+	});
+
+	it('does not affect other categories', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat1 = await createCategory({ name: 'DeleteMe' }, user.id, logger);
+		const cat2 = await createCategory({ name: 'KeepMe' }, user.id, logger);
+		await deleteCategory(cat1.id, user.id, logger);
+
+		const result = await getCategories(logger);
+
+		expect(result.map(c => c.id)).toContain(cat2.id);
 	});
 });

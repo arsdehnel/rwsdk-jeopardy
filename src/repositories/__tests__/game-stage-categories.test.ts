@@ -50,7 +50,7 @@ describe('createGameStageCategory', () => {
 
 describe('updateGameStageCategory', () => {
 	it('throws when gameStageCategoryId is not a valid UUID', async () => {
-		const { user, stage } = await setupStage();
+		const { user } = await setupStage();
 		const cat = await createCategory({ name: 'History' }, user.id, logger);
 
 		await expect(updateGameStageCategory('not-a-uuid', { categoryId: cat.id, position: 1 }, user.id, logger)).rejects.toThrow(
@@ -198,7 +198,9 @@ describe('saveGameStageCategories', () => {
 
 		await saveGameStageCategories(stage.id, [cat1.id, cat2.id], user.id, logger);
 		const before = await getGameStageCategories(stage.id, logger);
-		const cat1JunctionId = before.find(r => r.categoryId === cat1.id)!.id;
+		const cat1Record = before.find(r => r.categoryId === cat1.id);
+		if (!cat1Record) throw new Error('Expected cat1 junction record after first save');
+		const cat1JunctionId = cat1Record.id;
 
 		// Re-save with cat1 still present (cat2 dropped)
 		await saveGameStageCategories(stage.id, [cat1.id], user.id, logger);
@@ -297,5 +299,26 @@ describe('saveGameStageCategories', () => {
 		const byCategory = Object.fromEntries(after.map(r => [r.categoryId, r.position]));
 		expect(byCategory[cat1.id]).toBe(0);
 		expect(byCategory[cat2.id]).toBe(1);
+	});
+
+	it('creates a new junction row when re-adding a previously removed category', async () => {
+		const { user, stage } = await setupStage();
+		const cat = await createCategory({ name: 'Returning' }, user.id, logger);
+
+		await saveGameStageCategories(stage.id, [cat.id], user.id, logger);
+		const firstSave = await getGameStageCategories(stage.id, logger);
+		const originalJunctionId = firstSave[0].id;
+
+		// Remove the category
+		await saveGameStageCategories(stage.id, [], user.id, logger);
+
+		// Re-add it
+		await saveGameStageCategories(stage.id, [cat.id], user.id, logger);
+		const thirdSave = await getGameStageCategories(stage.id, logger);
+
+		expect(thirdSave).toHaveLength(1);
+		expect(thirdSave[0].categoryId).toBe(cat.id);
+		// A new junction row is created — the soft-deleted one is not resurrected
+		expect(thirdSave[0].id).not.toBe(originalJunctionId);
 	});
 });

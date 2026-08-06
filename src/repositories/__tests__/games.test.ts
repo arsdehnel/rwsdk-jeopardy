@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createNoopLogger } from '@/logger';
 import { resetDb } from '../../../tests/mocks/db';
-import { createGame, getGameById, getGamesByOwnerId, updateGame } from '../games';
+import { createGame, deleteGame, getGameById, getGamesByOwnerId, updateGame } from '../games';
 import { createUser } from '../users';
 
 const logger = createNoopLogger();
@@ -104,5 +104,62 @@ describe('getGamesByOwnerId', () => {
 		const result = await getGamesByOwnerId(user2.id, logger);
 
 		expect(result).toEqual([]);
+	});
+
+	it('excludes soft-deleted games', async () => {
+		const user = await createUser('testuser', null, logger);
+		const game = await createGame({ ownerId: user.id, currentStage: 'SINGLE' }, user.id, logger);
+		await deleteGame(game.id, user.id, logger);
+
+		const result = await getGamesByOwnerId(user.id, logger);
+
+		expect(result.map(g => g.id)).not.toContain(game.id);
+	});
+});
+
+describe('deleteGame', () => {
+	it('throws when gameId is not a valid UUID', async () => {
+		const user = await createUser('testuser', null, logger);
+
+		await expect(deleteGame('not-a-uuid', user.id, logger)).rejects.toThrow(
+			'The value "not-a-uuid" is not a valid ID for a Game',
+		);
+	});
+
+	it('throws when game does not exist', async () => {
+		const user = await createUser('testuser', null, logger);
+
+		await expect(deleteGame(crypto.randomUUID(), user.id, logger)).rejects.toThrow('Expected 1 Game record(s), but found 0');
+	});
+
+	it('soft-deletes game and returns it with deletedAt and deletedBy set', async () => {
+		const user = await createUser('testuser', null, logger);
+		const game = await createGame({ ownerId: user.id, currentStage: 'SINGLE' }, user.id, logger);
+
+		const deleted = await deleteGame(game.id, user.id, logger);
+
+		expect(deleted.id).toBe(game.id);
+		expect(deleted.deletedAt).not.toBeNull();
+		expect(deleted.deletedBy).toBe(user.id);
+	});
+
+	it('excluded from getGameById after deletion', async () => {
+		const user = await createUser('testuser', null, logger);
+		const game = await createGame({ ownerId: user.id, currentStage: 'SINGLE' }, user.id, logger);
+		await deleteGame(game.id, user.id, logger);
+
+		await expect(getGameById(game.id, logger)).rejects.toThrow('Expected 1 Game record(s), but found 0');
+	});
+
+	it('does not affect other games', async () => {
+		const user = await createUser('testuser', null, logger);
+		const game1 = await createGame({ ownerId: user.id, currentStage: 'SINGLE' }, user.id, logger);
+		const game2 = await createGame({ ownerId: user.id, currentStage: 'DOUBLE' }, user.id, logger);
+		await deleteGame(game1.id, user.id, logger);
+
+		const result = await getGamesByOwnerId(user.id, logger);
+
+		expect(result.map(g => g.id)).toContain(game2.id);
+		expect(result.map(g => g.id)).not.toContain(game1.id);
 	});
 });

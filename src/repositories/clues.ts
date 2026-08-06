@@ -1,4 +1,5 @@
 import { eq } from 'drizzle-orm/sql/expressions/conditions';
+import { sql } from 'drizzle-orm/sql/sql';
 import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { clues, verifications } from '@/models';
@@ -21,6 +22,26 @@ export async function createClue(clue: ClueRepoInput, userId: string, logger: KA
 	}
 
 	return createdClues[0];
+}
+
+export async function deleteClue(clueId: string, userId: string, logger: KADLogger): Promise<ClueDBRead> {
+	if (!validateUuid(clueId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [clueId, 'Clue']);
+	}
+
+	logger.debug(`Deleting clue ${clueId}`);
+	const deleted = await db
+		.update(clues)
+		.set({ deletedAt: sql`(datetime('now', 'localtime'))`, deletedBy: userId })
+		.where(eq(clues.id, clueId))
+		.returning();
+
+	if (deleted.length !== 1) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [deleted.length, 1, 'Clue']);
+	}
+
+	logger.info(`Deleted clue ${clueId}`);
+	return deleted[0];
 }
 
 export async function verifyClue(
