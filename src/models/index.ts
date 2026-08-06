@@ -1,3 +1,5 @@
+import _relations from './_relations';
+
 export * from './categories';
 export * from './clues';
 export * from './credentials';
@@ -6,10 +8,6 @@ export * from './game-stage-categories';
 export * from './game-stages';
 export * from './games';
 export * from './users';
+export * from './verifications';
 
-import { cluesRelations } from './clues';
-import { credentialsRelations } from './credentials';
-import { gameStageCategoriesRelations } from './game-stage-categories';
-import { gameStagesRelations } from './game-stages';
-
-export const relations = { ...credentialsRelations, ...cluesRelations, ...gameStagesRelations, ...gameStageCategoriesRelations };
+export { _relations };

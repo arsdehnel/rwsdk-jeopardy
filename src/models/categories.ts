@@ -10,6 +10,7 @@ export const categories = snakeCase.table(
 			.primaryKey()
 			.$defaultFn(() => crypto.randomUUID()),
 		name: text().notNull().unique(),
+		lastVerifiedAt: text(),
 		createdAt: text().notNull().default(sql`(datetime('now', 'localtime'))`),
 		createdBy: text()
 			.notNull()
