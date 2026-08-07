@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createNoopLogger } from '@/logger';
 import { resetDb } from '../../../tests/mocks/db';
 import { createCategory } from '../categories';
-import { createClue, deleteClue, getClueById, getCluesByCategoryId, verifyClue } from '../clues';
+import { createClue, deleteClue, getClueById, getCluesByCategoryId, updateClue, verifyClue } from '../clues';
 import { createUser } from '../users';
 
 const logger = createNoopLogger();
@@ -187,6 +187,66 @@ describe('getClueById', () => {
 
 		expect(result.id).toBe(target.id);
 		expect(result.text).toBe('Target');
+	});
+});
+
+describe('updateClue', () => {
+	it('throws when clueId is not a valid UUID', async () => {
+		const user = await createUser('testuser', null, logger);
+
+		await expect(
+			updateClue('not-a-uuid', { categoryId: crypto.randomUUID(), text: 'Q', response: 'A' }, user.id, logger),
+		).rejects.toThrow('The value "not-a-uuid" is not a valid ID for a Clue');
+	});
+
+	it('throws when clue does not exist', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Science' }, user.id, logger);
+
+		await expect(
+			updateClue(crypto.randomUUID(), { categoryId: cat.id, text: 'Q', response: 'A' }, user.id, logger),
+		).rejects.toThrow('Expected 1 Clue record(s), but found 0');
+	});
+
+	it('updates text and response and returns the updated clue', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Science' }, user.id, logger);
+		const clue = await createClue({ categoryId: cat.id, text: 'Old text', response: 'Old response' }, user.id, logger);
+
+		const updated = await updateClue(
+			clue.id,
+			{ categoryId: cat.id, text: 'New text', response: 'New response' },
+			user.id,
+			logger,
+		);
+
+		expect(updated.id).toBe(clue.id);
+		expect(updated.text).toBe('New text');
+		expect(updated.response).toBe('New response');
+	});
+
+	it('sets updatedBy to the userId', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Science' }, user.id, logger);
+		const clue = await createClue({ categoryId: cat.id, text: 'Q', response: 'A' }, user.id, logger);
+
+		const updated = await updateClue(clue.id, { categoryId: cat.id, text: 'Q2', response: 'A2' }, user.id, logger);
+
+		expect(updated.updatedBy).toBe(user.id);
+		expect(updated.updatedAt).not.toBeNull();
+	});
+
+	it('does not affect sibling clues in the same category', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'History' }, user.id, logger);
+		const clue1 = await createClue({ categoryId: cat.id, text: 'Q1', response: 'A1' }, user.id, logger);
+		const clue2 = await createClue({ categoryId: cat.id, text: 'Q2', response: 'A2' }, user.id, logger);
+
+		await updateClue(clue1.id, { categoryId: cat.id, text: 'Updated Q1', response: 'Updated A1' }, user.id, logger);
+
+		const unchanged = await getClueById(clue2.id, logger);
+		expect(unchanged.text).toBe('Q2');
+		expect(unchanged.response).toBe('A2');
 	});
 });
 
