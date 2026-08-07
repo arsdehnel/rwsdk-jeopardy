@@ -23,6 +23,10 @@ const permissions = {
 		update: ['ADMIN'],
 		delete: ['ADMIN'],
 		generate: ['BASIC'],
+		admin: ['ADMIN'],
+	},
+	clues: {
+		admin: ['ADMIN'],
 	},
 	games: {
 		read: ['*'],
@@ -33,6 +37,12 @@ const permissions = {
 	},
 	profile: {
 		read: ['ADMIN', 'BASIC'],
+	},
+	verifications: {
+		read: ['ADMIN'],
+		create: ['ADMIN'],
+		update: ['ADMIN'],
+		delete: ['ADMIN'],
 	},
 } as const satisfies Record<string, Record<string, RoleEntry[]>>;
 

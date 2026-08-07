@@ -1,7 +1,14 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createNoopLogger } from '@/logger';
 import { resetDb } from '../../../tests/mocks/db';
-import { createCategory, deleteCategory, getCategories, getCategoriesForGameStage, verifyCategory } from '../categories';
+import {
+	createCategory,
+	deleteCategory,
+	getCategories,
+	getCategoriesForGameStage,
+	getCategoryById,
+	verifyCategory,
+} from '../categories';
 import { createClue, deleteClue } from '../clues';
 import { createUser } from '../users';
 
@@ -271,5 +278,60 @@ describe('deleteCategory', () => {
 		const result = await getCategories(logger);
 
 		expect(result.map(c => c.id)).toContain(cat2.id);
+	});
+});
+
+describe('getCategoryById', () => {
+	it('throws when categoryId is not a valid UUID', async () => {
+		await expect(getCategoryById('not-a-uuid', logger)).rejects.toThrow(
+			'The value "not-a-uuid" is not a valid ID for a Category',
+		);
+	});
+
+	it('throws when category does not exist', async () => {
+		await expect(getCategoryById(crypto.randomUUID(), logger)).rejects.toThrow('Expected 1 Category record(s), but found 0');
+	});
+
+	it('returns category with its verifications', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Science' }, user.id, logger);
+		await verifyCategory(cat.id, user.id, logger);
+
+		const result = await getCategoryById(cat.id, logger);
+
+		expect(result.id).toBe(cat.id);
+		expect(result.name).toBe('Science');
+		expect(result.verifications).toHaveLength(1);
+		expect(result.verifications[0].categoryId).toBe(cat.id);
+	});
+
+	it('returns category with empty verifications array when none exist', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'History' }, user.id, logger);
+
+		const result = await getCategoryById(cat.id, logger);
+
+		expect(result.id).toBe(cat.id);
+		expect(result.verifications).toEqual([]);
+	});
+
+	it('throws when category is soft-deleted', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Gone' }, user.id, logger);
+		await deleteCategory(cat.id, user.id, logger);
+
+		await expect(getCategoryById(cat.id, logger)).rejects.toThrow('Expected 1 Category record(s), but found 0');
+	});
+
+	it('returns correct category when multiple exist', async () => {
+		const user = await createUser('testuser', null, logger);
+		await createCategory({ name: 'Other' }, user.id, logger);
+		const target = await createCategory({ name: 'Target' }, user.id, logger);
+		await createCategory({ name: 'Another' }, user.id, logger);
+
+		const result = await getCategoryById(target.id, logger);
+
+		expect(result.id).toBe(target.id);
+		expect(result.name).toBe('Target');
 	});
 });

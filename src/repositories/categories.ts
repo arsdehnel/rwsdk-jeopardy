@@ -3,7 +3,15 @@ import { sql } from 'drizzle-orm/sql/sql';
 import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { categories, verifications } from '@/models';
-import type { CategoryDBRead, CategoryInGame, CategoryRepoInput, GameStageEnum, KADLogger, VerificationDBRead } from '@/types';
+import type {
+	CategoryDBRead,
+	CategoryInGame,
+	CategoryRepoInput,
+	CategoryWithVerifications,
+	GameStageEnum,
+	KADLogger,
+	VerificationDBRead,
+} from '@/types';
 import { validateUuid } from './utils';
 
 export async function getCategoriesForGameStage(
@@ -58,6 +66,30 @@ export async function getCategoriesForGameStage(
 export async function getCategories(logger: KADLogger): Promise<CategoryDBRead[]> {
 	logger.info(`Fetching categories`);
 	return await db.select().from(categories).where(isNull(categories.deletedAt));
+}
+
+export async function getCategoryById(categoryId: string, logger: KADLogger): Promise<CategoryWithVerifications> {
+	if (!validateUuid(categoryId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [categoryId, 'Category']);
+	}
+
+	logger.debug(`Fetching category ${categoryId}`);
+	const category = await db.query.categories.findFirst({
+		where: {
+			id: { eq: categoryId },
+			deletedAt: { isNull: true },
+		},
+		with: {
+			verifications: true,
+		},
+	});
+
+	if (!category) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [0, 1, 'Category']);
+	}
+
+	logger.debug(`Fetched category ${categoryId}`);
+	return category;
 }
 
 export async function createCategory(category: CategoryRepoInput, userId: string, logger: KADLogger): Promise<CategoryDBRead> {

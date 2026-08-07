@@ -1,5 +1,6 @@
 import type { categories } from '@/models';
 import type { ClueDBRead, ClueInGame } from './clue';
+import type { VerificationDBRead } from './verifications';
 
 export type GeneratedCategory = {
 	name: string;
@@ -17,6 +18,10 @@ export type CategoryRepoInput = Omit<
 
 export type CategoryWithClues = CategoryDBRead & {
 	clues: ClueDBRead[];
+};
+
+export type CategoryWithVerifications = CategoryDBRead & {
+	verifications: VerificationDBRead[];
 };
 
 export type CategoryInGame = Pick<CategoryDBRead, 'id' | 'name'> & {

@@ -3,7 +3,7 @@ import { sql } from 'drizzle-orm/sql/sql';
 import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { clues, verifications } from '@/models';
-import type { ClueDBRead, ClueRepoInput, KADLogger, VerificationDBRead } from '@/types';
+import type { ClueDBRead, ClueRepoInput, ClueWithVerifications, KADLogger, VerificationDBRead } from '@/types';
 import { validateUuid } from './utils';
 
 export async function createClue(clue: ClueRepoInput, userId: string, logger: KADLogger): Promise<ClueDBRead> {
@@ -22,6 +22,50 @@ export async function createClue(clue: ClueRepoInput, userId: string, logger: KA
 	}
 
 	return createdClues[0];
+}
+
+export async function getCluesByCategoryId(categoryId: string, logger: KADLogger): Promise<ClueWithVerifications[]> {
+	if (!validateUuid(categoryId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [categoryId, 'Category']);
+	}
+
+	logger.debug(`Fetching clues for category ${categoryId}`);
+	const result = await db.query.clues.findMany({
+		where: {
+			categoryId: { eq: categoryId },
+			deletedAt: { isNull: true },
+		},
+		with: {
+			verifications: true,
+		},
+	});
+
+	logger.debug(`Fetched ${result.length} clues for category ${categoryId}`);
+	return result;
+}
+
+export async function getClueById(clueId: string, logger: KADLogger): Promise<ClueWithVerifications> {
+	if (!validateUuid(clueId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [clueId, 'Clue']);
+	}
+
+	logger.debug(`Fetching clue ${clueId}`);
+	const clue = await db.query.clues.findFirst({
+		where: {
+			id: { eq: clueId },
+			deletedAt: { isNull: true },
+		},
+		with: {
+			verifications: true,
+		},
+	});
+
+	if (!clue) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [0, 1, 'Clue']);
+	}
+
+	logger.debug(`Fetched clue ${clueId}`);
+	return clue;
 }
 
 export async function deleteClue(clueId: string, userId: string, logger: KADLogger): Promise<ClueDBRead> {
@@ -46,22 +90,17 @@ export async function deleteClue(clueId: string, userId: string, logger: KADLogg
 
 export async function verifyClue(
 	clueId: string,
-	categoryId: string,
 	userId: string,
 	logger: KADLogger,
 ): Promise<{ clue: ClueDBRead; verification: VerificationDBRead }> {
 	if (!validateUuid(clueId)) {
 		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [clueId, 'Clue']);
 	}
-	if (!validateUuid(categoryId)) {
-		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [categoryId, 'Category']);
-	}
 	logger.debug(`Verifying clue ${clueId}`);
 
 	const [verificationRecord] = await db
 		.insert(verifications)
 		.values({
-			categoryId,
 			clueId,
 			createdBy: userId,
 		})
