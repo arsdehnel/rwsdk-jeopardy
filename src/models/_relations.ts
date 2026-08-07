@@ -35,10 +35,12 @@ export default defineRelations(
 					deletedAt: { isNull: true },
 				},
 			}),
-			verification: r.one.verifications({
+			verifications: r.many.verifications({
 				from: r.categories.id,
 				to: r.verifications.categoryId,
-				optional: false,
+				where: {
+					deletedAt: { isNull: true },
+				},
 			}),
 		},
 		clues: {
@@ -47,10 +49,12 @@ export default defineRelations(
 				to: r.categories.id,
 				optional: false,
 			}),
-			verification: r.one.verifications({
+			verifications: r.many.verifications({
 				from: r.clues.id,
 				to: r.verifications.clueId,
-				optional: false,
+				where: {
+					deletedAt: { isNull: true },
+				},
 			}),
 		},
 		games: {

@@ -6,6 +6,7 @@ import { type DefaultAppContext, defineApp, type RequestInfo } from 'rwsdk/worke
 import Document from '@/document';
 import headersMiddleware from '@/middleware/headers';
 import sessionMiddleware from '@/middleware/session';
+import adminRoutes from '@/pages/admin/routes';
 import authRoutes from '@/pages/auth/routes';
 import devRoutes from '@/pages/dev/routes';
 import gamesRoutes from '@/pages/games/routes';
@@ -32,6 +33,7 @@ export default defineApp([
 	render(Document, [
 		except<RequestInfo<DefaultAppContext>>(handlePageError),
 		route('/', Pages__Home),
+		prefix('/admin', adminRoutes),
 		prefix('/auth', authRoutes),
 		prefix('/dev', devRoutes),
 		prefix('/games', gamesRoutes),

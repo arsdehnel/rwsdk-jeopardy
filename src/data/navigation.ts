@@ -1,4 +1,4 @@
-import { EnterIcon, ExitIcon, HomeIcon, IconJarLogoIcon, PlayIcon } from '@radix-ui/react-icons';
+import { EnterIcon, ExitIcon, HomeIcon, IconJarLogoIcon, MixIcon, PlayIcon } from '@radix-ui/react-icons';
 import type { NavItem, Permission } from '@/types';
 
 export const navItems: Record<string, NavItem[]> = {
@@ -17,6 +17,13 @@ export const navItems: Record<string, NavItem[]> = {
 			href: '/games/new',
 			icon: PlayIcon,
 			requiredPermission: 'games:create',
+		},
+		{
+			key: 'categories',
+			label: 'Categories',
+			href: '/admin/categories',
+			icon: MixIcon,
+			requiredPermission: 'categories:admin',
 		},
 		{
 			key: 'login',

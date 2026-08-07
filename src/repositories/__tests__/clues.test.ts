@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createNoopLogger } from '@/logger';
 import { resetDb } from '../../../tests/mocks/db';
 import { createCategory } from '../categories';
-import { createClue, deleteClue, verifyClue } from '../clues';
+import { createClue, deleteClue, getClueById, getCluesByCategoryId, verifyClue } from '../clues';
 import { createUser } from '../users';
 
 const logger = createNoopLogger();
@@ -32,18 +32,9 @@ describe('createClue', () => {
 describe('verifyClue', () => {
 	it('throws when clueId is not a valid UUID', async () => {
 		const user = await createUser('testuser', null, logger);
-		const cat = await createCategory({ name: 'History' }, user.id, logger);
 
-		await expect(verifyClue('not-a-uuid', cat.id, user.id, logger)).rejects.toThrow(
+		await expect(verifyClue('not-a-uuid', user.id, logger)).rejects.toThrow(
 			'The value "not-a-uuid" is not a valid ID for a Clue',
-		);
-	});
-
-	it('throws when categoryId is not a valid UUID', async () => {
-		const user = await createUser('testuser', null, logger);
-
-		await expect(verifyClue(crypto.randomUUID(), 'not-a-uuid', user.id, logger)).rejects.toThrow(
-			'The value "not-a-uuid" is not a valid ID for a Category',
 		);
 	});
 
@@ -56,12 +47,146 @@ describe('verifyClue', () => {
 			logger,
 		);
 
-		const result = await verifyClue(clue.id, cat.id, user.id, logger);
+		const result = await verifyClue(clue.id, user.id, logger);
 
 		expect(result.clue.id).toBe(clue.id);
 		expect(result.clue.lastVerifiedAt).not.toBeNull();
 		expect(result.verification.clueId).toBe(clue.id);
-		expect(result.verification.categoryId).toBe(cat.id);
+	});
+});
+
+describe('getCluesByCategoryId', () => {
+	it('throws when categoryId is not a valid UUID', async () => {
+		await expect(getCluesByCategoryId('not-a-uuid', logger)).rejects.toThrow(
+			'The value "not-a-uuid" is not a valid ID for a Category',
+		);
+	});
+
+	it('returns empty array when category has no clues', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Empty' }, user.id, logger);
+
+		const result = await getCluesByCategoryId(cat.id, logger);
+
+		expect(result).toEqual([]);
+	});
+
+	it('returns clues for the given category', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Science' }, user.id, logger);
+		const clue1 = await createClue({ categoryId: cat.id, text: 'Q1', response: 'A1' }, user.id, logger);
+		const clue2 = await createClue({ categoryId: cat.id, text: 'Q2', response: 'A2' }, user.id, logger);
+
+		const result = await getCluesByCategoryId(cat.id, logger);
+
+		expect(result).toHaveLength(2);
+		const ids = result.map(c => c.id);
+		expect(ids).toContain(clue1.id);
+		expect(ids).toContain(clue2.id);
+	});
+
+	it('does not return clues from other categories', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat1 = await createCategory({ name: 'Cat1' }, user.id, logger);
+		const cat2 = await createCategory({ name: 'Cat2' }, user.id, logger);
+		await createClue({ categoryId: cat1.id, text: 'Other', response: 'Other' }, user.id, logger);
+		const clue2 = await createClue({ categoryId: cat2.id, text: 'Mine', response: 'Mine' }, user.id, logger);
+
+		const result = await getCluesByCategoryId(cat2.id, logger);
+
+		expect(result).toHaveLength(1);
+		expect(result[0].id).toBe(clue2.id);
+	});
+
+	it('excludes soft-deleted clues', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'History' }, user.id, logger);
+		const clue1 = await createClue({ categoryId: cat.id, text: 'Keep', response: 'Kept' }, user.id, logger);
+		const clue2 = await createClue({ categoryId: cat.id, text: 'Delete', response: 'Gone' }, user.id, logger);
+		await deleteClue(clue2.id, user.id, logger);
+
+		const result = await getCluesByCategoryId(cat.id, logger);
+
+		expect(result).toHaveLength(1);
+		expect(result[0].id).toBe(clue1.id);
+	});
+
+	it('returns clues with their verifications', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Geography' }, user.id, logger);
+		const clue = await createClue({ categoryId: cat.id, text: 'Capital of France', response: 'Paris' }, user.id, logger);
+		await verifyClue(clue.id, user.id, logger);
+
+		const result = await getCluesByCategoryId(cat.id, logger);
+
+		expect(result[0].verifications).toHaveLength(1);
+		expect(result[0].verifications[0].clueId).toBe(clue.id);
+	});
+
+	it('returns clues with empty verifications array when none exist', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Music' }, user.id, logger);
+		await createClue({ categoryId: cat.id, text: 'Q', response: 'A' }, user.id, logger);
+
+		const result = await getCluesByCategoryId(cat.id, logger);
+
+		expect(result[0].verifications).toEqual([]);
+	});
+});
+
+describe('getClueById', () => {
+	it('throws when clueId is not a valid UUID', async () => {
+		await expect(getClueById('not-a-uuid', logger)).rejects.toThrow('The value "not-a-uuid" is not a valid ID for a Clue');
+	});
+
+	it('throws when clue does not exist', async () => {
+		await expect(getClueById(crypto.randomUUID(), logger)).rejects.toThrow('Expected 1 Clue record(s), but found 0');
+	});
+
+	it('returns clue with its verifications', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Science' }, user.id, logger);
+		const clue = await createClue({ categoryId: cat.id, text: 'Q', response: 'A' }, user.id, logger);
+		await verifyClue(clue.id, user.id, logger);
+
+		const result = await getClueById(clue.id, logger);
+
+		expect(result.id).toBe(clue.id);
+		expect(result.text).toBe('Q');
+		expect(result.verifications).toHaveLength(1);
+		expect(result.verifications[0].clueId).toBe(clue.id);
+	});
+
+	it('returns clue with empty verifications array when none exist', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'History' }, user.id, logger);
+		const clue = await createClue({ categoryId: cat.id, text: 'Q', response: 'A' }, user.id, logger);
+
+		const result = await getClueById(clue.id, logger);
+
+		expect(result.verifications).toEqual([]);
+	});
+
+	it('throws when clue is soft-deleted', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Art' }, user.id, logger);
+		const clue = await createClue({ categoryId: cat.id, text: 'Q', response: 'A' }, user.id, logger);
+		await deleteClue(clue.id, user.id, logger);
+
+		await expect(getClueById(clue.id, logger)).rejects.toThrow('Expected 1 Clue record(s), but found 0');
+	});
+
+	it('returns correct clue when multiple exist', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Geography' }, user.id, logger);
+		await createClue({ categoryId: cat.id, text: 'Other', response: 'Other' }, user.id, logger);
+		const target = await createClue({ categoryId: cat.id, text: 'Target', response: 'Target' }, user.id, logger);
+		await createClue({ categoryId: cat.id, text: 'Another', response: 'Another' }, user.id, logger);
+
+		const result = await getClueById(target.id, logger);
+
+		expect(result.id).toBe(target.id);
+		expect(result.text).toBe('Target');
 	});
 });
 
@@ -100,7 +225,7 @@ describe('deleteClue', () => {
 		await deleteClue(clue2.id, user.id, logger);
 
 		// verifyClue on the surviving clue should still work
-		const result = await verifyClue(clue1.id, cat.id, user.id, logger);
+		const result = await verifyClue(clue1.id, user.id, logger);
 		expect(result.clue.id).toBe(clue1.id);
 	});
 });
