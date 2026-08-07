@@ -88,6 +88,26 @@ export async function deleteClue(clueId: string, userId: string, logger: KADLogg
 	return deleted[0];
 }
 
+export async function updateClue(clueId: string, clue: ClueRepoInput, userId: string, logger: KADLogger): Promise<ClueDBRead> {
+	if (!validateUuid(clueId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [clueId, 'Clue']);
+	}
+
+	logger.info(`Updating clue ${clueId}`);
+	const updatedClues = await db
+		.update(clues)
+		.set({ ...clue, updatedBy: userId, updatedAt: sql`(datetime('now', 'localtime'))` })
+		.where(eq(clues.id, clueId))
+		.returning();
+
+	if (updatedClues.length !== 1) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [updatedClues.length, 1, 'Clue']);
+	}
+
+	logger.debug(`Updated clue ${clueId}`);
+	return updatedClues[0];
+}
+
 export async function verifyClue(
 	clueId: string,
 	userId: string,

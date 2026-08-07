@@ -1,5 +1,5 @@
 import type { categories } from '@/models';
-import type { ClueDBRead, ClueInGame } from './clue';
+import type { ClueDBRead, ClueInGame } from './clues';
 import type { VerificationDBRead } from './verifications';
 
 export type GeneratedCategory = {
