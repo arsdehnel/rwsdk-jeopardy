@@ -5,8 +5,8 @@ import { getCategories } from '@/repositories';
 import type { KADTableColumn } from '@/types/kad-table';
 
 const columns: KADTableColumn[] = [
-	{ key: 'id', label: 'ID' },
 	{ key: 'name', label: 'Name' },
+	{ key: 'idFirst8', label: 'ID (First 8)' },
 	{ key: 'lastVerifiedAt', label: 'Last Verified' },
 	{ key: 'createdAt', label: 'Created' },
 	{
@@ -25,6 +25,7 @@ export default async function Pages__Admin__Categories__Listing({ ctx }: Request
 
 	const rows = categories.map(ctgry => ({
 		...ctgry,
+		idFirst8: ctgry.id.substring(0, 8),
 		editUrl: `/admin/categories/${ctgry.id}/edit`,
 		cluesUrl: `/admin/categories/${ctgry.id}/clues`,
 		verifyUrl: `/admin/categories/${ctgry.id}/verify`,

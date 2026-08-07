@@ -1,13 +1,14 @@
 import type { RequestInfo } from 'rwsdk/worker';
-import KADTable from '@/components/design-system/table/kad-table';
+import { KADLink, KADTable } from '@/components/design-system';
 import SetupLayout from '@/layouts/setup';
 import { getCluesByCategoryId } from '@/repositories';
 import type { KADTableColumn } from '@/types/kad-table';
 
 const columns: KADTableColumn[] = [
-	{ key: 'id', label: 'ID' },
 	{ key: 'text', label: 'Text' },
 	{ key: 'response', label: 'Response' },
+	{ key: 'position', label: 'Position' },
+	{ key: 'idFirst8', label: 'ID (First 8)' },
 	{ key: 'lastVerifiedAt', label: 'Last Verified' },
 	{ key: 'createdAt', label: 'Created' },
 	{
@@ -26,12 +27,19 @@ export default async function Pages__Admin__Categories_Clues__Listing({ ctx, par
 
 	const rows = clues.map(clue => ({
 		...clue,
+		idFirst8: clue.id.substring(0, 8),
 		editUrl: `/admin/categories/${clue.categoryId}/clues/${clue.id}/edit`,
 		verifyUrl: `/admin/categories/${clue.categoryId}/clues/${clue.id}/verify`,
 	}));
 
 	return (
 		<SetupLayout pageTitle={`Category ${params.categoryId} Clues`} ctx={ctx} currentBasePage="categories">
+			<KADLink
+				href={`/admin/categories`}
+				userPermissions={ctx.permissions}
+				requiredPermission="categories:admin"
+				label="Back to Categories"
+			/>
 			<KADTable userPermissions={ctx.permissions} columns={columns} data={rows} />
 		</SetupLayout>
 	);

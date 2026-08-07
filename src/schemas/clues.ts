@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { requiredUuid } from './utils';
+import { coercedInt, requiredUuid } from './utils';
 
 const formSchema = z.object({
 	id: z
@@ -9,6 +9,7 @@ const formSchema = z.object({
 	categoryId: requiredUuid,
 	text: z.string(),
 	response: z.string(),
+	position: coercedInt(1, 50),
 });
 
 export const cluesSchemas = {

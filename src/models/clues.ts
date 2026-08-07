@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import { sql } from 'drizzle-orm';
-import { type AnySQLiteColumn, index, snakeCase, text } from 'drizzle-orm/sqlite-core';
+import { type AnySQLiteColumn, index, int, snakeCase, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 import { categories } from './categories';
 import { users } from './users';
 
@@ -15,6 +15,7 @@ export const clues = snakeCase.table(
 			.references((): AnySQLiteColumn => categories.id),
 		text: text().notNull(),
 		response: text().notNull(),
+		position: int(),
 		lastVerifiedAt: text(),
 		createdAt: text().notNull().default(sql`(datetime('now', 'localtime'))`),
 		createdBy: text()
@@ -25,5 +26,8 @@ export const clues = snakeCase.table(
 		deletedAt: text(),
 		deletedBy: text().references((): AnySQLiteColumn => users.id),
 	},
-	table => [index('clues_category_id_idx').on(table.categoryId)],
+	table => [
+		index('clues_category_id_idx').on(table.categoryId),
+		uniqueIndex('clues_category_id_position_idx').on(table.categoryId, table.position).where(sql`"deleted_at" IS NULL`),
+	],
 );

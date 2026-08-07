@@ -42,6 +42,9 @@ export default function ClueForm({
 				<form.AppField name="response">
 					{(field): React.ReactNode => <field.TextareaInput label="Response" required />}
 				</form.AppField>
+				<form.AppField name="position">
+					{(field): React.ReactNode => <field.NumberInput label="Position" required />}
+				</form.AppField>
 				{/* biome-ignore-end lint/nursery/useExplicitType: TanStack Form field render prop — parameter type is a deep internal generic impractical to annotate */}
 				{formState?.errors?._form && <p className="error">{formState.errors._form[0]}</p>}
 				{formState?.success && <p className="success">Clue saved.</p>}
