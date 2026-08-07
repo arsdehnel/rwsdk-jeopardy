@@ -1,11 +1,11 @@
 .kad-table {
 	width: 100%;
-	border: solid var(--accent-8);
+	border: solid #999;
 	border-width: 1px 0 0 1px;
 	td,
 	th {
 		padding: 0.5rem;
-		border: solid var(--accent-8);
+		border: solid #999;
 		border-width: 0 1px 1px 0;
 	}
 }
@@ -14,10 +14,16 @@
 	display: flex;
 	gap: 0.5rem;
 	a {
-		color: var(--accent-11);
+		color: #333;
 		text-decoration: none;
+		border: 1px solid #66c;
+		background-color: #99f;
+		padding: 0.5rem;
+		border-radius: 0.25rem;
+		transition: all 0.3s linear;
+		white-space: nowrap;
 		&:hover {
-			text-decoration: underline;
+			background-color: #66c;
 		}
 	}
 }
