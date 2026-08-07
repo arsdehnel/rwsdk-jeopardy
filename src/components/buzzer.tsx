@@ -16,7 +16,7 @@ export default function Buzzer({
 	const currentHasBuzzedIn = buzzerQueue.includes(sessionId);
 	let buzzerText = locales.buzzerText.initial;
 	if (someoneHasBuzzedIn && !currentHasBuzzedIn) {
-		buzzerText = locales.buzzerText.inQueue;
+		buzzerText = locales.buzzerText.initial;
 	} else if (buzzerPosition === 0) {
 		buzzerText = locales.buzzerText.yourTurn;
 	} else if (buzzerPosition > 0) {
