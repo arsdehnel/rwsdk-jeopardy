@@ -7,6 +7,7 @@ export default function HostView({
 	selectedClue,
 	buzzerQueue,
 	scores,
+	activeContestant,
 	abortClue,
 	resetBuzzers,
 	correctClueResponse,
@@ -19,6 +20,7 @@ export default function HostView({
 	selectedClue: ClueInGame | null;
 	buzzerQueue: string[];
 	scores: Record<string, number>;
+	activeContestant: string | undefined;
 	abortClue: () => void;
 	resetBuzzers: () => void;
 	correctClueResponse: () => void;
@@ -27,6 +29,7 @@ export default function HostView({
 	finishGame: () => void;
 	expireClue: () => void;
 }): React.ReactNode {
+	const activeConnection = activeContestant ? connections.contestants.find(c => c.id === activeContestant) : undefined;
 	return (
 		<div className="view-host">
 			<section>
@@ -34,6 +37,14 @@ export default function HostView({
 				<div className="host-section-content">
 					<Scoreboard connections={connections} scores={scores} buzzerQueue={buzzerQueue} />
 				</div>
+				<div>
+					<strong>Active</strong>
+					{activeContestant}
+				</div>
+			</section>
+			<section>
+				<h2>Active Contestant</h2>
+				<div className="host-section-content">{activeConnection?.name}</div>
 			</section>
 			<section>
 				<h2>Current Clue</h2>
