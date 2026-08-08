@@ -32,6 +32,7 @@ export default function GameClient({
 		scores,
 		hasDisplay,
 		activeContestant,
+		buzzInTimeLeft,
 		registerConnection,
 		unregisterConnection,
 		correctClueResponse,
@@ -44,6 +45,7 @@ export default function GameClient({
 		selectClue,
 		buzzIn,
 		expireClue,
+		decreaseBuzzerTimeLeft,
 	} = useGameState(sessionId, gameId);
 
 	useEffect(() => {
@@ -55,6 +57,14 @@ export default function GameClient({
 			}
 		});
 	}, [gamePhase]);
+
+	useEffect(() => {
+		if (!buzzInTimeLeft) return;
+		const timer = setTimeout(() => {
+			decreaseBuzzerTimeLeft();
+		}, 1000);
+		return (): void => clearTimeout(timer);
+	}, [buzzInTimeLeft, decreaseBuzzerTimeLeft]);
 
 	if (gamePhase === 'SETUP') {
 		return (
@@ -114,6 +124,7 @@ export default function GameClient({
 				finishGame={finishGame}
 				expireClue={expireClue}
 				activeContestant={activeContestant}
+				buzzInTimeLeft={buzzInTimeLeft}
 			/>
 		);
 	}
@@ -128,6 +139,7 @@ export default function GameClient({
 			buzzIn={buzzIn}
 			usedClueIds={usedClueIds}
 			activeContestant={activeContestant}
+			buzzInTimeLeft={buzzInTimeLeft}
 		/>
 	);
 }

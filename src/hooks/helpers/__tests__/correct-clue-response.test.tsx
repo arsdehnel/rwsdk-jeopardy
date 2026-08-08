@@ -21,6 +21,7 @@ const baseState = {
 	usedClueIds: [],
 	scores: {},
 	activeContestant: undefined,
+	buzzInTimeLeft: undefined,
 };
 
 describe('correctClueResponse', () => {

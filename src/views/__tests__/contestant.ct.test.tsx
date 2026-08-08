@@ -28,6 +28,7 @@ test('clue select mode', async ({ mount }) => {
 			buzzIn={() => {}}
 			usedClueIds={[]}
 			activeContestant={undefined}
+			buzzInTimeLeft={undefined}
 		/>,
 	);
 	await expect(component).toHaveScreenshot();
@@ -44,6 +45,7 @@ test('Buzzer mode with empty queue', async ({ mount }) => {
 			buzzIn={() => {}}
 			usedClueIds={[]}
 			activeContestant={undefined}
+			buzzInTimeLeft={undefined}
 		/>,
 	);
 	await expect(component).toHaveScreenshot();
@@ -60,6 +62,7 @@ test('Buzzer mode with another contestant in the queue', async ({ mount }) => {
 			buzzIn={() => {}}
 			usedClueIds={[]}
 			activeContestant={undefined}
+			buzzInTimeLeft={undefined}
 		/>,
 	);
 	await expect(component).toHaveScreenshot();
@@ -76,6 +79,7 @@ test('Buzzer mode with current contestant at the front of the queue', async ({ m
 			buzzIn={() => {}}
 			usedClueIds={[]}
 			activeContestant={undefined}
+			buzzInTimeLeft={undefined}
 		/>,
 	);
 	await expect(component).toHaveScreenshot();
@@ -92,6 +96,7 @@ test('Buzzer mode with current contestant in position 2 of the queue', async ({ 
 			buzzIn={() => {}}
 			usedClueIds={[]}
 			activeContestant={undefined}
+			buzzInTimeLeft={undefined}
 		/>,
 	);
 	await expect(component).toHaveScreenshot();

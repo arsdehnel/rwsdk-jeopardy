@@ -1,4 +1,5 @@
 'use client';
+import { KADProgress } from '@/components/design-system';
 import Scoreboard from '@/components/scoreboard';
 import type { ClueInGame, Connections } from '@/types';
 
@@ -8,6 +9,7 @@ export default function HostView({
 	buzzerQueue,
 	scores,
 	activeContestant,
+	buzzInTimeLeft,
 	abortClue,
 	resetBuzzers,
 	correctClueResponse,
@@ -21,6 +23,7 @@ export default function HostView({
 	buzzerQueue: string[];
 	scores: Record<string, number>;
 	activeContestant: string | undefined;
+	buzzInTimeLeft: number | undefined;
 	abortClue: () => void;
 	resetBuzzers: () => void;
 	correctClueResponse: () => void;
@@ -30,6 +33,7 @@ export default function HostView({
 	expireClue: () => void;
 }): React.ReactNode {
 	const activeConnection = activeContestant ? connections.contestants.find(c => c.id === activeContestant) : undefined;
+	const timerIsActive = typeof buzzInTimeLeft !== 'undefined';
 	return (
 		<div className="view-host">
 			<section>
@@ -37,15 +41,22 @@ export default function HostView({
 				<div className="host-section-content">
 					<Scoreboard connections={connections} scores={scores} buzzerQueue={buzzerQueue} />
 				</div>
-				<div>
-					<strong>Active</strong>
-					{activeContestant}
-				</div>
 			</section>
-			<section>
-				<h2>Active Contestant</h2>
-				<div className="host-section-content">{activeConnection?.name}</div>
-			</section>
+			{activeContestant && (
+				<section>
+					<h2>Active Contestant</h2>
+					<div className="host-section-content">{activeConnection?.name}</div>
+				</section>
+			)}
+
+			{timerIsActive && (
+				<section>
+					<h2>Buzz-In timer</h2>
+					<div className="host-section-content">
+						{buzzInTimeLeft ? <KADProgress progressPcnt={(buzzInTimeLeft / 5) * 100} /> : <span>🚨 TIME'S UP 🚨</span>}
+					</div>
+				</section>
+			)}
 			<section>
 				<h2>Current Clue</h2>
 				<div className="host-section-content">

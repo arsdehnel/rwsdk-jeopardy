@@ -9,12 +9,21 @@
 		font-size: 3rem;
 		width: 90vw;
 		height: 90vh;
-		&.buzzer-button--position-0 {
+		// your turn
+		&.buzzer-button-your-turn {
 			background-color: #009900;
 		}
-		&:disabled:not(.buzzer-button--position-0) {
+		// someone else's turn
+		&.buzzer-button-not-your-turn {
 			background-color: #3333cc;
-			color: #888888;
+			color: white;
+		}
+		// expired
+		&.buzzer-button-timer-expired {
+			background-color: #990000;
+			color: white;
+		}
+		&:disabled {
 			cursor: not-allowed;
 		}
 	}

@@ -13,6 +13,7 @@ export default function ContestantView({
 	buzzIn,
 	usedClueIds,
 	activeContestant,
+	buzzInTimeLeft,
 }: {
 	selectClue: (clue: ClueInGame) => void;
 	selectedClue: ClueInGame | null;
@@ -22,6 +23,7 @@ export default function ContestantView({
 	buzzIn: (contestantSessionId: string) => void;
 	usedClueIds: string[];
 	activeContestant: string | undefined;
+	buzzInTimeLeft: number | undefined;
 }): React.ReactNode {
 	const mode = selectedClue ? 'buzzer' : 'clue-select';
 
@@ -36,7 +38,7 @@ export default function ContestantView({
 					sessionId={sessionId}
 				/>
 			) : (
-				<Buzzer buzzIn={buzzIn} buzzerQueue={buzzerQueue} sessionId={sessionId} />
+				<Buzzer buzzIn={buzzIn} buzzerQueue={buzzerQueue} sessionId={sessionId} buzzInTimeLeft={buzzInTimeLeft} />
 			)}
 		</div>
 	);

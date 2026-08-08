@@ -3,6 +3,7 @@ export type LocaleDefinition = {
 		initial: string;
 		inQueue: string;
 		yourTurn: string;
+		timesUp: string;
 	};
 };
 
