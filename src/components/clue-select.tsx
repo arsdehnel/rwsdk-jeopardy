@@ -8,10 +8,14 @@ export default function ClueSelect({
 	categories,
 	selectClue,
 	usedClueIds,
+	activeContestant,
+	sessionId,
 }: {
 	categories: CategoryInGame[];
 	selectClue: (clue: ClueInGame) => void;
 	usedClueIds: string[];
+	activeContestant: string | undefined;
+	sessionId: string;
 }): React.ReactNode {
 	const [openCategory, setOpenCategory] = useState('');
 
@@ -22,6 +26,19 @@ export default function ClueSelect({
 			setOpenCategory(categoryId);
 		}
 	};
+
+	if (activeContestant !== sessionId) {
+		return (
+			<>
+				<h1 className="welcome-title">RWSDK Jeopardy</h1>
+				<main>
+					<h2 className="page-title">Select A Clue</h2>
+					<p>Another player is choosing</p>
+				</main>
+			</>
+		);
+	}
+
 	return (
 		<>
 			<h1 className="welcome-title">RWSDK Jeopardy</h1>

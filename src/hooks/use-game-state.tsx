@@ -26,6 +26,7 @@ export type GameState = {
 	usedClueIds: string[];
 	expireClue: () => void;
 	scores: Record<string, number>;
+	activeContestant: string | undefined;
 };
 
 export default function useGameState(sessionId: string, gameId: string): GameState {
@@ -39,6 +40,7 @@ export default function useGameState(sessionId: string, gameId: string): GameSta
 	const [buzzerQueue, setBuzzerQueue] = useSyncedState<string[]>([], 'buzzerQueue', gameId);
 	const [usedClueIds, setUsedClueIds] = useSyncedState<string[]>([], 'usedClueIds', gameId);
 	const [scores, setScores] = useSyncedState<Record<string, number>>({}, 'scores', gameId);
+	const [activeContestant, setActiveContestant] = useSyncedState<string | undefined>(undefined, 'activeContestant', gameId);
 
 	const registerConnection = (connection: Connection): void => {
 		setConnections(helpers.registerConnection(connections, connection));
@@ -49,29 +51,40 @@ export default function useGameState(sessionId: string, gameId: string): GameSta
 	};
 
 	const correctClueResponse = (): void => {
-		const next = helpers.correctClueResponse({ connections, selectedClue, gamePhase, buzzerQueue, usedClueIds, scores });
+		const next = helpers.correctClueResponse({
+			connections,
+			selectedClue,
+			gamePhase,
+			buzzerQueue,
+			usedClueIds,
+			scores,
+			activeContestant,
+		});
 		setSelectedClue(next.selectedClue);
 		setBuzzerQueue(next.buzzerQueue);
 		setUsedClueIds(next.usedClueIds);
 		setScores(next.scores);
+		setActiveContestant(next.activeContestant);
 		reactLogger.info(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
 	};
 
 	const expireClue = (): void => {
-		const next = helpers.expireClue({ selectedClue, buzzerQueue, usedClueIds });
+		const next = helpers.expireClue({ selectedClue, buzzerQueue, usedClueIds, activeContestant });
 		setSelectedClue(next.selectedClue);
 		setBuzzerQueue(next.buzzerQueue);
 		setUsedClueIds(next.usedClueIds);
+		setActiveContestant(next.activeContestant);
 		reactLogger.info(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
 	};
 
 	const wrongClueResponse = (): void => {
-		const next = helpers.wrongClueResponse({ selectedClue, buzzerQueue, scores });
+		const next = helpers.wrongClueResponse({ selectedClue, buzzerQueue, scores, activeContestant });
 		if (!selectedClue) {
 			return;
 		}
 		setBuzzerQueue(next.buzzerQueue);
 		setScores(next.scores);
+		setActiveContestant(next.activeContestant);
 		reactLogger.info(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} incorrectly!`);
 	};
 
@@ -88,6 +101,11 @@ export default function useGameState(sessionId: string, gameId: string): GameSta
 
 	const startGame = (): void => {
 		setGamePhase('PLAYING');
+		const randomContestantId =
+			connections.contestants.length > 0
+				? connections.contestants[Math.floor(Math.random() * connections.contestants.length)].id
+				: undefined;
+		setActiveContestant(randomContestantId);
 	};
 
 	const setupGame = (): void => {
@@ -143,5 +161,6 @@ export default function useGameState(sessionId: string, gameId: string): GameSta
 		usedClueIds,
 		expireClue,
 		scores,
+		activeContestant,
 	};
 }

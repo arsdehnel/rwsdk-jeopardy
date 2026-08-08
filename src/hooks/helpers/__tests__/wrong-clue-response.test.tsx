@@ -16,6 +16,7 @@ const baseState = {
 	buzzerQueue: ['player-1', 'player-2'],
 	usedClueIds: [],
 	scores: {},
+	activeContestant: undefined,
 };
 
 describe('wrongClueResponse', () => {
