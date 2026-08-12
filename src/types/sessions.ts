@@ -7,5 +7,3 @@ export interface Session {
 	lastAccessedAt: number;
 	permissionsOverride?: Permission[];
 }
-
-export type SessionError = 'Invalid session' | 'Session expired';

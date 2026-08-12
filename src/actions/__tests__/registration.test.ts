@@ -13,8 +13,8 @@ vi.mock('@simplewebauthn/server', () => ({
 
 vi.mock('@/durable-objects', () => ({
 	sessions: {
-		save: vi.fn(),
-		load: vi.fn(),
+		upsert: vi.fn(),
+		loadFromRequest: vi.fn(),
 	},
 }));
 
@@ -123,7 +123,7 @@ describe('startPasskeyRegistration', () => {
 		vi.clearAllMocks();
 		mockEnv.RWSDK_JEOPARDY_ENV = 'development';
 		vi.mocked(generateRegistrationOptions).mockResolvedValue(mockOptions as any);
-		vi.mocked(sessions.save).mockResolvedValue(undefined as any);
+		vi.mocked(sessions.upsert).mockResolvedValue(undefined as any);
 	});
 
 	it('returns registration options on success', async () => {
@@ -142,7 +142,7 @@ describe('startPasskeyRegistration', () => {
 	// came from this server's ceremony and not a replay of a previous one.
 	it('saves the challenge to the session', async () => {
 		await startPasskeyRegistration('testuser');
-		expect(sessions.save).toHaveBeenCalledWith(expect.anything(), { challenge: mockOptions.challenge });
+		expect(sessions.upsert).toHaveBeenCalledWith(null, expect.anything(), { challenge: mockOptions.challenge });
 	});
 
 	it('returns a validation error for an invalid username', async () => {
@@ -182,8 +182,8 @@ describe('finishPasskeyRegistration', () => {
 		mockUAGetDevice.mockReturnValue({ vendor: 'Apple', model: 'MacBook', type: undefined });
 		mockUAGetOS.mockReturnValue({ name: 'macOS', version: '14.0' });
 		mockUAGetBrowser.mockReturnValue({ name: 'Chrome', version: '120.0' });
-		vi.mocked(sessions.load).mockResolvedValue({ challenge: 'stored-challenge' } as any);
-		vi.mocked(sessions.save).mockResolvedValue(undefined as any);
+		vi.mocked(sessions.loadFromRequest).mockResolvedValue({ sessionId: null, challenge: 'stored-challenge' } as any);
+		vi.mocked(sessions.upsert).mockResolvedValue(undefined as any);
 		vi.mocked(verifyRegistrationResponse).mockResolvedValue(mockVerification as any);
 		vi.mocked(createUser).mockResolvedValue(mockUser as any);
 		vi.mocked(createCredential).mockResolvedValue({} as any);
@@ -192,14 +192,14 @@ describe('finishPasskeyRegistration', () => {
 	// The challenge links Phase 1 (start) to Phase 2 (finish). If it's missing from the
 	// session the user either skipped Phase 1 or the session expired — the ceremony cannot proceed.
 	it('returns an error when no challenge is in the session', async () => {
-		vi.mocked(sessions.load).mockResolvedValue(null as any);
+		vi.mocked(sessions.loadFromRequest).mockResolvedValue(null as any);
 		const result = await finishPasskeyRegistration('testuser', mockRegistration as any);
 		expect(result.success).toBe(false);
 		expect(result.errors?._form?.[0]).toContain('challenge');
 	});
 
 	it('returns an error when the session challenge has been cleared', async () => {
-		vi.mocked(sessions.load).mockResolvedValue({ challenge: null } as any);
+		vi.mocked(sessions.loadFromRequest).mockResolvedValue({ challenge: null } as any);
 		const result = await finishPasskeyRegistration('testuser', mockRegistration as any);
 		expect(result.success).toBe(false);
 	});
@@ -224,7 +224,7 @@ describe('finishPasskeyRegistration', () => {
 	// authenticator response can't be replayed to register again.
 	it('clears the challenge from the session after successful verification', async () => {
 		await finishPasskeyRegistration('testuser', mockRegistration as any);
-		expect(sessions.save).toHaveBeenCalledWith(expect.anything(), { challenge: null });
+		expect(sessions.upsert).toHaveBeenCalledWith(null, expect.anything(), { challenge: null });
 	});
 
 	it('creates a new user with the provided username', async () => {

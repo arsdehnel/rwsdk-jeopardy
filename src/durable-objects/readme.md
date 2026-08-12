@@ -15,26 +15,32 @@ Cloudflare Durable Objects used by the application. Each file implements a singl
 
 ## How the session layer works
 
-`sessions.ts` has two distinct pieces that are easy to conflate:
+`sessions.ts` has two distinct pieces that work together:
 
-### 1. `sessions` — the rwsdk helper
-
-```typescript
-export const sessions = defineDurableSession({
-    secretKey: env.SESSION_SECRET_KEY,
-    sessionDurableObject: env.SESSION_DURABLE_OBJECT,
-});
-```
-
-`defineDurableSession` (from `rwsdk/auth`) returns a `sessions` object with `save`, `load`, and `remove` methods. These are what you call from middleware and actions:
+### 1. `sessions` — the module-level helper
 
 ```typescript
-await sessions.load(request);           // read session from the DO
-await sessions.save(response.headers, { userId: user.id }); // write session
-await sessions.remove(request, response.headers);           // revoke session
+export const sessions = {
+    loadFromRequest(request),          // read session from cookie + DO
+    upsert(unsignedSessionId, headers, sessionData), // create/update session in DO + set cookie
+    clear(request, headers),           // revoke session from DO + clear cookie
+};
 ```
 
-`env.SESSION_DURABLE_OBJECT` is the Cloudflare binding — the bridge between this helper and the actual DO class defined below it.
+These are what you call from middleware and actions:
+
+```typescript
+await sessions.loadFromRequest(request);
+// → reads the signed session ID from the cookie, validates the signature,
+//   looks up the DO by name, and returns the Session (or null if no cookie)
+
+await sessions.upsert(null, response.headers, { userId: user.id });
+// → null creates a new session ID; non-null reuses an existing one.
+//   writes sessionData to the DO and sets the signed cookie on the response.
+
+await sessions.clear(request, response.headers);
+// → revokes the DO and clears the cookie
+```
 
 ### 2. `SessionDurableObject` — the actual Durable Object
 
@@ -42,32 +48,32 @@ await sessions.remove(request, response.headers);           // revoke session
 export class SessionDurableObject extends DurableObject { ... }
 ```
 
-This class defines how session data is physically stored, read, and expired. It implements three methods that rwsdk calls internally:
+Defines how session data is physically stored, read, and expired. The DO name is the unsigned session ID — the same value stored as `sessionId` inside the session data itself.
 
-| Your method | Called by rwsdk when you call |
+| Method | Called by |
 |---|---|
-| `saveSession(data)` | `sessions.save(headers, data)` |
-| `getSession()` | `sessions.load(request)` |
-| `revokeSession()` | `sessions.remove(request, headers)` |
+| `saveSession(unsignedSessionId, sessionData)` | `sessions.upsert(...)` |
+| `getSession()` | `sessions.loadFromRequest(...)` |
+| `revokeSession()` | `sessions.clear(...)` and internal expiry handling |
 
-You never call `saveSession` / `getSession` / `revokeSession` directly — those are the hooks rwsdk calls after handling cookies, encryption, and the DO stub lookup.
+`getSession()` throws `'Invalid session'` when no session data exists and `'Session expired'` when `lastAccessedAt` is beyond the 14-day window. It also updates `lastAccessedAt` on every read (sliding expiration).
 
-### The circular-looking export
+### Cookie and signing
 
-`sessions` (the helper) references `env.SESSION_DURABLE_OBJECT`, and `SessionDurableObject` is exported from `worker.tsx` so Cloudflare creates that binding. This means:
+The browser cookie (`rwsdk-jeopardy-session`) carries a base64-encoded value of `unsignedSessionId:hmacSignature`. The private `sessionCookie` helper inside `sessions.ts` handles all cookie read/write and signature verification using HMAC-SHA256 with `SESSION_SECRET_KEY`.
 
-- `sessions.ts` defines both pieces
-- `index.ts` re-exports both
-- `worker.tsx` re-exports `SessionDurableObject` (required by Cloudflare) and imports `sessions` indirectly via middleware
+The cookie value is only a pointer — it identifies which DO to look up. All session data lives in the DO's KV storage.
 
-The dependency direction is: worker → middleware → `sessions` helper → DO binding → `SessionDurableObject`. It reads as circular but isn't — the binding is resolved by the Cloudflare runtime, not at import time.
+### Session ID terminology
+
+- **Unsigned session ID** — the raw UUID; used as the DO's `name` and stored as `sessionId` in the session data
+- **Signed session ID** — base64(`unsignedId:hmacSignature`); what goes in the browser cookie
 
 ### Extending session data
 
-Session data shape is defined by the `Session` type in `src/types/sessions.ts`. To add a new field:
+Session data shape is defined by the `Session` interface in `src/types/sessions.ts`. To add a new field:
 
 1. Add it to the `Session` interface
-2. Add it as a parameter to `saveSession` (with a default of `null` to match the existing pattern)
-3. Include it in the constructed `session` object inside `saveSession`
+2. Pass it in the `sessionData` argument when calling `sessions.upsert(...)`
 
-The second argument to `sessions.save` is typed from `saveSession`'s parameter shape, so updating `saveSession` is all that's needed — callers will automatically see the new field as an accepted option.
+`sessionData` is typed as `Partial<Session>`, so new fields are automatically accepted by callers without any changes to the DO methods.

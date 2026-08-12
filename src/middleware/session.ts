@@ -1,25 +1,12 @@
 import type { DefaultAppContext, RequestInfo } from 'rwsdk/worker';
-import { ErrorResponse } from 'rwsdk/worker';
 import { sessions } from '@/durable-objects';
 
-export default async function sessionMiddleware({
-	ctx,
-	request,
-	response,
-}: RequestInfo<DefaultAppContext>): Promise<Response | undefined> {
+export default async function sessionMiddleware({ ctx, request, response }: RequestInfo<DefaultAppContext>): Promise<void> {
 	try {
-		ctx.session = await sessions.load(request);
+		ctx.session = await sessions.loadFromRequest(request, response.headers);
+		// biome-ignore lint/suspicious/noConsole: temporary exception during debugging new sessions
+		console.log(`CTX session: ${JSON.stringify(ctx.session)}`);
 	} catch (error) {
-		if (error instanceof ErrorResponse && error.code === 401) {
-			await sessions.remove(request, response.headers);
-			response.headers.set('Location', '/auth/login');
-
-			return new Response(null, {
-				status: 302,
-				headers: response.headers,
-			});
-		}
-
-		throw error;
+		ctx.logger.error(`Uncaught session loading error: ${JSON.stringify(error)}`);
 	}
 }

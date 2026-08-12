@@ -11,6 +11,7 @@ export const requirePermissions = (...required: Permission[]): (() => Promise<vo
 		const missing = required.filter(p => !ctx.permissions?.includes(p));
 
 		if (missing.length > 0) {
+			ctx.logger.info(`Required permissions: ${required.join(', ')}, current user permissions: ${ctx.permissions?.join(', ')}`);
 			throw new KADAccessError(403, 'Forbidden');
 		}
 	};

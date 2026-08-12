@@ -17,8 +17,8 @@ vi.mock('@simplewebauthn/server', () => ({
 
 vi.mock('@/durable-objects', () => ({
 	sessions: {
-		save: vi.fn(),
-		load: vi.fn(),
+		upsert: vi.fn(),
+		loadFromRequest: vi.fn(),
 	},
 }));
 
@@ -103,7 +103,7 @@ describe('startPasskeyLogin', () => {
 		vi.clearAllMocks();
 		mockEnv.RWSDK_JEOPARDY_ENV = 'development';
 		vi.mocked(generateAuthenticationOptions).mockResolvedValue(mockOptions as any);
-		vi.mocked(sessions.save).mockResolvedValue(undefined as any);
+		vi.mocked(sessions.upsert).mockResolvedValue(undefined as any);
 	});
 
 	it('returns authentication options on success', async () => {
@@ -117,7 +117,7 @@ describe('startPasskeyLogin', () => {
 	// came from this server's ceremony and not from a replay of a captured response.
 	it('saves the challenge to the session', async () => {
 		await startPasskeyLogin();
-		expect(sessions.save).toHaveBeenCalledWith(expect.anything(), { challenge: mockOptions.challenge });
+		expect(sessions.upsert).toHaveBeenCalledWith(null, expect.anything(), { challenge: mockOptions.challenge });
 	});
 
 	// allowCredentials: [] means "any resident key on this device is allowed."
@@ -149,8 +149,8 @@ describe('finishPasskeyLogin', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockEnv.RWSDK_JEOPARDY_ENV = 'development';
-		vi.mocked(sessions.load).mockResolvedValue({ challenge: 'stored-challenge' } as any);
-		vi.mocked(sessions.save).mockResolvedValue(undefined as any);
+		vi.mocked(sessions.loadFromRequest).mockResolvedValue({ sessionId: null, challenge: 'stored-challenge' } as any);
+		vi.mocked(sessions.upsert).mockResolvedValue(undefined as any);
 		vi.mocked(getCredentialById).mockResolvedValue(mockCredential as any);
 		vi.mocked(verifyAuthenticationResponse).mockResolvedValue(mockVerification as any);
 		vi.mocked(updateCredentialCounter).mockResolvedValue(undefined as any);
@@ -160,14 +160,14 @@ describe('finishPasskeyLogin', () => {
 	// The challenge links Phase 1 (start) to Phase 2 (finish). Without it the server has no
 	// way to confirm that the signed response belongs to this ceremony rather than being replayed.
 	it('returns an error when no challenge is in the session', async () => {
-		vi.mocked(sessions.load).mockResolvedValue(null as any);
+		vi.mocked(sessions.loadFromRequest).mockResolvedValue(null as any);
 		const result = await finishPasskeyLogin(mockLogin as any);
 		expect(result.success).toBe(false);
 		expect(result.errors?._form?.[0]).toContain('challenge');
 	});
 
 	it('returns an error when the session challenge has been cleared', async () => {
-		vi.mocked(sessions.load).mockResolvedValue({ challenge: null } as any);
+		vi.mocked(sessions.loadFromRequest).mockResolvedValue({ challenge: null } as any);
 		const result = await finishPasskeyLogin(mockLogin as any);
 		expect(result.success).toBe(false);
 	});
@@ -252,7 +252,7 @@ describe('finishPasskeyLogin', () => {
 	// Clearing challenge simultaneously makes it single-use.
 	it('saves the userId to the session and clears the challenge on success', async () => {
 		await finishPasskeyLogin(mockLogin as any);
-		expect(sessions.save).toHaveBeenCalledWith(expect.anything(), { userId: 'user-id', challenge: null });
+		expect(sessions.upsert).toHaveBeenCalledWith(null, expect.anything(), { userId: 'user-id', challenge: null });
 	});
 
 	it('returns success when all steps complete', async () => {
@@ -271,7 +271,7 @@ describe('analytics tracking', () => {
 	describe('startPasskeyLogin', () => {
 		beforeEach(() => {
 			vi.mocked(generateAuthenticationOptions).mockResolvedValue(mockOptions as any);
-			vi.mocked(sessions.save).mockResolvedValue(undefined as any);
+			vi.mocked(sessions.upsert).mockResolvedValue(undefined as any);
 		});
 
 		it('tracks a successful start attempt', async () => {
@@ -291,8 +291,8 @@ describe('analytics tracking', () => {
 
 	describe('finishPasskeyLogin', () => {
 		beforeEach(() => {
-			vi.mocked(sessions.load).mockResolvedValue({ challenge: 'stored-challenge' } as any);
-			vi.mocked(sessions.save).mockResolvedValue(undefined as any);
+			vi.mocked(sessions.loadFromRequest).mockResolvedValue({ challenge: 'stored-challenge' } as any);
+			vi.mocked(sessions.upsert).mockResolvedValue(undefined as any);
 			vi.mocked(getCredentialById).mockResolvedValue(mockCredential as any);
 			vi.mocked(verifyAuthenticationResponse).mockResolvedValue(mockVerification as any);
 			vi.mocked(updateCredentialCounter).mockResolvedValue(undefined as any);
@@ -300,7 +300,7 @@ describe('analytics tracking', () => {
 		});
 
 		it('tracks a failed attempt when no challenge is in the session', async () => {
-			vi.mocked(sessions.load).mockResolvedValue(null as any);
+			vi.mocked(sessions.loadFromRequest).mockResolvedValue(null as any);
 
 			await finishPasskeyLogin(mockLogin as any);
 

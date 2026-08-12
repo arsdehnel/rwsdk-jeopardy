@@ -8,7 +8,7 @@ vi.mock('@/repositories', () => ({
 
 vi.mock('@/durable-objects', () => ({
 	sessions: {
-		remove: vi.fn(),
+		clear: vi.fn(),
 	},
 }));
 
@@ -87,6 +87,6 @@ describe('userMiddleware', () => {
 
 		await userMiddleware(mockRequestInfo as any);
 
-		expect(sessions.remove).toHaveBeenCalledWith(mockRequestInfo.request, expect.any(Headers));
+		expect(sessions.clear).toHaveBeenCalledWith(mockRequestInfo.request, expect.any(Headers));
 	});
 });

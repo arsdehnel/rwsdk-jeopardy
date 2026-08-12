@@ -34,7 +34,7 @@ export async function startPasskeyRegistration(username: string): Promise<Action
 			},
 		});
 
-		await sessions.save(response.headers, { challenge: options.challenge });
+		await sessions.upsert(null, response.headers, { challenge: options.challenge });
 
 		return successResponse(options);
 	} catch (err) {
@@ -49,7 +49,7 @@ export async function finishPasskeyRegistration(
 	const { request, response } = requestInfo;
 	const { origin } = getWebAuthnConfig(requestInfo.request);
 
-	const session = await sessions.load(request);
+	const session = await sessions.loadFromRequest(request, response.headers);
 	const challenge = session?.challenge;
 
 	if (!challenge) {
@@ -67,7 +67,7 @@ export async function finishPasskeyRegistration(
 		return errorResponse('Invalid passkey registration', 400);
 	}
 
-	await sessions.save(response.headers, { challenge: null });
+	await sessions.upsert(session.sessionId, response.headers, { challenge: null });
 
 	const userParsed = usersSchemas.form.safeParse({ username });
 	if (!userParsed.success) {
