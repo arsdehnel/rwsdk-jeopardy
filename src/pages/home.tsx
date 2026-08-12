@@ -12,6 +12,9 @@ export default async function Pages__Home({ ctx }: RequestInfo): Promise<React.J
 				realtime hook. But it's grown into a pretty nice setup for playing a Jeopardy-style game in a group setting with
 				contestants each on their own devices.
 			</p>
+			<div>
+				<pre>{JSON.stringify(ctx, null, 4)}</pre>
+			</div>
 		</SetupLayout>
 	);
 }

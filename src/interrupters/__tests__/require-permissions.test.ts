@@ -5,6 +5,12 @@ const mockRequestInfo = {
 	ctx: {
 		user: null as { id: string; role?: string | null } | null,
 		permissions: [] as string[],
+		logger: {
+			info: vi.fn(),
+			debug: vi.fn(),
+			warn: vi.fn(),
+			error: vi.fn(),
+		},
 	},
 };
 

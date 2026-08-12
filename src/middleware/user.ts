@@ -13,7 +13,7 @@ export default async function userMiddleware({
 			ctx.logger = ctx.logger.child({ userId: ctx.user.id });
 		} catch (err) {
 			ctx.logger.error(`Error fetching current user: ${err}`);
-			await sessions.remove(request, response.headers);
+			await sessions.clear(request, response.headers);
 			response.headers.set('Location', '/');
 
 			return Response.json(null, {

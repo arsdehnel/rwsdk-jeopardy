@@ -59,6 +59,10 @@
 		{
 			"binding": "AED_LOGIN_ATTEMPTS",
 			"dataset": "login_attempts_local"
+		},
+		{
+			"binding": "AED_SESSION_LIFECYCLE",
+			"dataset": "session_lifecycle_local"
 		}
 	],
 	"d1_databases": [
@@ -92,6 +96,10 @@
 				{
 					"binding": "AED_LOGIN_ATTEMPTS",
 					"dataset": "login_attempts_integration"
+				},
+				{
+					"binding": "AED_SESSION_LIFECYCLE",
+					"dataset": "session_lifecycle_local"
 				}
 			],
 			"durable_objects": {

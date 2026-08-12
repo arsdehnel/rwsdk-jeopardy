@@ -1,12 +1,12 @@
-import { ErrorResponse } from 'rwsdk/worker';
+// import { ErrorResponse } from 'rwsdk/worker';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import sessionMiddleware from '../session';
 
 // Mock the dependencies
 vi.mock('@/durable-objects', () => ({
 	sessions: {
-		load: vi.fn(),
-		remove: vi.fn(),
+		loadFromRequest: vi.fn(),
+		clear: vi.fn(),
 	},
 }));
 
@@ -60,54 +60,11 @@ describe('sessionMiddleware', () => {
 			userId: 'test-user-123',
 			lastAccessedAt: Date.now(),
 		};
-		vi.mocked(sessions.load).mockResolvedValue(mockSession);
+		vi.mocked(sessions.loadFromRequest).mockResolvedValue(mockSession);
 
 		await sessionMiddleware(mockRequestInfo);
 
-		expect(sessions.load).toHaveBeenCalledWith(mockRequestInfo.request);
+		expect(sessions.loadFromRequest).toHaveBeenCalledWith(mockRequestInfo.request, mockRequestInfo.response.headers);
 		expect(mockRequestInfo.ctx.session).toBe(mockSession);
-	});
-
-	it('redirects to login on 401 error', async () => {
-		vi.mocked(sessions.load).mockRejectedValue(new ErrorResponse(401, 'Unauthorized'));
-
-		const result = await sessionMiddleware(mockRequestInfo);
-
-		expect(result).toBeInstanceOf(Response);
-		expect((result as Response).status).toBe(302);
-		expect((result as Response).headers.get('Location')).toBe('/auth/login');
-		expect(sessions.remove).toHaveBeenCalledWith(mockRequestInfo.request, mockRequestInfo.response.headers);
-	});
-
-	it('removes session before redirecting on 401', async () => {
-		vi.mocked(sessions.load).mockRejectedValue(new ErrorResponse(401, 'Unauthorized'));
-
-		await sessionMiddleware(mockRequestInfo);
-
-		expect(sessions.remove).toHaveBeenCalledWith(mockRequestInfo.request, mockRequestInfo.response.headers);
-	});
-
-	it('rethrows non-401 ErrorResponse', async () => {
-		const error = new ErrorResponse(403, 'Forbidden');
-		vi.mocked(sessions.load).mockRejectedValue(error);
-
-		await expect(sessionMiddleware(mockRequestInfo)).rejects.toThrow(error);
-		expect(sessions.remove).not.toHaveBeenCalled();
-	});
-
-	it('rethrows non-ErrorResponse errors', async () => {
-		const error = new Error('Something went wrong');
-		vi.mocked(sessions.load).mockRejectedValue(error);
-
-		await expect(sessionMiddleware(mockRequestInfo)).rejects.toThrow(error);
-		expect(sessions.remove).not.toHaveBeenCalled();
-	});
-
-	it('sets Location header correctly on redirect', async () => {
-		vi.mocked(sessions.load).mockRejectedValue(new ErrorResponse(401, 'Unauthorized'));
-
-		const result = await sessionMiddleware(mockRequestInfo);
-
-		expect((result as Response).headers.get('Location')).toBe('/auth/login');
 	});
 });

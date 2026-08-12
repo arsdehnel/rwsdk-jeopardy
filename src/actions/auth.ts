@@ -25,7 +25,7 @@ export async function startPasskeyLogin(): Promise<ActionState<PublicKeyCredenti
 			allowCredentials: [],
 		});
 
-		await sessions.save(response.headers, { challenge: options.challenge });
+		await sessions.upsert(null, response.headers, { challenge: options.challenge });
 		trackLoginAttempt({
 			type: 'PASSKEY',
 			stage: 'START',
@@ -51,8 +51,10 @@ export async function finishPasskeyLogin(login: AuthenticationResponseJSON): Pro
 		const taskLogger = requestInfo.ctx.logger.child({ task: 'passkey-login' });
 		taskLogger.debug('Passkey login attempt', { credentialId: login.id });
 
-		const session = await sessions.load(request);
+		const session = await sessions.loadFromRequest(request, response.headers);
 		const challenge = session?.challenge;
+
+		taskLogger.debug('Session loaded from request: ', { session });
 
 		if (!challenge) {
 			trackLoginAttempt({
@@ -113,7 +115,7 @@ export async function finishPasskeyLogin(login: AuthenticationResponseJSON): Pro
 
 		taskLogger.debug('User resolved', { userId: user.id });
 
-		await sessions.save(response.headers, {
+		await sessions.upsert(session.sessionId, response.headers, {
 			userId: user.id,
 			challenge: null,
 		});

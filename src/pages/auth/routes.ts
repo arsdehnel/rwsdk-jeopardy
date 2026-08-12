@@ -6,7 +6,7 @@ import Pages__auth__login from './login';
 
 async function logoutRedirect({ request }: RequestInfo): Promise<Response> {
 	const headers = new Headers();
-	await sessions.remove(request, headers);
+	await sessions.clear(request, headers);
 	headers.set('Location', '/');
 
 	return new Response(null, {

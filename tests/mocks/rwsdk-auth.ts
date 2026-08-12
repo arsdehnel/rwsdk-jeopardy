@@ -1,2 +1,3 @@
-export const MAX_SESSION_DURATION = 1209600000; // 14 days in ms
-export const defineDurableSession = () => ({});
+// export const MAX_SESSION_DURATION = 1209600000; // 14 days in ms
+// export const defineDurableSession = () => ({});
+// export const defineSessionStore = () => ({});
