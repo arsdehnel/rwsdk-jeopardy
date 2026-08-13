@@ -36,13 +36,13 @@
 				"class_name": "SessionDurableObject"
 			},
 			{
-				"name": "SYNCED_STATE_SERVER",
-				"class_name": "SyncedStateServer"
+				"name": "GAME_STATE_SYNC_DURABLE_OBJECT",
+				"class_name": "GameStateSyncDurableObject"
 			}
 		]
 	},
 	"exports": {
-		"SyncedStateServer": {
+		"GameStateSyncDurableObject": {
 			"type": "durable-object",
 			"storage": "sqlite"
 		},
@@ -109,8 +109,8 @@
 						"class_name": "SessionDurableObject"
 					},
 					{
-						"name": "SYNCED_STATE_SERVER",
-						"class_name": "SyncedStateServer"
+						"name": "GAME_STATE_SYNC_DURABLE_OBJECT",
+						"class_name": "GameStateSyncDurableObject"
 					}
 				]
 			}
@@ -145,8 +145,8 @@
 						"class_name": "SessionDurableObject"
 					},
 					{
-						"name": "SYNCED_STATE_SERVER",
-						"class_name": "SyncedStateServer"
+						"name": "GAME_STATE_SYNC_DURABLE_OBJECT",
+						"class_name": "GameStateSyncDurableObject"
 					}
 				]
 			}

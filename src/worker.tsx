@@ -1,6 +1,6 @@
 import { env } from 'cloudflare:workers';
 import { except, prefix, render, route } from 'rwsdk/router';
-import { SyncedStateServer, syncedStateRoutes } from 'rwsdk/use-synced-state/worker';
+import { syncedStateRoutes } from 'rwsdk/use-synced-state/worker';
 import { type DefaultAppContext, defineApp, type RequestInfo } from 'rwsdk/worker';
 
 import Document from '@/document';
@@ -19,8 +19,7 @@ import userMiddleware from './middleware/user';
 import Pages__not_found from './pages/not-found';
 import { handlePageError } from './worker-error';
 
-export { SessionDurableObject } from '@/durable-objects/sessions';
-export { SyncedStateServer };
+export { GameStateSyncDurableObject, SessionDurableObject } from '@/durable-objects';
 
 export default defineApp([
 	botMiddleware,
@@ -29,7 +28,7 @@ export default defineApp([
 	sessionMiddleware,
 	userMiddleware,
 	permissionsMiddleware,
-	...syncedStateRoutes(() => env.SYNCED_STATE_SERVER),
+	...syncedStateRoutes(() => env.GAME_STATE_SYNC_DURABLE_OBJECT),
 	render(Document, [
 		except<RequestInfo<DefaultAppContext>>(handlePageError),
 		route('/', Pages__Home),
