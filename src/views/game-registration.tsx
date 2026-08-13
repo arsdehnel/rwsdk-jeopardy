@@ -1,9 +1,9 @@
 'use client';
 import { QRCodeSVG } from 'qrcode.react';
-import { ContestantRegistration, CurrentRegistration, DisplayRegistration, HostRegistration } from '@/components/setup';
-import useGamePhaseSetupState from '@/hooks/use-game-phase-setup-state';
+import { ContestantRegistration, CurrentRegistration, DisplayRegistration, HostRegistration } from '@/components/registration';
+import useGamePhaseRegistrationState from '@/hooks/use-game-phase-registration-state';
 
-export default function ViewGameSetup({
+export default function ViewGameRegistration({
 	gameUrl,
 	gameId,
 	sessionId,
@@ -32,7 +32,7 @@ export default function ViewGameSetup({
 		currentUserRole,
 		hasDisplay,
 		hasHost,
-	} = useGamePhaseSetupState(sessionId, gameId);
+	} = useGamePhaseRegistrationState(sessionId, gameId);
 
 	if (!sessionId) {
 		return (
@@ -41,8 +41,8 @@ export default function ViewGameSetup({
 	}
 
 	return (
-		<div className="view-game-setup">
-			<div className="view-game-setup-actions">
+		<div className="view-game-registration">
+			<div className="view-game-registration-actions">
 				{currentUserRole ? (
 					<CurrentRegistration
 						currentUserRole={currentUserRole}
@@ -63,7 +63,7 @@ export default function ViewGameSetup({
 					})}
 				</div>
 			</div>
-			<div className="view-game-setup-qr-code">
+			<div className="view-game-registration-qr-code">
 				<QRCodeSVG value={gameUrl} size={400} />
 			</div>
 		</div>

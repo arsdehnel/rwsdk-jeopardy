@@ -1,9 +1,9 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import SetupLayout from '@/layouts/setup';
 import { getGameById } from '@/repositories';
-import ViewGameSetup from '@/views/game-setup';
+import ViewGameRegistration from '@/views/game-registration';
 
-export default async function Pages__Games__Setup({ params, ctx, request }: RequestInfo): Promise<React.JSX.Element> {
+export default async function Pages__Games__Registration({ params, ctx, request }: RequestInfo): Promise<React.JSX.Element> {
 	try {
 		const gameId = params.gameId;
 		if (!gameId) {
@@ -23,7 +23,7 @@ export default async function Pages__Games__Setup({ params, ctx, request }: Requ
 
 		return (
 			<SetupLayout pageTitle={`Setup Game ${game.id}`} ctx={ctx} currentBasePage="games">
-				<ViewGameSetup gameId={gameId} gameUrl={gameUrl} sessionId={sessionId} userId={ctx.user?.id} />
+				<ViewGameRegistration gameId={gameId} gameUrl={gameUrl} sessionId={sessionId} userId={ctx.user?.id} />
 			</SetupLayout>
 		);
 	} catch (err) {
