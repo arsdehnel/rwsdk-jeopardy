@@ -1,6 +1,6 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import { KADLink } from '@/components/design-system';
-import CategorySelector from '@/components/setup/category-selector';
+import { CategorySelector } from '@/components/setup/category-selector';
 import GameForm from '@/forms/game';
 import SetupLayout from '@/layouts/setup';
 import { getCategories } from '@/repositories';
