@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 import type { Connection, Connections, Permission, Role } from '@/types';
-import { KADButton } from '../design-system';
+import { KADButton } from './design-system';
 
 export function MemberSelect({
 	connections,
