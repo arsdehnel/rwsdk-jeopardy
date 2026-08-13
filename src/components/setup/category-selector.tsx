@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { generateCategory, saveCategory } from '@/actions/categories';
 import { KADButton } from '@/components/design-system';
 import type { CategoryDBRead, GeneratedCategory, Permission } from '@/types';
-import ViewCategory from './view-category';
+import { ViewCategory } from './view-category';
 
-export default function CategorySelector({
+export function CategorySelector({
 	categories,
 	userPermissions,
 }: {

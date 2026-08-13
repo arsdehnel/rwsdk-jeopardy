@@ -1,6 +1,7 @@
+'use client';
 import type { GeneratedCategory } from '@/types';
 
-export default function ViewCategory({ name, clues }: GeneratedCategory): React.ReactNode {
+export function ViewCategory({ name, clues }: GeneratedCategory): React.ReactNode {
 	return (
 		<>
 			<p>{name}</p>

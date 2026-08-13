@@ -14,6 +14,7 @@ const columns: KADTableColumn[] = [
 		actions: [
 			{ type: 'link', hrefProp: 'editUrl', label: 'Edit', requiredPermission: 'games:update' },
 			{ type: 'link', hrefProp: 'playUrl', label: 'Play', requiredPermission: 'games:update' },
+			{ type: 'link', hrefProp: 'setupUrl', label: 'Setup', requiredPermission: 'games:update' },
 		],
 	},
 ];
@@ -27,6 +28,7 @@ export default async function Pages__Games__Listing({ ctx }: RequestInfo): Promi
 		...g,
 		editUrl: `/games/${g.id}/edit`,
 		playUrl: `/games/${g.id}/play`,
+		setupUrl: `/games/${g.id}/setup`,
 	}));
 
 	return (
