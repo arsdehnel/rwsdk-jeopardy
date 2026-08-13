@@ -1,0 +1,42 @@
+import type { RequestInfo } from 'rwsdk/worker';
+import SetupLayout from '@/layouts/setup';
+import { getCategoriesForGameStage, getGameById } from '@/repositories';
+import ViewGamePlay from '@/views/game-play';
+
+export default async function Pages__Games__Play({ params, ctx }: RequestInfo): Promise<React.JSX.Element> {
+	try {
+		const gameId = params.gameId;
+		if (!gameId) {
+			return <p>Game ID not provided</p>;
+		}
+
+		const sessionId = ctx?.session?.sessionId;
+		if (!sessionId) {
+			return <p>Session ID not found, please refresh the page.</p>;
+		}
+
+		const game = await getGameById(gameId, ctx.logger);
+		if (!game) {
+			return <p>Game not found</p>;
+		}
+		const currentStage = game.stages.find(stage => stage.stage === game.currentStage);
+		const categoryIds =
+			currentStage?.categories.sort((a, b) => a.position - b.position).map(gmStgCtgry => gmStgCtgry.categoryId) || [];
+		const categories = await getCategoriesForGameStage(categoryIds, game.currentStage, ctx.logger);
+
+		return (
+			<SetupLayout pageTitle={`Play Game ${game.id}`} ctx={ctx} currentBasePage="games">
+				<ViewGamePlay
+					currentUserRole="contestant"
+					contestants={[]}
+					gameId={gameId}
+					sessionId={sessionId}
+					categories={categories}
+				/>
+			</SetupLayout>
+		);
+	} catch (err) {
+		ctx.logger.error('Unexpected error in Pages__Games__Play', { err: err instanceof Error ? err : new Error(String(err)) });
+		return <p>Unexpected error occurred. Please try again later.</p>;
+	}
+}
