@@ -23,7 +23,13 @@ export default async function Pages__Games__Registration({ params, ctx, request 
 
 		return (
 			<SetupLayout pageTitle={`Setup Game ${game.id}`} ctx={ctx} currentBasePage="games">
-				<ViewGameRegistration gameId={gameId} gameUrl={gameUrl} sessionId={sessionId} userId={ctx.user?.id} />
+				<ViewGameRegistration
+					gameId={gameId}
+					gameUrl={gameUrl}
+					sessionId={sessionId}
+					userId={ctx.user?.id}
+					userPermissions={ctx.permissions}
+				/>
 			</SetupLayout>
 		);
 	} catch (err) {

@@ -24,7 +24,12 @@ export async function createGame(game: GameRepoInput, userId: string, logger: KA
 	return createdGames[0];
 }
 
-export async function updateGame(gameId: string, game: GameRepoInput, userId: string, logger: KADLogger): Promise<GameDBRead> {
+export async function updateGame(
+	gameId: string,
+	game: Partial<GameRepoInput>,
+	userId: string,
+	logger: KADLogger,
+): Promise<GameDBRead> {
 	if (!validateUuid(gameId)) {
 		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [gameId, 'Game']);
 	}
@@ -35,6 +40,7 @@ export async function updateGame(gameId: string, game: GameRepoInput, userId: st
 		.update(games)
 		.set({
 			...game,
+			updatedAt: sql`(datetime('now', 'localtime'))`,
 			updatedBy: userId,
 		})
 		.where(eq(games.id, gameId))
@@ -78,7 +84,7 @@ export async function getGameById(gameId: string, logger: KADLogger): Promise<Ga
 		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [0, 1, 'Game']);
 	}
 
-	logger.debug(`Fetched recipe ${gameId}`);
+	logger.debug(`Fetched game ${gameId}`);
 	return game;
 }
 

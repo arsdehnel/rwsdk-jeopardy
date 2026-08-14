@@ -2,6 +2,7 @@ import { defineRelations } from 'drizzle-orm';
 import { categories } from './categories';
 import { clues } from './clues';
 import { credentials } from './credentials';
+import { gameContestants } from './game-contestants';
 import { gameStageCategories } from './game-stage-categories';
 import { gameStages } from './game-stages';
 import { games } from './games';
@@ -9,7 +10,7 @@ import { users } from './users';
 import { verifications } from './verifications';
 
 export default defineRelations(
-	{ credentials, users, clues, categories, games, gameStages, gameStageCategories, verifications },
+	{ credentials, users, clues, categories, games, gameContestants, gameStages, gameStageCategories, verifications },
 	r => ({
 		users: {
 			credentials: r.many.credentials({
@@ -61,6 +62,18 @@ export default defineRelations(
 			stages: r.many.gameStages({
 				from: r.games.id,
 				to: r.gameStages.gameId,
+				where: {
+					deletedAt: { isNull: true },
+				},
+			}),
+			host: r.one.users({
+				from: r.games.hostUserId,
+				to: r.users.id,
+				optional: true,
+			}),
+			contestants: r.many.gameContestants({
+				from: r.games.id,
+				to: r.gameContestants.gameId,
 				where: {
 					deletedAt: { isNull: true },
 				},
