@@ -14,6 +14,8 @@ export const games = snakeCase.table(
 			.notNull()
 			.references((): AnySQLiteColumn => users.id),
 		phase: text({ enum: gamePhaseEnum }).default('SETUP').notNull(),
+		displaySessionId: text(),
+		hostUserId: text().references((): AnySQLiteColumn => users.id),
 		currentStage: text({ enum: gameStageEnum }).notNull(),
 		createdAt: text().notNull().default(sql`(datetime('now', 'localtime'))`),
 		createdBy: text()

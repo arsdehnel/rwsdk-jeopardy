@@ -31,6 +31,7 @@ const permissions = {
 	games: {
 		read: ['*'],
 		create: ['BASIC', 'ADMIN'],
+		host: ['BASIC', 'ADMIN'],
 		update: ['BASIC', 'ADMIN'],
 		register: ['*'],
 		unregister: ['*'],

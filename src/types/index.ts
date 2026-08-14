@@ -6,6 +6,7 @@ export * from './connection';
 export * from './connections';
 export * from './contestant';
 export * from './credentials';
+export * from './game-contestants';
 export * from './game-stage-categories';
 export * from './game-stages';
 export * from './games';

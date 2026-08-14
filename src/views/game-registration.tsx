@@ -1,18 +1,27 @@
 'use client';
 import { QRCodeSVG } from 'qrcode.react';
-import { ContestantRegistration, CurrentRegistration, DisplayRegistration, HostRegistration } from '@/components/registration';
+import {
+	ContestantRegistration,
+	CurrentRegistration,
+	DisplayRegistration,
+	HostOptions,
+	HostRegistration,
+} from '@/components/registration';
 import useGamePhaseRegistrationState from '@/hooks/use-game-phase-registration-state';
+import type { Permission } from '@/types';
 
 export default function ViewGameRegistration({
 	gameUrl,
 	gameId,
 	sessionId,
 	userId,
+	userPermissions,
 }: {
 	gameUrl: string;
 	gameId: string;
 	sessionId: string;
 	userId?: string;
+	userPermissions: Permission[];
 }): React.ReactNode {
 	const {
 		// host
@@ -20,6 +29,7 @@ export default function ViewGameRegistration({
 		unregisterAsHost,
 
 		// display
+		display,
 		registerAsDisplay,
 		unregisterAsDisplay,
 
@@ -44,16 +54,19 @@ export default function ViewGameRegistration({
 		<div className="view-game-registration">
 			<div className="view-game-registration-actions">
 				{currentUserRole ? (
-					<CurrentRegistration
-						currentUserRole={currentUserRole}
-						unregisterAsDisplay={unregisterAsDisplay}
-						unregisterAsHost={unregisterAsHost}
-						unregisterAsContestant={unregisterAsContestant}
-					/>
+					<>
+						<CurrentRegistration
+							currentUserRole={currentUserRole}
+							unregisterAsDisplay={unregisterAsDisplay}
+							unregisterAsHost={unregisterAsHost}
+							unregisterAsContestant={unregisterAsContestant}
+						/>
+						{currentUserRole === 'host' && <HostOptions gameId={gameId} display={display} contestants={contestants} />}
+					</>
 				) : (
 					<>
 						{!hasDisplay && <DisplayRegistration registerAsDisplay={registerAsDisplay} />}
-						{!hasHost && <HostRegistration registerAsHost={registerAsHost} />}
+						{!hasHost && <HostRegistration registerAsHost={registerAsHost} userPermissions={userPermissions} />}
 						<ContestantRegistration registerAsContestant={registerAsContestant} userId={userId} />
 					</>
 				)}

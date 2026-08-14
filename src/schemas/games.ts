@@ -16,6 +16,19 @@ const formSchema = z.object({
 	stages: z.array(stageSchema).min(1).max(4),
 });
 
+const contestantSchema = z.object({
+	sessionId: z.string().uuid('Must be a valid UUID'),
+	userId: z.string().uuid('Must be a valid UUID').optional(),
+	name: z.string(),
+});
+
+const registrationSchema = z.object({
+	gameId: z.string().uuid('Must be a valid UUID'),
+	displaySessionId: z.string().uuid('Must be a valid UUID'),
+	contestants: z.array(contestantSchema).min(2),
+});
+
 export const gamesSchemas = {
 	form: formSchema,
+	registration: registrationSchema,
 };

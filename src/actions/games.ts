@@ -1,13 +1,15 @@
 'use server';
+import { env } from 'cloudflare:workers';
 import { requestInfo, serverAction } from 'rwsdk/worker';
 import { requireAuthentication, requirePermissions } from '@/interrupters';
-import { getGameById, saveGameStageCategories } from '@/repositories';
+import { getGameById, saveGameContestants, saveGameStageCategories, updateGame } from '@/repositories';
 import { gamesSchemas } from '@/schemas';
 import { saveGameStages, saveGame as saveGameStep } from '@/steps';
-import type { ActionState, GameFormInput, GameWithEverything } from '@/types';
+import type { ActionState, Contestant, GameDBRead, GameFormInput, GameWithEverything } from '@/types';
 import { errorResponse, successResponse } from './utils';
 
 export const saveGame = serverAction([requireAuthentication, requirePermissions('games:create', 'games:update'), _saveGame]);
+export const startGame = serverAction([requireAuthentication, requirePermissions('games:host', 'games:update'), _startGame]);
 
 export async function _saveGame(game: GameFormInput): Promise<ActionState<GameWithEverything>> {
 	const { ctx } = requestInfo;
@@ -42,4 +44,48 @@ export async function _saveGame(game: GameFormInput): Promise<ActionState<GameWi
 		requestInfo.ctx.logger.error('Unexpected error', { err: err instanceof Error ? err : new Error(String(err)) });
 		return errorResponse(err);
 	}
+}
+
+type GameRegistrationState = {
+	gameId: string;
+	displaySessionId: string;
+	contestants: Contestant[];
+};
+
+export async function _startGame(registrationState: GameRegistrationState): Promise<ActionState<GameDBRead>> {
+	const { ctx } = requestInfo;
+	// biome-ignore lint/style/noNonNullAssertion: guaranteed by requireAuthentication in serverAction chain
+	const userId = ctx.user!.id;
+
+	const syncDOStateStub = env.GAME_STATE_SYNC_DURABLE_OBJECT.getByName(registrationState.gameId);
+	const syncState = {
+		contestants: await syncDOStateStub.getState('contestants'),
+		display: await syncDOStateStub.getState('display'),
+		host: await syncDOStateStub.getState('host'),
+	};
+
+	// syncState[Symbol.dispose]();
+
+	const parsed = gamesSchemas.registration.safeParse(registrationState);
+	requestInfo.ctx.logger.info(`Received game to be started: ${JSON.stringify(parsed.data)}`);
+	if (parsed.error) {
+		return errorResponse<GameDBRead>(parsed.error.flatten().fieldErrors, 400);
+	}
+	if (!parsed.data) {
+		return errorResponse<GameDBRead>(`Game registration not be validated properly`);
+	}
+	const parsedGame = parsed.data;
+
+	await updateGame(
+		parsedGame.gameId,
+		{ phase: 'PLAYING', displaySessionId: syncState.display, hostUserId: userId },
+		userId,
+		ctx.logger,
+	);
+
+	await saveGameContestants(parsedGame.gameId, parsedGame.contestants, userId, ctx.logger);
+
+	const updatedGame = await getGameById(registrationState.gameId, ctx.logger);
+
+	return successResponse<GameDBRead>(updatedGame);
 }
