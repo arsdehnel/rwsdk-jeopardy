@@ -82,7 +82,7 @@ export default function GameClient({
 		);
 	}
 
-	if (gamePhase === 'FINISHED') {
+	if (gamePhase === 'FINISH') {
 		return <FinishedView connections={connections} scores={scores} />;
 	}
 

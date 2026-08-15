@@ -106,7 +106,7 @@ export default function useGameState(sessionId: string, gameId: string): GameSta
 	const hasDisplay: boolean = !!connections.display;
 
 	const startGame = (): void => {
-		setGamePhase('PLAYING');
+		setGamePhase('PLAY');
 		const randomContestantId =
 			connections.contestants.length > 0
 				? connections.contestants[Math.floor(Math.random() * connections.contestants.length)].id
@@ -121,7 +121,7 @@ export default function useGameState(sessionId: string, gameId: string): GameSta
 	};
 
 	const finishGame = (): void => {
-		setGamePhase('FINISHED');
+		setGamePhase('FINISH');
 		setSelectedClue(null);
 		setBuzzerQueue([]);
 	};
