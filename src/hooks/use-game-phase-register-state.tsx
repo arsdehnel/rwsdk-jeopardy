@@ -2,7 +2,7 @@ import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import { ConnectionConflictError } from '@/errors';
 import type { Contestant, Role } from '@/types';
 
-export type GamePhaseRegistrationState = {
+export type GamePhaseRegisterState = {
 	// display
 	display: string | undefined;
 	registerAsDisplay: () => void;
@@ -24,7 +24,7 @@ export type GamePhaseRegistrationState = {
 	hasHost: boolean;
 };
 
-export default function useGamePhaseRegistrationState(sessionId: string, gameId: string): GamePhaseRegistrationState {
+export default function useGamePhaseRegisterState(sessionId: string, gameId: string): GamePhaseRegisterState {
 	const [host, setHost] = useSyncedState<string | undefined>(undefined, 'host', gameId);
 	const [display, setDisplay] = useSyncedState<string | undefined>(undefined, 'display', gameId);
 	const [contestants, setContestants] = useSyncedState<Contestant[]>([], 'contestants', gameId);

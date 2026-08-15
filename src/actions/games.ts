@@ -46,46 +46,46 @@ export async function _saveGame(game: GameFormInput): Promise<ActionState<GameWi
 	}
 }
 
-type GameRegistrationState = {
+type GameRegisterState = {
 	gameId: string;
 	displaySessionId: string;
 	contestants: Contestant[];
 };
 
-export async function _startGame(registrationState: GameRegistrationState): Promise<ActionState<GameDBRead>> {
+export async function _startGame(registerState: GameRegisterState): Promise<ActionState<GameDBRead>> {
 	const { ctx } = requestInfo;
 	// biome-ignore lint/style/noNonNullAssertion: guaranteed by requireAuthentication in serverAction chain
 	const userId = ctx.user!.id;
 
-	const syncDOStateStub = env.GAME_STATE_SYNC_DURABLE_OBJECT.getByName(registrationState.gameId);
+	const syncDOStateStub = env.GAME_STATE_SYNC_DURABLE_OBJECT.getByName(registerState.gameId);
 	const syncState = {
 		contestants: await syncDOStateStub.getState('contestants'),
 		display: await syncDOStateStub.getState('display'),
 		host: await syncDOStateStub.getState('host'),
 	};
 
-	// syncState[Symbol.dispose]();
-
-	const parsed = gamesSchemas.registration.safeParse(registrationState);
+	const parsed = gamesSchemas.register.safeParse(registerState);
 	requestInfo.ctx.logger.info(`Received game to be started: ${JSON.stringify(parsed.data)}`);
 	if (parsed.error) {
 		return errorResponse<GameDBRead>(parsed.error.flatten().fieldErrors, 400);
 	}
 	if (!parsed.data) {
-		return errorResponse<GameDBRead>(`Game registration not be validated properly`);
+		return errorResponse<GameDBRead>(`Game register could not be validated properly`);
 	}
 	const parsedGame = parsed.data;
 
+	await saveGameContestants(parsedGame.gameId, parsedGame.contestants, userId, ctx.logger);
+
 	await updateGame(
 		parsedGame.gameId,
-		{ phase: 'PLAYING', displaySessionId: syncState.display, hostUserId: userId },
+		{ phase: 'PLAY', displaySessionId: syncState.display, hostUserId: userId },
 		userId,
 		ctx.logger,
 	);
 
-	await saveGameContestants(parsedGame.gameId, parsedGame.contestants, userId, ctx.logger);
+	await syncDOStateStub.setState('PLAY', 'gamePhase');
 
-	const updatedGame = await getGameById(registrationState.gameId, ctx.logger);
+	const updatedGame = await getGameById(registerState.gameId, ctx.logger);
 
 	return successResponse<GameDBRead>(updatedGame);
 }

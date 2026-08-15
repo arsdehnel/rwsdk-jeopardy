@@ -1,16 +1,11 @@
 'use client';
 import { QRCodeSVG } from 'qrcode.react';
-import {
-	ContestantRegistration,
-	CurrentRegistration,
-	DisplayRegistration,
-	HostOptions,
-	HostRegistration,
-} from '@/components/registration';
-import useGamePhaseRegistrationState from '@/hooks/use-game-phase-registration-state';
+import { HostOptions, RegisterContestant, RegisterCurrent, RegisterDisplay, RegisterHost } from '@/components/register';
+import useGamePhase from '@/hooks/use-game-phase';
+import useGamePhaseRegisterState from '@/hooks/use-game-phase-register-state';
 import type { Permission } from '@/types';
 
-export default function ViewGameRegistration({
+export default function ViewGameRegister({
 	gameUrl,
 	gameId,
 	sessionId,
@@ -23,6 +18,7 @@ export default function ViewGameRegistration({
 	userId?: string;
 	userPermissions: Permission[];
 }): React.ReactNode {
+	useGamePhase(gameId, 'REGISTER');
 	const {
 		// host
 		registerAsHost,
@@ -42,7 +38,7 @@ export default function ViewGameRegistration({
 		currentUserRole,
 		hasDisplay,
 		hasHost,
-	} = useGamePhaseRegistrationState(sessionId, gameId);
+	} = useGamePhaseRegisterState(sessionId, gameId);
 
 	if (!sessionId) {
 		return (
@@ -51,11 +47,11 @@ export default function ViewGameRegistration({
 	}
 
 	return (
-		<div className="view-game-registration">
-			<div className="view-game-registration-actions">
+		<div className="view-game-register">
+			<div className="view-game-register-actions">
 				{currentUserRole ? (
 					<>
-						<CurrentRegistration
+						<RegisterCurrent
 							currentUserRole={currentUserRole}
 							unregisterAsDisplay={unregisterAsDisplay}
 							unregisterAsHost={unregisterAsHost}
@@ -65,9 +61,9 @@ export default function ViewGameRegistration({
 					</>
 				) : (
 					<>
-						{!hasDisplay && <DisplayRegistration registerAsDisplay={registerAsDisplay} />}
-						{!hasHost && <HostRegistration registerAsHost={registerAsHost} userPermissions={userPermissions} />}
-						<ContestantRegistration registerAsContestant={registerAsContestant} userId={userId} />
+						{!hasDisplay && <RegisterDisplay registerAsDisplay={registerAsDisplay} />}
+						{!hasHost && <RegisterHost registerAsHost={registerAsHost} userPermissions={userPermissions} />}
+						<RegisterContestant registerAsContestant={registerAsContestant} userId={userId} />
 					</>
 				)}
 				<div>
@@ -76,7 +72,7 @@ export default function ViewGameRegistration({
 					})}
 				</div>
 			</div>
-			<div className="view-game-registration-qr-code">
+			<div className="view-game-register-qr-code">
 				<QRCodeSVG value={gameUrl} size={400} />
 			</div>
 		</div>

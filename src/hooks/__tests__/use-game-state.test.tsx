@@ -346,18 +346,18 @@ describe('game phase transitions', () => {
 		expect(result.current.gamePhase).toBe('SETUP');
 	});
 
-	it('transitions to PLAYING on startGame', () => {
+	it('transitions to PLAY on startGame', () => {
 		const { result } = renderHook(() => useGameState('', GAME_ID));
 		act(() => result.current.startGame());
-		expect(result.current.gamePhase).toBe('PLAYING');
+		expect(result.current.gamePhase).toBe('PLAY');
 	});
 
-	it('transitions to finished on finishGame and clears state', () => {
+	it('transitions to finish on finishGame and clears state', () => {
 		const { result } = renderHook(() => useGameState('', GAME_ID));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn(contestant1.id));
 		act(() => result.current.finishGame());
-		expect(result.current.gamePhase).toBe('FINISHED');
+		expect(result.current.gamePhase).toBe('FINISH');
 		expect(result.current.selectedClue).toBeNull();
 		expect(result.current.buzzerQueue).toHaveLength(0);
 	});

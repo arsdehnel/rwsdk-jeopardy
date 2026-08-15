@@ -48,7 +48,6 @@ export default function ViewGamePlay({
 	const timerIsActive = typeof buzzInTimeLeft !== 'undefined';
 	const contestantMode = selectedClue ? 'buzzer' : 'clue-select';
 
-	// game mode PLAYING
 	if (currentUserRole === 'display') {
 		return (
 			<div className="view-display">

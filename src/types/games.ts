@@ -1,6 +1,7 @@
 import type { z } from 'zod';
 import type { games } from '@/models';
 import type { gamesSchemas } from '@/schemas';
+import type { GameContestantDBRead } from './game-contestants';
 import type { GameStageCategoryDBRead } from './game-stage-categories';
 import type { GameStageDBRead } from './game-stages';
 
@@ -10,7 +11,7 @@ export type GameRepoInput = Omit<
 	'createdAt' | 'createdBy' | 'updatedAt' | 'updatedBy' | 'deletedAt' | 'deletedBy'
 >;
 
-export type GamePhaseEnum = 'SETUP' | 'PLAYING' | 'FINISHED';
+export type GamePhaseEnum = 'SETUP' | 'REGISTER' | 'PLAY' | 'FINISH';
 
 // export type GameFormInput = {
 // 	id?: string;
@@ -25,4 +26,5 @@ export type GameWithEverything = GameDBRead & {
 	stages: (GameStageDBRead & {
 		categories: GameStageCategoryDBRead[];
 	})[];
+	contestants: GameContestantDBRead[];
 };

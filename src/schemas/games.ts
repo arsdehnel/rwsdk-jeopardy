@@ -22,7 +22,7 @@ const contestantSchema = z.object({
 	name: z.string(),
 });
 
-const registrationSchema = z.object({
+const registerSchema = z.object({
 	gameId: z.string().uuid('Must be a valid UUID'),
 	displaySessionId: z.string().uuid('Must be a valid UUID'),
 	contestants: z.array(contestantSchema).min(2),
@@ -30,5 +30,5 @@ const registrationSchema = z.object({
 
 export const gamesSchemas = {
 	form: formSchema,
-	registration: registrationSchema,
+	register: registerSchema,
 };

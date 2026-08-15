@@ -13,7 +13,7 @@ const columns: KADTableColumn[] = [
 		label: '',
 		actions: [
 			{ type: 'link', hrefProp: 'editUrl', label: 'Edit', requiredPermission: 'games:update' },
-			{ type: 'link', hrefProp: 'registrationUrl', label: 'Registration', requiredPermission: 'games:update' },
+			{ type: 'link', hrefProp: 'registerUrl', label: 'Register', requiredPermission: 'games:update' },
 			{ type: 'link', hrefProp: 'playUrl', label: 'Play', requiredPermission: 'games:update' },
 		],
 	},
@@ -27,7 +27,7 @@ export default async function Pages__Games__Listing({ ctx }: RequestInfo): Promi
 	const rows = games.map(g => ({
 		...g,
 		editUrl: `/games/${g.id}/edit`,
-		registrationUrl: `/games/${g.id}/registration`,
+		registerUrl: `/games/${g.id}/register`,
 		playUrl: `/games/${g.id}/play`,
 	}));
 
