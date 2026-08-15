@@ -76,6 +76,8 @@ export async function _startGame(registrationState: GameRegistrationState): Prom
 	}
 	const parsedGame = parsed.data;
 
+	await saveGameContestants(parsedGame.gameId, parsedGame.contestants, userId, ctx.logger);
+
 	await updateGame(
 		parsedGame.gameId,
 		{ phase: 'PLAYING', displaySessionId: syncState.display, hostUserId: userId },
@@ -83,7 +85,7 @@ export async function _startGame(registrationState: GameRegistrationState): Prom
 		ctx.logger,
 	);
 
-	await saveGameContestants(parsedGame.gameId, parsedGame.contestants, userId, ctx.logger);
+	await syncDOStateStub.setState('PLAYING', 'gamePhase');
 
 	const updatedGame = await getGameById(registrationState.gameId, ctx.logger);
 

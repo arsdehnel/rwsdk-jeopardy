@@ -10,7 +10,7 @@ export type GameRepoInput = Omit<
 	'createdAt' | 'createdBy' | 'updatedAt' | 'updatedBy' | 'deletedAt' | 'deletedBy'
 >;
 
-export type GamePhaseEnum = 'SETUP' | 'PLAYING' | 'FINISHED';
+export type GamePhaseEnum = 'SETUP' | 'REGISTRATION' | 'PLAYING' | 'FINISHED';
 
 // export type GameFormInput = {
 // 	id?: string;

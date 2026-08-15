@@ -7,6 +7,7 @@ import {
 	HostOptions,
 	HostRegistration,
 } from '@/components/registration';
+import useGamePhase from '@/hooks/use-game-phase';
 import useGamePhaseRegistrationState from '@/hooks/use-game-phase-registration-state';
 import type { Permission } from '@/types';
 
@@ -23,6 +24,7 @@ export default function ViewGameRegistration({
 	userId?: string;
 	userPermissions: Permission[];
 }): React.ReactNode {
+	useGamePhase(gameId, 'REGISTRATION');
 	const {
 		// host
 		registerAsHost,
