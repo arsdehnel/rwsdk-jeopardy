@@ -1,4 +1,4 @@
-export function DisplayRegistration({ registerAsDisplay }: { registerAsDisplay: () => void }): React.ReactNode {
+export function RegisterDisplay({ registerAsDisplay }: { registerAsDisplay: () => void }): React.ReactNode {
 	return (
 		<>
 			<p>
@@ -6,7 +6,6 @@ export function DisplayRegistration({ registerAsDisplay }: { registerAsDisplay: 
 				display please start the game on that one.
 			</p>
 			<button
-				className="registration-button"
 				type="button"
 				onClick={(): void => {
 					registerAsDisplay();

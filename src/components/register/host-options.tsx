@@ -18,7 +18,6 @@ export function HostOptions({
 	}
 	return (
 		<button
-			className="registration-button"
 			type="button"
 			onClick={(): void => {
 				startGame({ gameId, displaySessionId: display, contestants });

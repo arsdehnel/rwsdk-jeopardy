@@ -1,6 +1,6 @@
 import type { Permission } from '@/types';
 
-export function HostRegistration({
+export function RegisterHost({
 	registerAsHost,
 	userPermissions,
 }: {
@@ -12,9 +12,8 @@ export function HostRegistration({
 	}
 	return (
 		<>
-			<p>Host registration</p>
+			<p>Host</p>
 			<button
-				className="registration-button"
 				type="button"
 				onClick={(): void => {
 					registerAsHost();

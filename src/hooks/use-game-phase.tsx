@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { navigate } from 'rwsdk/client';
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import { gamePhaseEnum } from '@/models';
 import type { GamePhaseEnum } from '@/types';
@@ -18,7 +19,8 @@ export default function useGamePhase(gameId: string, defaultPhase: GamePhaseEnum
 				document.querySelector('body')?.classList.add(`game-phase-${phase.toLowerCase()}`);
 			}
 		});
-	}, [gamePhase]);
+		navigate(`/games/${gameId}/${gamePhase.toLowerCase()}`, { history: 'replace' });
+	}, [gamePhase, gameId]);
 
 	return {
 		phase: gamePhase,

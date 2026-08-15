@@ -1,9 +1,10 @@
 import type { RequestInfo } from 'rwsdk/worker';
-import GameClient from '@/components/game';
 import SetupLayout from '@/layouts/setup';
 import { getCategoriesForGameStage, getGameById } from '@/repositories';
+import type { Role } from '@/types';
+import ViewGamePlay from '@/views/game-play';
 
-export default async function Pages__Games__Play({ params, ctx, request }: RequestInfo): Promise<React.JSX.Element> {
+export default async function Pages__Games__Play({ params, ctx }: RequestInfo): Promise<React.JSX.Element> {
 	try {
 		const gameId = params.gameId;
 		if (!gameId) {
@@ -24,16 +25,31 @@ export default async function Pages__Games__Play({ params, ctx, request }: Reque
 			currentStage?.categories.sort((a, b) => a.position - b.position).map(gmStgCtgry => gmStgCtgry.categoryId) || [];
 		const categories = await getCategoriesForGameStage(categoryIds, game.currentStage, ctx.logger);
 
-		const gameUrl = new URL(`/games/${gameId}/play`, request.url).href;
+		let currentUserRole: Role | undefined;
+		if (game.displaySessionId === sessionId) {
+			currentUserRole = 'display';
+		} else if (game.hostUserId === ctx.user?.id) {
+			currentUserRole = 'host';
+		} else if (game.contestants.some(c => c.sessionId === sessionId)) {
+			currentUserRole = 'contestant';
+		}
+
+		if (!currentUserRole) {
+			return (
+				<SetupLayout pageTitle={`Play Game ${game.id}`} ctx={ctx} currentBasePage="games">
+					<p>Sorry you don't seem to be a registered contestant in this game</p>
+				</SetupLayout>
+			);
+		}
 
 		return (
 			<SetupLayout pageTitle={`Play Game ${game.id}`} ctx={ctx} currentBasePage="games">
-				<GameClient
-					gameUrl={gameUrl}
+				<ViewGamePlay
+					currentUserRole={currentUserRole}
+					contestants={[]}
 					gameId={gameId}
 					sessionId={sessionId}
 					categories={categories}
-					userPermissions={ctx.permissions}
 				/>
 			</SetupLayout>
 		);

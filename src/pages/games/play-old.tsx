@@ -1,9 +1,9 @@
 import type { RequestInfo } from 'rwsdk/worker';
+import GameClient from '@/components/game';
 import SetupLayout from '@/layouts/setup';
 import { getCategoriesForGameStage, getGameById } from '@/repositories';
-import ViewGamePlay from '@/views/game-play';
 
-export default async function Pages__Games__Play({ params, ctx }: RequestInfo): Promise<React.JSX.Element> {
+export default async function Pages__Games__Play({ params, ctx, request }: RequestInfo): Promise<React.JSX.Element> {
 	try {
 		const gameId = params.gameId;
 		if (!gameId) {
@@ -24,14 +24,16 @@ export default async function Pages__Games__Play({ params, ctx }: RequestInfo): 
 			currentStage?.categories.sort((a, b) => a.position - b.position).map(gmStgCtgry => gmStgCtgry.categoryId) || [];
 		const categories = await getCategoriesForGameStage(categoryIds, game.currentStage, ctx.logger);
 
+		const gameUrl = new URL(`/games/${gameId}/play`, request.url).href;
+
 		return (
 			<SetupLayout pageTitle={`Play Game ${game.id}`} ctx={ctx} currentBasePage="games">
-				<ViewGamePlay
-					currentUserRole="contestant"
-					contestants={[]}
+				<GameClient
+					gameUrl={gameUrl}
 					gameId={gameId}
 					sessionId={sessionId}
 					categories={categories}
+					userPermissions={ctx.permissions}
 				/>
 			</SetupLayout>
 		);

@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 
-export function ContestantRegistration({
+export function RegisterContestant({
 	registerAsContestant,
 	userId,
 }: {
@@ -12,7 +12,7 @@ export function ContestantRegistration({
 
 	return (
 		<>
-			<p>Contestant registration</p>
+			<p>Contestant</p>
 			<label htmlFor="name">Name:</label>
 			<input
 				id="name"
@@ -22,7 +22,6 @@ export function ContestantRegistration({
 				onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setName(e.target.value)}
 			/>
 			<button
-				className="registration-button"
 				type="button"
 				disabled={!name}
 				onClick={(): void => {

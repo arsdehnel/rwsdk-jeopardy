@@ -72,6 +72,7 @@ export async function getGameById(gameId: string, logger: KADLogger): Promise<Ga
 						categories: true,
 					},
 				},
+				contestants: true,
 			},
 		});
 	} catch (err) {

@@ -1,7 +1,7 @@
 'use client';
 import type { Role } from '@/types';
 
-export function CurrentRegistration({
+export function RegisterCurrent({
 	currentUserRole,
 	unregisterAsDisplay,
 	unregisterAsHost,
@@ -17,7 +17,6 @@ export function CurrentRegistration({
 			<div>
 				<p>Registered as Game Display</p>
 				<button
-					className="registration-button"
 					type="button"
 					onClick={(): void => {
 						unregisterAsDisplay();
@@ -34,7 +33,6 @@ export function CurrentRegistration({
 			<div>
 				<p>Registered as Host!</p>
 				<button
-					className="registration-button"
 					type="button"
 					onClick={(): void => {
 						unregisterAsHost();
@@ -51,7 +49,6 @@ export function CurrentRegistration({
 			<div>
 				<p>Registered as Contestant!</p>
 				<button
-					className="registration-button"
 					type="button"
 					onClick={(): void => {
 						unregisterAsContestant();
