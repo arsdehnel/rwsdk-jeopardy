@@ -8,7 +8,6 @@ import headersMiddleware from '@/middleware/headers';
 import sessionMiddleware from '@/middleware/session';
 import adminRoutes from '@/pages/admin/routes';
 import authRoutes from '@/pages/auth/routes';
-import devRoutes from '@/pages/dev/routes';
 import gamesRoutes from '@/pages/games/routes';
 import Pages__Home from '@/pages/home';
 import profileRoutes from '@/pages/profile/routes';
@@ -34,7 +33,6 @@ export default defineApp([
 		route('/', Pages__Home),
 		prefix('/admin', adminRoutes),
 		prefix('/auth', authRoutes),
-		prefix('/dev', devRoutes),
 		prefix('/games', gamesRoutes),
 		prefix('/profile', profileRoutes),
 		route('*', Pages__not_found),
