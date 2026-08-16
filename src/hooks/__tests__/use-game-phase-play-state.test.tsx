@@ -1,23 +1,45 @@
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import useGamePhasePlayState from '@/hooks/use-game-phase-play-state';
-import type { ClueInGame } from '@/types';
+import type { ClueInGame, GameContestantDBRead } from '@/types';
 
 const GAME_ID = 'test-game';
 const SESSION_A = 'session-a';
 const SESSION_B = 'session-b';
+const CONTESTANTS: GameContestantDBRead[] = [
+	{
+		id: SESSION_A,
+		sessionId: SESSION_A,
+	},
+	{
+		id: SESSION_B,
+		sessionId: SESSION_B,
+	},
+].map(c => ({
+	...c,
+	name: null,
+	userId: null,
+	updatedAt: null,
+	updatedBy: null,
+	deletedAt: null,
+	deletedBy: null,
+	score: null,
+	gameId: GAME_ID,
+	createdAt: new Date().toISOString(),
+	createdBy: 'user-id',
+}));
 
 const clue: ClueInGame = { id: crypto.randomUUID(), value: 200, text: 'This is a clue', response: 'What is an answer?' };
 const clue2: ClueInGame = { id: crypto.randomUUID(), value: 400, text: 'Another clue', response: 'What is another answer?' };
 
 describe('initial state', () => {
 	it('has no selected clue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		expect(result.current.selectedClue).toBeNull();
 	});
 
 	it('has an empty buzzer queue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		expect(result.current.buzzerQueue).toHaveLength(0);
 	});
 
@@ -27,30 +49,30 @@ describe('initial state', () => {
 	});
 
 	it('has no buzz-in time left', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		expect(result.current.buzzInTimeLeft).toBeUndefined();
 	});
 
 	it('has empty scores', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		expect(result.current.scores).toEqual({});
 	});
 
 	it('has no used clue ids', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		expect(result.current.usedClueIds).toHaveLength(0);
 	});
 });
 
 describe('selectClue', () => {
 	it('sets the selected clue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		expect(result.current.selectedClue).toEqual(clue);
 	});
 
 	it('sets buzzInTimeLeft to 5', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		expect(result.current.buzzInTimeLeft).toBe(5);
 	});
@@ -58,14 +80,14 @@ describe('selectClue', () => {
 
 describe('abortClue', () => {
 	it('clears the selected clue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.abortClue());
 		expect(result.current.selectedClue).toBeNull();
 	});
 
 	it('clears the buzzer queue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.abortClue());
@@ -73,7 +95,7 @@ describe('abortClue', () => {
 	});
 
 	it('clears buzzInTimeLeft', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.abortClue());
 		expect(result.current.buzzInTimeLeft).toBeUndefined();
@@ -82,21 +104,21 @@ describe('abortClue', () => {
 
 describe('buzzIn', () => {
 	it('adds the current session to the buzzer queue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		expect(result.current.buzzerQueue).toContain(SESSION_A);
 	});
 
 	it('clears buzzInTimeLeft', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		expect(result.current.buzzInTimeLeft).toBeUndefined();
 	});
 
 	it('does not add the same session twice', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.buzzIn());
@@ -128,7 +150,7 @@ describe('buzzIn', () => {
 
 describe('resetBuzzers', () => {
 	it('clears the buzzer queue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.resetBuzzers());
@@ -136,7 +158,7 @@ describe('resetBuzzers', () => {
 	});
 
 	it('resets buzzInTimeLeft to 5', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.resetBuzzers());
@@ -146,20 +168,20 @@ describe('resetBuzzers', () => {
 
 describe('decreaseBuzzerTimeLeft', () => {
 	it('decrements buzzInTimeLeft by 1', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.decreaseBuzzerTimeLeft());
 		expect(result.current.buzzInTimeLeft).toBe(4);
 	});
 
 	it('is a no-op when buzzInTimeLeft is undefined', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.decreaseBuzzerTimeLeft());
 		expect(result.current.buzzInTimeLeft).toBeUndefined();
 	});
 
 	it('is a no-op when buzzInTimeLeft is 0', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.decreaseBuzzerTimeLeft()); // 4
 		act(() => result.current.decreaseBuzzerTimeLeft()); // 3
@@ -173,7 +195,7 @@ describe('decreaseBuzzerTimeLeft', () => {
 
 describe('correctClueResponse', () => {
 	it('clears the selected clue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.correctClueResponse());
@@ -194,7 +216,7 @@ describe('correctClueResponse', () => {
 	});
 
 	it('awards points to the first contestant in the queue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.correctClueResponse());
@@ -202,15 +224,15 @@ describe('correctClueResponse', () => {
 	});
 
 	it('sets the active contestant to the winner', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.correctClueResponse());
-		expect(result.current.activeContestant).toBe(SESSION_A);
+		expect(result.current.activeContestant?.sessionId).toBe(SESSION_A);
 	});
 
 	it('adds the clue id to usedClueIds', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.correctClueResponse());
@@ -218,7 +240,7 @@ describe('correctClueResponse', () => {
 	});
 
 	it('accumulates points across multiple clues', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.correctClueResponse());
@@ -229,7 +251,7 @@ describe('correctClueResponse', () => {
 	});
 
 	it('clears buzzInTimeLeft', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.correctClueResponse());
@@ -237,7 +259,7 @@ describe('correctClueResponse', () => {
 	});
 
 	it('is a no-op when there is no selected clue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.buzzIn());
 		act(() => result.current.correctClueResponse());
 		expect(result.current.buzzerQueue).toHaveLength(1);
@@ -247,7 +269,7 @@ describe('correctClueResponse', () => {
 
 describe('wrongClueResponse', () => {
 	it('deducts points from the first contestant in the queue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.wrongClueResponse());
@@ -268,7 +290,7 @@ describe('wrongClueResponse', () => {
 	});
 
 	it('advances the active contestant to the next in queue', () => {
-		const { result, rerender } = renderHook(({ sessionId }) => useGamePhasePlayState(sessionId, GAME_ID, []), {
+		const { result, rerender } = renderHook(({ sessionId }) => useGamePhasePlayState(sessionId, GAME_ID, CONTESTANTS), {
 			initialProps: { sessionId: SESSION_A },
 		});
 		act(() => result.current.selectClue(clue));
@@ -277,11 +299,11 @@ describe('wrongClueResponse', () => {
 		act(() => result.current.buzzIn());
 		rerender({ sessionId: SESSION_A });
 		act(() => result.current.wrongClueResponse());
-		expect(result.current.activeContestant).toBe(SESSION_B);
+		expect(result.current.activeContestant?.sessionId).toBe(SESSION_B);
 	});
 
 	it('clears active contestant when the last contestant in queue answers wrong', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.wrongClueResponse());
@@ -289,7 +311,7 @@ describe('wrongClueResponse', () => {
 	});
 
 	it('resets buzzInTimeLeft to 5 when the queue empties', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.wrongClueResponse());
@@ -297,7 +319,7 @@ describe('wrongClueResponse', () => {
 	});
 
 	it('is a no-op when there is no selected clue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.buzzIn());
 		act(() => result.current.wrongClueResponse());
 		expect(result.current.buzzerQueue).toHaveLength(1);
@@ -307,14 +329,14 @@ describe('wrongClueResponse', () => {
 
 describe('expireClue', () => {
 	it('clears the selected clue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.expireClue());
 		expect(result.current.selectedClue).toBeNull();
 	});
 
 	it('clears the buzzer queue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.expireClue());
@@ -322,21 +344,21 @@ describe('expireClue', () => {
 	});
 
 	it('adds the clue id to usedClueIds', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.expireClue());
 		expect(result.current.usedClueIds).toContain(clue.id);
 	});
 
 	it('clears buzzInTimeLeft', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.expireClue());
 		expect(result.current.buzzInTimeLeft).toBeUndefined();
 	});
 
 	it('is a no-op when there is no selected clue', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.buzzIn());
 		act(() => result.current.expireClue());
 		expect(result.current.buzzerQueue).toHaveLength(1);
@@ -345,7 +367,7 @@ describe('expireClue', () => {
 
 describe('usedClueIds', () => {
 	it('does not add duplicate clue ids', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, []));
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
 		act(() => result.current.selectClue(clue));
 		act(() => result.current.buzzIn());
 		act(() => result.current.correctClueResponse());
