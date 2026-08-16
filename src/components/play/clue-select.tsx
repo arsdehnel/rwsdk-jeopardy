@@ -2,19 +2,21 @@
 import { Cross2Icon, RowSpacingIcon } from '@radix-ui/react-icons';
 import { Collapsible } from 'radix-ui';
 import { useState } from 'react';
-import type { CategoryInGame, ClueInGame } from '@/types';
+import type { CategoryInGame, ClueInGame, GameContestantDBRead } from '@/types';
 
 export function ClueSelect({
 	categories,
 	selectClue,
+	selectedClue,
 	usedClueIds,
 	activeContestant,
 	sessionId,
 }: {
 	categories: CategoryInGame[];
 	selectClue: (clue: ClueInGame) => void;
+	selectedClue: ClueInGame | null;
 	usedClueIds: string[];
-	activeContestant: string | undefined;
+	activeContestant: GameContestantDBRead | undefined;
 	sessionId: string;
 }): React.ReactNode {
 	const [openCategory, setOpenCategory] = useState('');
@@ -26,8 +28,11 @@ export function ClueSelect({
 			setOpenCategory(categoryId);
 		}
 	};
+	if (selectedClue) {
+		return;
+	}
 
-	if (activeContestant !== sessionId) {
+	if (activeContestant?.sessionId !== sessionId) {
 		return (
 			<>
 				<h2 className="page-title">Select A Clue</h2>

@@ -4,7 +4,7 @@ type WrongClueResponseGameState = {
 	selectedClue: ClueInGame | null;
 	buzzerQueue: string[];
 	scores: Record<string, number>;
-	activeContestant: string | undefined;
+	activeContestantSessionId: string | undefined;
 	buzzInTimeLeft: number | undefined;
 };
 
@@ -22,7 +22,7 @@ export const wrongClueResponse = (state: WrongClueResponseGameState): WrongClueR
 	return {
 		...state,
 		buzzerQueue: state.buzzerQueue.slice(1),
-		activeContestant: state.buzzerQueue[1],
+		activeContestantSessionId: state.buzzerQueue[1],
 		buzzInTimeLeft,
 		scores: {
 			...state.scores,

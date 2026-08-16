@@ -1,6 +1,6 @@
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import { createReactLogger } from '@/logger-react';
-import type { ClueInGame } from '@/types';
+import type { ClueInGame, GameContestantDBRead } from '@/types';
 import * as helpers from './helpers';
 
 const reactLogger = createReactLogger();
@@ -21,20 +21,33 @@ export type GamePhasePlayState = {
 	scores: Record<string, number>;
 
 	// clue selection
-	activeContestant: string | undefined;
 	selectedClue: ClueInGame | null;
 	abortClue: () => void;
 	selectClue: (clue: ClueInGame) => void;
 	usedClueIds: string[];
 	expireClue: () => void;
+
+	// derived values
+	activeContestant: GameContestantDBRead | undefined;
+	contestantMode: 'buzzer' | 'clue-select';
+	timerIsActive: boolean;
+	timerIsExpired: boolean;
 };
 
-export default function useGamePhasePlayState(sessionId: string, gameId: string): GamePhasePlayState {
+export default function useGamePhasePlayState(
+	sessionId: string,
+	gameId: string,
+	contestants: GameContestantDBRead[],
+): GamePhasePlayState {
 	const [selectedClue, setSelectedClue] = useSyncedState<ClueInGame | null>(null, 'selectedClue', gameId);
 	const [buzzerQueue, setBuzzerQueue] = useSyncedState<string[]>([], 'buzzerQueue', gameId);
 	const [usedClueIds, setUsedClueIds] = useSyncedState<string[]>([], 'usedClueIds', gameId);
 	const [scores, setScores] = useSyncedState<Record<string, number>>({}, 'scores', gameId);
-	const [activeContestant, setActiveContestant] = useSyncedState<string | undefined>(undefined, 'activeContestant', gameId);
+	const [activeContestantSessionId, setActiveContestantSessionId] = useSyncedState<string | undefined>(
+		undefined,
+		'activeContestantSessionId',
+		gameId,
+	);
 	const [buzzInTimeLeft, setbuzzInTimeLeft] = useSyncedState<number | undefined>(undefined, 'buzzInTimeLeft', gameId);
 
 	const correctClueResponse = (): void => {
@@ -43,14 +56,14 @@ export default function useGamePhasePlayState(sessionId: string, gameId: string)
 			buzzerQueue,
 			usedClueIds,
 			scores,
-			activeContestant,
+			activeContestantSessionId,
 			buzzInTimeLeft,
 		});
 		setSelectedClue(next.selectedClue);
 		setBuzzerQueue(next.buzzerQueue);
 		setUsedClueIds(next.usedClueIds);
 		setScores(next.scores);
-		setActiveContestant(next.activeContestant);
+		setActiveContestantSessionId(next.activeContestantSessionId);
 		setbuzzInTimeLeft(next.buzzInTimeLeft);
 		reactLogger.info(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
 	};
@@ -68,10 +81,10 @@ export default function useGamePhasePlayState(sessionId: string, gameId: string)
 		if (!selectedClue) {
 			return;
 		}
-		const next = helpers.wrongClueResponse({ selectedClue, buzzerQueue, scores, activeContestant, buzzInTimeLeft });
+		const next = helpers.wrongClueResponse({ selectedClue, buzzerQueue, scores, activeContestantSessionId, buzzInTimeLeft });
 		setBuzzerQueue(next.buzzerQueue);
 		setScores(next.scores);
-		setActiveContestant(next.activeContestant);
+		setActiveContestantSessionId(next.activeContestantSessionId);
 		setbuzzInTimeLeft(next.buzzInTimeLeft);
 		reactLogger.info(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} incorrectly!`);
 	};
@@ -106,6 +119,15 @@ export default function useGamePhasePlayState(sessionId: string, gameId: string)
 		}
 	};
 
+	const contestantMode = selectedClue ? 'buzzer' : 'clue-select';
+
+	const randomlySelectedContestant = contestants[Math.floor(Math.random() * contestants.length)];
+	const activeContestant = activeContestantSessionId
+		? contestants.find(c => c.sessionId === activeContestantSessionId)
+		: contestantMode === 'buzzer'
+			? undefined
+			: randomlySelectedContestant;
+
 	return {
 		// buzzers
 		buzzInTimeLeft,
@@ -122,11 +144,16 @@ export default function useGamePhasePlayState(sessionId: string, gameId: string)
 		scores,
 
 		// clue selection
-		activeContestant,
 		selectedClue,
 		abortClue,
 		selectClue,
 		usedClueIds,
 		expireClue,
+
+		// derived values
+		activeContestant,
+		contestantMode,
+		timerIsActive: typeof buzzInTimeLeft !== 'undefined',
+		timerIsExpired: typeof buzzInTimeLeft !== 'undefined' ? buzzInTimeLeft <= 0 : false,
 	};
 }

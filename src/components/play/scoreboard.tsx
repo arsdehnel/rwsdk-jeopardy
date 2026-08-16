@@ -1,13 +1,13 @@
 'use client';
 import classNames from 'classnames';
-import type { Contestant } from '@/types';
+import type { GameContestantDBRead } from '@/types';
 
 export function Scoreboard({
 	contestants,
 	scores,
 	buzzerQueue,
 }: {
-	contestants: Contestant[];
+	contestants: GameContestantDBRead[];
 	scores: Record<string, number>;
 	buzzerQueue?: string[];
 }): React.ReactNode {

@@ -20,7 +20,7 @@ const baseState = {
 	buzzerQueue: ['player-1', 'player-2'],
 	usedClueIds: [],
 	scores: {},
-	activeContestant: undefined,
+	activeContestantSessionId: undefined,
 	buzzInTimeLeft: undefined,
 };
 
@@ -36,7 +36,7 @@ describe('correctClueResponse', () => {
 		expect(result).toEqual({
 			...baseState,
 			selectedClue: null,
-			activeContestant: 'player-1',
+			activeContestantSessionId: 'player-1',
 			buzzerQueue: [],
 			usedClueIds: ['clue-1'],
 			scores: { 'player-1': 200 },
