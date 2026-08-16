@@ -49,6 +49,10 @@
 		"SessionDurableObject": {
 			"type": "durable-object",
 			"storage": "sqlite"
+		},
+		"SyncedStateServer": {
+			"type": "durable-object",
+			"state": "deleted"
 		}
 	},
 	"ai": {
