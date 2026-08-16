@@ -46,7 +46,7 @@ export default async function Pages__Games__Play({ params, ctx }: RequestInfo): 
 			<SetupLayout pageTitle={`Play Game ${game.id}`} ctx={ctx} currentBasePage="games">
 				<ViewGamePlay
 					currentUserRole={currentUserRole}
-					contestants={[]}
+					contestants={game.contestants}
 					gameId={gameId}
 					sessionId={sessionId}
 					categories={categories}

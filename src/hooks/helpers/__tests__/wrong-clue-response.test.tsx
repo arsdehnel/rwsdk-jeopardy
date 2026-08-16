@@ -16,7 +16,7 @@ const baseState = {
 	buzzerQueue: ['player-1', 'player-2'],
 	usedClueIds: [],
 	scores: {},
-	activeContestant: undefined,
+	activeContestantSessionId: undefined,
 	buzzInTimeLeft: undefined,
 };
 

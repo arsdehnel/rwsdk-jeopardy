@@ -31,7 +31,7 @@ export default function GameClient({
 		usedClueIds,
 		scores,
 		hasDisplay,
-		activeContestant,
+		activeContestantSessionId,
 		buzzInTimeLeft,
 		registerConnection,
 		unregisterConnection,
@@ -123,7 +123,7 @@ export default function GameClient({
 				setupGame={setupGame}
 				finishGame={finishGame}
 				expireClue={expireClue}
-				activeContestant={activeContestant}
+				activeContestant={activeContestantSessionId}
 				buzzInTimeLeft={buzzInTimeLeft}
 			/>
 		);
@@ -138,7 +138,7 @@ export default function GameClient({
 			sessionId={sessionId}
 			buzzIn={buzzIn}
 			usedClueIds={usedClueIds}
-			activeContestant={activeContestant}
+			activeContestant={activeContestantSessionId}
 			buzzInTimeLeft={buzzInTimeLeft}
 		/>
 	);

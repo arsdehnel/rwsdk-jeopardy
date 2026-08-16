@@ -26,7 +26,7 @@ export type GameState = {
 	usedClueIds: string[];
 	expireClue: () => void;
 	scores: Record<string, number>;
-	activeContestant: string | undefined;
+	activeContestantSessionId: string | undefined;
 	buzzInTimeLeft: number | undefined;
 	decreaseBuzzerTimeLeft: () => void;
 };
@@ -42,7 +42,11 @@ export default function useGameState(sessionId: string, gameId: string): GameSta
 	const [buzzerQueue, setBuzzerQueue] = useSyncedState<string[]>([], 'buzzerQueue', gameId);
 	const [usedClueIds, setUsedClueIds] = useSyncedState<string[]>([], 'usedClueIds', gameId);
 	const [scores, setScores] = useSyncedState<Record<string, number>>({}, 'scores', gameId);
-	const [activeContestant, setActiveContestant] = useSyncedState<string | undefined>(undefined, 'activeContestant', gameId);
+	const [activeContestantSessionId, setActiveContestantSessionId] = useSyncedState<string | undefined>(
+		undefined,
+		'activeContestantSessionId',
+		gameId,
+	);
 	const [buzzInTimeLeft, setbuzzInTimeLeft] = useSyncedState<number | undefined>(undefined, 'buzzInTimeLeft', gameId);
 
 	const registerConnection = (connection: Connection): void => {
@@ -61,14 +65,14 @@ export default function useGameState(sessionId: string, gameId: string): GameSta
 			buzzerQueue,
 			usedClueIds,
 			scores,
-			activeContestant,
+			activeContestantSessionId,
 			buzzInTimeLeft,
 		});
 		setSelectedClue(next.selectedClue);
 		setBuzzerQueue(next.buzzerQueue);
 		setUsedClueIds(next.usedClueIds);
 		setScores(next.scores);
-		setActiveContestant(next.activeContestant);
+		setActiveContestantSessionId(next.activeContestantSessionId);
 		setbuzzInTimeLeft(next.buzzInTimeLeft);
 		reactLogger.info(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} correctly!`);
 	};
@@ -83,13 +87,13 @@ export default function useGameState(sessionId: string, gameId: string): GameSta
 	};
 
 	const wrongClueResponse = (): void => {
-		const next = helpers.wrongClueResponse({ selectedClue, buzzerQueue, scores, activeContestant, buzzInTimeLeft });
+		const next = helpers.wrongClueResponse({ selectedClue, buzzerQueue, scores, activeContestantSessionId, buzzInTimeLeft });
 		if (!selectedClue) {
 			return;
 		}
 		setBuzzerQueue(next.buzzerQueue);
 		setScores(next.scores);
-		setActiveContestant(next.activeContestant);
+		setActiveContestantSessionId(next.activeContestantSessionId);
 		setbuzzInTimeLeft(next.buzzInTimeLeft);
 		reactLogger.info(`Contestant ${buzzerQueue[0]} responded to clue ${JSON.stringify(selectedClue)} incorrectly!`);
 	};
@@ -111,7 +115,7 @@ export default function useGameState(sessionId: string, gameId: string): GameSta
 			connections.contestants.length > 0
 				? connections.contestants[Math.floor(Math.random() * connections.contestants.length)].id
 				: undefined;
-		setActiveContestant(randomContestantId);
+		setActiveContestantSessionId(randomContestantId);
 	};
 
 	const setupGame = (): void => {
@@ -177,7 +181,7 @@ export default function useGameState(sessionId: string, gameId: string): GameSta
 		usedClueIds,
 		expireClue,
 		scores,
-		activeContestant,
+		activeContestantSessionId,
 		buzzInTimeLeft,
 		decreaseBuzzerTimeLeft,
 	};

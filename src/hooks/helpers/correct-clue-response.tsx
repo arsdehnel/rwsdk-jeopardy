@@ -7,7 +7,7 @@ type CorrectClueResponseGameState = {
 	buzzerQueue: string[];
 	usedClueIds: string[];
 	scores: Record<string, number>;
-	activeContestant: string | undefined;
+	activeContestantSessionId: string | undefined;
 	buzzInTimeLeft: number | undefined;
 };
 
@@ -20,7 +20,7 @@ export const correctClueResponse = (state: CorrectClueResponseGameState): Correc
 		selectedClue: null,
 		buzzerQueue: [],
 		usedClueIds: Array.from(new Set([...state.usedClueIds, clue.id])),
-		activeContestant: winner,
+		activeContestantSessionId: winner,
 		buzzInTimeLeft: undefined,
 		scores: {
 			...state.scores,

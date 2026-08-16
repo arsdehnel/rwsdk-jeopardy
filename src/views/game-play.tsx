@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { KADProgress } from '@/components/design-system';
 import { Board, Buzzer, ClueOverlay, ClueSelect, Scoreboard } from '@/components/play';
 import useGamePhasePlayState from '@/hooks/use-game-phase-play-state';
-import type { CategoryInGame, Contestant, Role } from '@/types';
+import type { CategoryInGame, GameContestantDBRead, Role } from '@/types';
 
 export default function ViewGamePlay({
 	currentUserRole,
@@ -14,7 +14,7 @@ export default function ViewGamePlay({
 	categories,
 }: {
 	currentUserRole: Role;
-	contestants: Contestant[];
+	contestants: GameContestantDBRead[];
 	gameId: string;
 	sessionId: string;
 	categories: CategoryInGame[];
@@ -24,7 +24,6 @@ export default function ViewGamePlay({
 		buzzerQueue,
 		usedClueIds,
 		scores,
-		activeContestant,
 		buzzInTimeLeft,
 		correctClueResponse,
 		wrongClueResponse,
@@ -34,7 +33,11 @@ export default function ViewGamePlay({
 		buzzIn,
 		expireClue,
 		decreaseBuzzerTimeLeft,
-	} = useGamePhasePlayState(sessionId, gameId);
+		activeContestant,
+		contestantMode,
+		timerIsActive,
+		timerIsExpired,
+	} = useGamePhasePlayState(sessionId, gameId, contestants);
 
 	useEffect(() => {
 		if (!buzzInTimeLeft) return;
@@ -43,10 +46,6 @@ export default function ViewGamePlay({
 		}, 1000);
 		return (): void => clearTimeout(timer);
 	}, [buzzInTimeLeft, decreaseBuzzerTimeLeft]);
-
-	const activeConnection = activeContestant ? contestants.find(c => c.sessionId === activeContestant) : undefined;
-	const timerIsActive = typeof buzzInTimeLeft !== 'undefined';
-	const contestantMode = selectedClue ? 'buzzer' : 'clue-select';
 
 	if (currentUserRole === 'display') {
 		return (
@@ -70,10 +69,9 @@ export default function ViewGamePlay({
 				{activeContestant && (
 					<section>
 						<h2>Active Contestant</h2>
-						<div className="host-section-content">{activeConnection?.name}</div>
+						<div className="host-section-content">{activeContestant?.name}</div>
 					</section>
 				)}
-
 				{timerIsActive && (
 					<section>
 						<h2>Buzz-In timer</h2>
@@ -136,17 +134,22 @@ export default function ViewGamePlay({
 
 	return (
 		<div className={classnames('view-contestant', `view-contestant--${contestantMode}`)}>
-			{selectedClue === null ? (
-				<ClueSelect
-					selectClue={selectClue}
-					categories={categories}
-					usedClueIds={usedClueIds}
-					activeContestant={activeContestant}
-					sessionId={sessionId}
-				/>
-			) : (
-				<Buzzer buzzIn={buzzIn} buzzerQueue={buzzerQueue} sessionId={sessionId} buzzInTimeLeft={buzzInTimeLeft} />
-			)}
+			<ClueSelect
+				selectClue={selectClue}
+				selectedClue={selectedClue}
+				categories={categories}
+				usedClueIds={usedClueIds}
+				activeContestant={activeContestant}
+				sessionId={sessionId}
+			/>
+			<Buzzer
+				selectedClue={selectedClue}
+				timerIsExpired={timerIsExpired}
+				buzzIn={buzzIn}
+				buzzerQueue={buzzerQueue}
+				sessionId={sessionId}
+				buzzInTimeLeft={buzzInTimeLeft}
+			/>
 		</div>
 	);
 }

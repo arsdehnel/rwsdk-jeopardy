@@ -1,18 +1,26 @@
 'use client';
 import classnames from 'classnames';
 import locales from '@/locales';
+import type { ClueInGame } from '@/types';
 
 export function Buzzer({
+	selectedClue,
 	buzzIn,
 	buzzerQueue,
 	sessionId,
 	buzzInTimeLeft,
+	timerIsExpired,
 }: {
+	selectedClue: ClueInGame | null;
 	buzzIn: (contestantSessionId: string) => void;
 	buzzerQueue: string[];
 	sessionId: string;
 	buzzInTimeLeft: number | undefined;
+	timerIsExpired: boolean;
 }): React.ReactNode {
+	if (!selectedClue) {
+		return;
+	}
 	const someoneHasBuzzedIn = buzzerQueue.length > 0;
 	const buzzerPosition = buzzerQueue.indexOf(sessionId);
 	const currentHasBuzzedIn = buzzerQueue.includes(sessionId);
@@ -26,9 +34,6 @@ export function Buzzer({
 	} else if (buzzerPosition > 0) {
 		buzzerText = locales.buzzerText.inQueue;
 	}
-
-	const timerIsActive = typeof buzzInTimeLeft !== 'undefined';
-	const timerIsExpired = timerIsActive ? buzzInTimeLeft <= 0 : false;
 
 	const disabled = currentHasBuzzedIn || timerIsExpired;
 	const buttonClassnames = classnames({
