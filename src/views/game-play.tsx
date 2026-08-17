@@ -50,7 +50,7 @@ export default function ViewGamePlay({
 	if (currentUserRole === 'display') {
 		return (
 			<div className="view-display">
-				<Scoreboard contestants={contestants} scores={scores} buzzerQueue={buzzerQueue} />
+				<Scoreboard contestants={contestants} scores={scores} buzzerQueue={buzzerQueue} activeContestant={activeContestant} />
 				<ClueOverlay selectedClue={selectedClue} />
 				<Board categories={categories} usedClueIds={usedClueIds} />
 			</div>
@@ -63,7 +63,7 @@ export default function ViewGamePlay({
 				<section>
 					<h2>Scores / Buzzers</h2>
 					<div className="host-section-content">
-						<Scoreboard contestants={contestants} scores={scores} buzzerQueue={buzzerQueue} />
+						<Scoreboard contestants={contestants} scores={scores} buzzerQueue={buzzerQueue} activeContestant={activeContestant} />
 					</div>
 				</section>
 				{activeContestant && (
