@@ -166,33 +166,6 @@ describe('resetBuzzers', () => {
 	});
 });
 
-describe('decreaseBuzzerTimeLeft', () => {
-	it('decrements buzzInTimeLeft by 1', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
-		act(() => result.current.selectClue(clue));
-		act(() => result.current.decreaseBuzzerTimeLeft());
-		expect(result.current.buzzInTimeLeft).toBe(4);
-	});
-
-	it('is a no-op when buzzInTimeLeft is undefined', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
-		act(() => result.current.decreaseBuzzerTimeLeft());
-		expect(result.current.buzzInTimeLeft).toBeUndefined();
-	});
-
-	it('is a no-op when buzzInTimeLeft is 0', () => {
-		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
-		act(() => result.current.selectClue(clue));
-		act(() => result.current.decreaseBuzzerTimeLeft()); // 4
-		act(() => result.current.decreaseBuzzerTimeLeft()); // 3
-		act(() => result.current.decreaseBuzzerTimeLeft()); // 2
-		act(() => result.current.decreaseBuzzerTimeLeft()); // 1
-		act(() => result.current.decreaseBuzzerTimeLeft()); // 0
-		act(() => result.current.decreaseBuzzerTimeLeft()); // still 0
-		expect(result.current.buzzInTimeLeft).toBe(0);
-	});
-});
-
 describe('correctClueResponse', () => {
 	it('clears the selected clue', () => {
 		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));

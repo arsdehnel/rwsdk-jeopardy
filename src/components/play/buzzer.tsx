@@ -8,14 +8,12 @@ export function Buzzer({
 	buzzIn,
 	buzzerQueue,
 	sessionId,
-	buzzInTimeLeft,
 	timerIsExpired,
 }: {
 	selectedClue: ClueInGame | null;
 	buzzIn: (contestantSessionId: string) => void;
 	buzzerQueue: string[];
 	sessionId: string;
-	buzzInTimeLeft: number | undefined;
 	timerIsExpired: boolean;
 }): React.ReactNode {
 	if (!selectedClue) {
@@ -25,7 +23,7 @@ export function Buzzer({
 	const buzzerPosition = buzzerQueue.indexOf(sessionId);
 	const currentHasBuzzedIn = buzzerQueue.includes(sessionId);
 	let buzzerText = locales.buzzerText.initial;
-	if (buzzInTimeLeft && buzzInTimeLeft <= 0) {
+	if (timerIsExpired) {
 		buzzerText = locales.buzzerText.timesUp;
 	} else if (someoneHasBuzzedIn && !currentHasBuzzedIn) {
 		buzzerText = locales.buzzerText.initial;
