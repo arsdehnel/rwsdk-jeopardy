@@ -6,31 +6,31 @@ import SetupLayout from '@/layouts/setup';
 import { createNoopLogger } from '@/logger';
 import { caughtError } from '../../../utils';
 
-const gameId: string = crypto.randomUUID();
-const contestants = ['Abc', 'Def', 'Ghi'].map(name => ({
-	id: crypto.randomUUID(),
-	gameId: gameId,
-	userId: null,
-	score: null,
-	sessionId: crypto.randomUUID(),
-	name,
-	createdAt: 'asdf',
-	createdBy: crypto.randomUUID(),
-	updatedAt: 'asdf',
-	updatedBy: crypto.randomUUID(),
-	deletedAt: null,
-	deletedBy: null,
-}));
-
-const scores: Record<string, number> = contestants.reduce(
-	(scores, contestant) => {
-		scores[contestant.sessionId] = Math.floor(Math.random() * 1000);
-		return scores;
-	},
-	{} as Record<string, number>,
-);
-
 export default async function Pages__dev__games__play__display({ ctx }: RequestInfo): Promise<React.JSX.Element> {
+	const gameId: string = crypto.randomUUID();
+	const contestants = ['Abc', 'Def', 'Ghi'].map(name => ({
+		id: crypto.randomUUID(),
+		gameId: gameId,
+		userId: null,
+		score: null,
+		sessionId: crypto.randomUUID(),
+		name,
+		createdAt: 'asdf',
+		createdBy: crypto.randomUUID(),
+		updatedAt: 'asdf',
+		updatedBy: crypto.randomUUID(),
+		deletedAt: null,
+		deletedBy: null,
+	}));
+
+	const scores: Record<string, number> = contestants.reduce(
+		(scores, contestant) => {
+			scores[contestant.sessionId] = Math.floor(Math.random() * 1000);
+			return scores;
+		},
+		{} as Record<string, number>,
+	);
+
 	// mock middleware-provided context
 	const mockCtx = {
 		session: {

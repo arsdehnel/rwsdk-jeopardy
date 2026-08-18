@@ -1,4 +1,3 @@
-'use client';
 import { useEffect } from 'react';
 import { navigate } from 'rwsdk/client';
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
