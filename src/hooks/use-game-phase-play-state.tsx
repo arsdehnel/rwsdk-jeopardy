@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import { createReactLogger } from '@/logger-react';
 import type { ClueInGame, GameContestantDBRead } from '@/types';
@@ -11,7 +12,6 @@ export type GamePhasePlayState = {
 	buzzerQueue: string[];
 	buzzIn: () => void;
 	resetBuzzers: () => void;
-	decreaseBuzzerTimeLeft: () => void;
 
 	// responses
 	correctClueResponse: () => void;
@@ -113,12 +113,6 @@ export default function useGamePhasePlayState(
 		setbuzzInTimeLeft(undefined);
 	};
 
-	const decreaseBuzzerTimeLeft = (): void => {
-		if (buzzInTimeLeft && buzzInTimeLeft > 0) {
-			setbuzzInTimeLeft(buzzInTimeLeft - 1);
-		}
-	};
-
 	const contestantMode = selectedClue ? 'buzzer' : 'clue-select';
 
 	const randomlySelectedContestant = contestants[Math.floor(Math.random() * contestants.length)];
@@ -128,13 +122,22 @@ export default function useGamePhasePlayState(
 			? undefined
 			: randomlySelectedContestant;
 
+	useEffect(() => {
+		if (!buzzInTimeLeft) return;
+		const timer = setTimeout(() => {
+			if (buzzInTimeLeft && buzzInTimeLeft > 0) {
+				setbuzzInTimeLeft(buzzInTimeLeft - 1);
+			}
+		}, 1000);
+		return (): void => clearTimeout(timer);
+	}, [buzzInTimeLeft, setbuzzInTimeLeft]);
+
 	return {
 		// buzzers
 		buzzInTimeLeft,
 		buzzerQueue,
 		buzzIn,
 		resetBuzzers,
-		decreaseBuzzerTimeLeft,
 
 		// responses
 		correctClueResponse,

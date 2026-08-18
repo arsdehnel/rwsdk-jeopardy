@@ -1,6 +1,5 @@
 'use client';
 import classnames from 'classnames';
-import { useEffect } from 'react';
 import { KADProgress } from '@/components/design-system';
 import { Board, Buzzer, ClueOverlay, ClueSelect, Scoreboard } from '@/components/play';
 import useGamePhasePlayState from '@/hooks/use-game-phase-play-state';
@@ -32,20 +31,11 @@ export default function ViewGamePlay({
 		selectClue,
 		buzzIn,
 		expireClue,
-		decreaseBuzzerTimeLeft,
 		activeContestant,
 		contestantMode,
 		timerIsActive,
 		timerIsExpired,
 	} = useGamePhasePlayState(sessionId, gameId, contestants);
-
-	useEffect(() => {
-		if (!buzzInTimeLeft) return;
-		const timer = setTimeout(() => {
-			decreaseBuzzerTimeLeft();
-		}, 1000);
-		return (): void => clearTimeout(timer);
-	}, [buzzInTimeLeft, decreaseBuzzerTimeLeft]);
 
 	if (currentUserRole === 'display') {
 		return (
@@ -148,7 +138,6 @@ export default function ViewGamePlay({
 				buzzIn={buzzIn}
 				buzzerQueue={buzzerQueue}
 				sessionId={sessionId}
-				buzzInTimeLeft={buzzInTimeLeft}
 			/>
 		</div>
 	);
