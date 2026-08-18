@@ -1,3 +1,4 @@
+'use client';
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import { ConnectionConflictError } from '@/errors';
 import type { Contestant, Role } from '@/types';

@@ -1,3 +1,4 @@
+'use client';
 import { useEffect } from 'react';
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import { createReactLogger } from '@/logger-react';
