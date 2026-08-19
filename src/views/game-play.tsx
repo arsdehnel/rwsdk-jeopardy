@@ -33,14 +33,22 @@ export default function ViewGamePlay({
 		expireClue,
 		activeContestant,
 		contestantMode,
-		timerIsActive,
-		timerIsExpired,
+		buzzInTimerIsActive,
+		buzzInTimerIsExpired,
+		responseTimeLeft,
+		responseTimerIsActive,
 	} = useGamePhasePlayState(sessionId, gameId, contestants);
 
 	if (currentUserRole === 'display') {
 		return (
 			<div className="view-display">
-				<Scoreboard contestants={contestants} scores={scores} buzzerQueue={buzzerQueue} activeContestant={activeContestant} />
+				<Scoreboard
+					contestants={contestants}
+					scores={scores}
+					buzzerQueue={buzzerQueue}
+					activeContestant={activeContestant}
+					responseTimeLeft={responseTimeLeft}
+				/>
 				<ClueOverlay selectedClue={selectedClue} />
 				<Board categories={categories} usedClueIds={usedClueIds} />
 			</div>
@@ -62,11 +70,19 @@ export default function ViewGamePlay({
 						<div className="host-section-content">{activeContestant?.name}</div>
 					</section>
 				)}
-				{timerIsActive && (
+				{buzzInTimerIsActive && (
 					<section>
 						<h2>Buzz-In timer</h2>
 						<div className="host-section-content">
 							{buzzInTimeLeft ? <KADProgress progressPcnt={(buzzInTimeLeft / 5) * 100} /> : <span>🚨 TIME'S UP 🚨</span>}
+						</div>
+					</section>
+				)}
+				{responseTimerIsActive && (
+					<section>
+						<h2>Response timer</h2>
+						<div className="host-section-content">
+							{responseTimeLeft ? <KADProgress progressPcnt={(responseTimeLeft / 5) * 100} /> : <span>🚨 TIME'S UP 🚨</span>}
 						</div>
 					</section>
 				)}
@@ -134,7 +150,7 @@ export default function ViewGamePlay({
 			/>
 			<Buzzer
 				selectedClue={selectedClue}
-				timerIsExpired={timerIsExpired}
+				buzzInTimerIsExpired={buzzInTimerIsExpired}
 				buzzIn={buzzIn}
 				buzzerQueue={buzzerQueue}
 				sessionId={sessionId}

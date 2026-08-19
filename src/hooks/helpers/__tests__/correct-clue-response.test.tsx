@@ -22,6 +22,7 @@ const baseState = {
 	scores: {},
 	activeContestantSessionId: undefined,
 	buzzInTimeLeft: undefined,
+	responseTimeLeft: undefined,
 };
 
 describe('correctClueResponse', () => {
@@ -103,5 +104,15 @@ describe('correctClueResponse', () => {
 	it('does not modify connections', () => {
 		const result = correctClueResponse(baseState);
 		expect(result.connections).toEqual(mockConnections);
+	});
+
+	it('clears responseTimeLeft', () => {
+		const result = correctClueResponse({ ...baseState, responseTimeLeft: 3 });
+		expect(result.responseTimeLeft).toBeUndefined();
+	});
+
+	it('is a no-op when the buzzer queue is empty', () => {
+		const state = { ...baseState, buzzerQueue: [] };
+		expect(correctClueResponse(state)).toEqual(state);
 	});
 });

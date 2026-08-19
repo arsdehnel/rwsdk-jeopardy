@@ -19,6 +19,7 @@ const baseState = {
 	scores: {},
 	activeContestant: undefined,
 	buzzInTimeLeft: undefined,
+	responseTimeLeft: undefined,
 };
 
 describe('expireClue', () => {
@@ -53,5 +54,10 @@ describe('expireClue', () => {
 	it('does not mutate input state', () => {
 		const frozen = Object.freeze({ ...baseState, usedClueIds: Object.freeze([]) });
 		expect(() => expireClue(frozen as typeof baseState)).not.toThrow();
+	});
+
+	it('clears responseTimeLeft', () => {
+		const result = expireClue({ ...baseState, responseTimeLeft: 3 });
+		expect(result.responseTimeLeft).toBeUndefined();
 	});
 });

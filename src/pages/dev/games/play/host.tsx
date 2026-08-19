@@ -45,7 +45,7 @@ export default async function Pages__dev__games__play__display({ ctx }: RequestI
 	const mockSyncState: Pick<
 		GamePhasePlayState,
 		| 'buzzerQueue'
-		| 'timerIsActive'
+		| 'buzzInTimerIsActive'
 		| 'buzzInTimeLeft'
 		| 'scores'
 		| 'selectedClue'
@@ -57,7 +57,7 @@ export default async function Pages__dev__games__play__display({ ctx }: RequestI
 		| 'expireClue'
 		| 'abortClue'
 	> = {
-		timerIsActive: true,
+		buzzInTimerIsActive: true,
 		buzzInTimeLeft: 3,
 		buzzerQueue: [],
 		scores,
@@ -92,7 +92,7 @@ export default async function Pages__dev__games__play__display({ ctx }: RequestI
 							<div className="host-section-content">{mockSyncState.activeContestant?.name}</div>
 						</section>
 					)}
-					{mockSyncState.timerIsActive && (
+					{mockSyncState.buzzInTimerIsActive && (
 						<section>
 							<h2>Buzz-In timer</h2>
 							<div className="host-section-content">

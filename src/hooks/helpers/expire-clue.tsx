@@ -5,6 +5,7 @@ type ExpireClueGameState = {
 	buzzerQueue: string[];
 	usedClueIds: string[];
 	buzzInTimeLeft: number | undefined;
+	responseTimeLeft: number | undefined;
 };
 
 export const expireClue = (state: ExpireClueGameState): ExpireClueGameState => {
@@ -18,6 +19,7 @@ export const expireClue = (state: ExpireClueGameState): ExpireClueGameState => {
 		selectedClue: null,
 		buzzerQueue: [],
 		buzzInTimeLeft: undefined,
+		responseTimeLeft: undefined,
 		usedClueIds: Array.from(new Set([...state.usedClueIds, clue.id])),
 	};
 };
