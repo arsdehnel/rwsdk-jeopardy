@@ -18,6 +18,7 @@ const baseState = {
 	scores: {},
 	activeContestantSessionId: undefined,
 	buzzInTimeLeft: undefined,
+	responseTimeLeft: undefined,
 };
 
 describe('wrongClueResponse', () => {
@@ -60,5 +61,30 @@ describe('wrongClueResponse', () => {
 	it('does not mutate input state', () => {
 		const frozen = Object.freeze({ ...baseState, scores: Object.freeze({}), buzzerQueue: Object.freeze(['player-1']) });
 		expect(() => wrongClueResponse(frozen as typeof baseState)).not.toThrow();
+	});
+
+	it('sets responseTimeLeft to 5 when the next player takes over', () => {
+		const result = wrongClueResponse(baseState); // queue has 2
+		expect(result.responseTimeLeft).toBe(5);
+	});
+
+	it('clears responseTimeLeft when the queue empties', () => {
+		const result = wrongClueResponse({ ...baseState, buzzerQueue: ['player-1'] });
+		expect(result.responseTimeLeft).toBeUndefined();
+	});
+
+	it('clears buzzInTimeLeft when the next player takes over', () => {
+		const result = wrongClueResponse(baseState); // queue has 2
+		expect(result.buzzInTimeLeft).toBeUndefined();
+	});
+
+	it('sets buzzInTimeLeft to 5 when the queue empties', () => {
+		const result = wrongClueResponse({ ...baseState, buzzerQueue: ['player-1'] });
+		expect(result.buzzInTimeLeft).toBe(5);
+	});
+
+	it('is a no-op when the buzzer queue is empty', () => {
+		const state = { ...baseState, buzzerQueue: [] };
+		expect(wrongClueResponse(state)).toEqual(state);
 	});
 });

@@ -1,5 +1,6 @@
 'use client';
 import classNames from 'classnames';
+import { KADProgress } from '@/components/design-system';
 import type { GameContestantDBRead } from '@/types';
 
 export function Scoreboard({
@@ -7,11 +8,13 @@ export function Scoreboard({
 	scores,
 	buzzerQueue,
 	activeContestant,
+	responseTimeLeft,
 }: {
 	contestants: GameContestantDBRead[];
 	scores: Record<string, number>;
 	buzzerQueue?: string[];
 	activeContestant: GameContestantDBRead | undefined;
+	responseTimeLeft?: number | undefined;
 }): React.ReactNode {
 	return (
 		<div className="jeopardy-scoreboard">
@@ -31,6 +34,9 @@ export function Scoreboard({
 					</span>
 				);
 			})}
+			<div className="timer-progress">
+				{responseTimeLeft ? <KADProgress progressPcnt={(responseTimeLeft / 5) * 100} /> : <span>🚨 TIME'S UP 🚨</span>}
+			</div>
 		</div>
 	);
 }

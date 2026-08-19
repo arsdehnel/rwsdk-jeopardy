@@ -171,6 +171,26 @@ describe('registerAsContestant', () => {
 		expect(result.current.contestants[0].userId).toBe('user-1');
 	});
 
+	it('allows multiple sessions to register as contestants simultaneously', () => {
+		const { result, rerender } = renderHook(({ sessionId }) => useGamePhaseRegisterState(sessionId, GAME_ID), {
+			initialProps: { sessionId: SESSION_A },
+		});
+		act(() => result.current.registerAsContestant('Alice', undefined));
+		rerender({ sessionId: SESSION_B });
+		act(() => result.current.registerAsContestant('Bob', undefined));
+		expect(result.current.contestants).toHaveLength(2);
+	});
+
+	it('allows two sessions to register with the same name', () => {
+		const { result, rerender } = renderHook(({ sessionId }) => useGamePhaseRegisterState(sessionId, GAME_ID), {
+			initialProps: { sessionId: SESSION_A },
+		});
+		act(() => result.current.registerAsContestant('Alice', undefined));
+		rerender({ sessionId: SESSION_B });
+		act(() => result.current.registerAsContestant('Alice', undefined));
+		expect(result.current.contestants).toHaveLength(2);
+	});
+
 	it('throws when already registered as contestant', () => {
 		const { result } = renderHook(() => useGamePhaseRegisterState(SESSION_A, GAME_ID));
 		act(() => result.current.registerAsContestant('Alice', undefined));
@@ -196,6 +216,18 @@ describe('unregisterAsContestant', () => {
 		act(() => result.current.registerAsContestant('Alice', undefined));
 		act(() => result.current.unregisterAsContestant());
 		expect(result.current.contestants).toHaveLength(0);
+	});
+
+	it('leaves other contestants intact', () => {
+		const { result, rerender } = renderHook(({ sessionId }) => useGamePhaseRegisterState(sessionId, GAME_ID), {
+			initialProps: { sessionId: SESSION_A },
+		});
+		act(() => result.current.registerAsContestant('Alice', undefined));
+		rerender({ sessionId: SESSION_B });
+		act(() => result.current.registerAsContestant('Bob', undefined));
+		act(() => result.current.unregisterAsContestant());
+		expect(result.current.contestants).toHaveLength(1);
+		expect(result.current.contestants[0].sessionId).toBe(SESSION_A);
 	});
 
 	it('silently succeeds when not registered as anything', () => {
