@@ -1,15 +1,10 @@
-import type { ClueInGame, Connections, GamePhaseEnum } from '@/types';
+import type { GamePhasePlayState } from '../use-game-phase-play-state';
 
-type CorrectClueResponseGameState = {
-	connections?: Connections;
-	selectedClue: ClueInGame | null;
-	gamePhase?: GamePhaseEnum;
-	buzzerQueue: string[];
-	usedClueIds: string[];
-	scores: Record<string, number>;
+type CorrectClueResponseGameState = Pick<
+	GamePhasePlayState,
+	'selectedClue' | 'buzzerQueue' | 'usedClueIds' | 'scores' | 'buzzInTimeLeft' | 'responseTimeLeft'
+> & {
 	activeContestantSessionId: string | undefined;
-	buzzInTimeLeft: number | undefined;
-	responseTimeLeft: number | undefined;
 };
 
 export const correctClueResponse = (state: CorrectClueResponseGameState): CorrectClueResponseGameState => {

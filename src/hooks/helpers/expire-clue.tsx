@@ -1,12 +1,9 @@
-import type { ClueInGame } from '@/types';
+import type { GamePhasePlayState } from '../use-game-phase-play-state';
 
-type ExpireClueGameState = {
-	selectedClue: ClueInGame | null;
-	buzzerQueue: string[];
-	usedClueIds: string[];
-	buzzInTimeLeft: number | undefined;
-	responseTimeLeft: number | undefined;
-};
+type ExpireClueGameState = Pick<
+	GamePhasePlayState,
+	'selectedClue' | 'buzzerQueue' | 'buzzInTimeLeft' | 'responseTimeLeft' | 'usedClueIds'
+>;
 
 export const expireClue = (state: ExpireClueGameState): ExpireClueGameState => {
 	if (!state.selectedClue) {
