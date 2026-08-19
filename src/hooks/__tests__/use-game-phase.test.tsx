@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { navigate } from 'rwsdk/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import useGamePhase from '@/hooks/use-game-phase';
