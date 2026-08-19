@@ -1,5 +1,5 @@
 import type { RequestInfo } from 'rwsdk/worker';
-import SetupLayout from '@/layouts/setup';
+import { RegisterLayout } from '@/layouts';
 import { getGameById } from '@/repositories';
 import ViewGameRegister from '@/views/game-register';
 
@@ -22,7 +22,7 @@ export default async function Pages__Games__Register({ params, ctx, request }: R
 		const gameUrl = new URL(`/games/${gameId}/play`, request.url).href;
 
 		return (
-			<SetupLayout pageTitle={`Setup Game ${game.id}`} ctx={ctx} currentBasePage="games">
+			<RegisterLayout pageTitle={`Setup Game ${game.id}`} ctx={ctx} currentBasePage="games">
 				<ViewGameRegister
 					gameId={gameId}
 					gameUrl={gameUrl}
@@ -30,10 +30,10 @@ export default async function Pages__Games__Register({ params, ctx, request }: R
 					userId={ctx.user?.id}
 					userPermissions={ctx.permissions}
 				/>
-			</SetupLayout>
+			</RegisterLayout>
 		);
 	} catch (err) {
-		ctx.logger.error('Unexpected error in Pages__Games__Play', { err: err instanceof Error ? err : new Error(String(err)) });
+		ctx.logger.error('Unexpected error in Pages__Games__Register', { err: err instanceof Error ? err : new Error(String(err)) });
 		return <p>Unexpected error occurred. Please try again later.</p>;
 	}
 }

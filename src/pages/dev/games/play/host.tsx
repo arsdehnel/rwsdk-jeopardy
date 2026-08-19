@@ -2,7 +2,7 @@ import type { RequestInfo } from 'rwsdk/worker';
 import { KADProgress } from '@/components/design-system';
 import { Scoreboard } from '@/components/play';
 import type { GamePhasePlayState } from '@/hooks/use-game-phase-play-state';
-import SetupLayout from '@/layouts/setup';
+import { DefaultLayout } from '@/layouts';
 import { createNoopLogger } from '@/logger';
 import { caughtError } from '../../../utils';
 
@@ -73,7 +73,7 @@ export default async function Pages__dev__games__play__display({ ctx }: RequestI
 
 	try {
 		return (
-			<SetupLayout pageTitle="Dev Games Play Host" currentBasePage="dev" ctx={mockCtx}>
+			<DefaultLayout pageTitle="Dev Games Play Host" currentBasePage="dev" ctx={mockCtx}>
 				<div className="view-host">
 					<section>
 						<h2>Scores / Buzzers</h2>
@@ -153,7 +153,7 @@ export default async function Pages__dev__games__play__display({ ctx }: RequestI
 						</div>
 					</section>
 				</div>
-			</SetupLayout>
+			</DefaultLayout>
 		);
 	} catch (err) {
 		return caughtError(err, ctx.logger);

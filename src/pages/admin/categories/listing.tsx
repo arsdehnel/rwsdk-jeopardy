@@ -1,6 +1,6 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import KADTable from '@/components/design-system/table/kad-table';
-import SetupLayout from '@/layouts/setup';
+import { DefaultLayout } from '@/layouts';
 import { getCategories } from '@/repositories';
 import type { KADTableColumn } from '@/types/kad-table';
 
@@ -32,8 +32,8 @@ export default async function Pages__Admin__Categories__Listing({ ctx }: Request
 	}));
 
 	return (
-		<SetupLayout pageTitle="Categories" ctx={ctx} currentBasePage="categories">
+		<DefaultLayout pageTitle="Categories" ctx={ctx} currentBasePage="categories">
 			<KADTable userPermissions={ctx.permissions} columns={columns} data={rows} />
-		</SetupLayout>
+		</DefaultLayout>
 	);
 }

@@ -1,6 +1,6 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import { KADLink, KADTable } from '@/components/design-system';
-import SetupLayout from '@/layouts/setup';
+import { DefaultLayout } from '@/layouts';
 import { getCluesByCategoryId } from '@/repositories';
 import type { KADTableColumn } from '@/types/kad-table';
 
@@ -33,7 +33,7 @@ export default async function Pages__Admin__Categories_Clues__Listing({ ctx, par
 	}));
 
 	return (
-		<SetupLayout pageTitle={`Category ${params.categoryId} Clues`} ctx={ctx} currentBasePage="categories">
+		<DefaultLayout pageTitle={`Category ${params.categoryId} Clues`} ctx={ctx} currentBasePage="categories">
 			<KADLink
 				href={`/admin/categories`}
 				userPermissions={ctx.permissions}
@@ -41,6 +41,6 @@ export default async function Pages__Admin__Categories_Clues__Listing({ ctx, par
 				label="Back to Categories"
 			/>
 			<KADTable userPermissions={ctx.permissions} columns={columns} data={rows} />
-		</SetupLayout>
+		</DefaultLayout>
 	);
 }

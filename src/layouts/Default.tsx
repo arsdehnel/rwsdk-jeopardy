@@ -5,7 +5,7 @@ import type { DefaultAppContext } from 'rwsdk/worker';
 import { KADAvatar } from '@/components/design-system';
 import { getNavItems } from '@/data/navigation';
 
-export default function SetupLayout({
+export function DefaultLayout({
 	children,
 	ctx,
 	currentBasePage,
@@ -22,7 +22,7 @@ export default function SetupLayout({
 
 	return (
 		<StrictMode>
-			<header className="setup-header">
+			<header className="default-header">
 				<h1 className="welcome-title">RWSDK Jeopardy</h1>
 				<KADAvatar user={ctx.user} classNameRoot="header-avatar" />
 				<nav className="main-nav">

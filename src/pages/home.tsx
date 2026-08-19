@@ -1,9 +1,9 @@
 import type { RequestInfo } from 'rwsdk/worker';
-import SetupLayout from '@/layouts/setup';
+import { DefaultLayout } from '@/layouts';
 
 export default async function Pages__Home({ ctx }: RequestInfo): Promise<React.JSX.Element> {
 	return (
-		<SetupLayout pageTitle="Welcome" ctx={ctx} currentBasePage="home">
+		<DefaultLayout pageTitle="Welcome" ctx={ctx} currentBasePage="home">
 			<p>
 				This started as just a way for me to mess around with <a href="https://rwsdk.com/">RedwoodSDK</a> and their sweet{' '}
 				<a href="https://docs.rwsdk.com/experimental/realtime/">
@@ -15,6 +15,6 @@ export default async function Pages__Home({ ctx }: RequestInfo): Promise<React.J
 			<div>
 				<pre>{JSON.stringify(ctx, null, 4)}</pre>
 			</div>
-		</SetupLayout>
+		</DefaultLayout>
 	);
 }

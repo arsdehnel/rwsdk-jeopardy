@@ -1,7 +1,7 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import { KADTable } from '@/components/design-system';
 import VerificationForm from '@/forms/verification';
-import SetupLayout from '@/layouts/setup';
+import { DefaultLayout } from '@/layouts';
 import { getCategoryById } from '@/repositories';
 import type { KADTableColumn } from '@/types';
 
@@ -14,9 +14,9 @@ export default async function Pages__admin__categories__verify({ ctx, params }: 
 	const category = await getCategoryById(params.categoryId, ctx.logger);
 
 	return (
-		<SetupLayout ctx={ctx} currentBasePage="categories" pageTitle={`Verifications for ${category.name}`}>
+		<DefaultLayout ctx={ctx} currentBasePage="categories" pageTitle={`Verifications for ${category.name}`}>
 			<KADTable userPermissions={ctx.permissions} columns={columns} data={category.verifications} />
 			<VerificationForm verification={{ categoryId: category.id }} userPermissions={ctx.permissions} />
-		</SetupLayout>
+		</DefaultLayout>
 	);
 }
