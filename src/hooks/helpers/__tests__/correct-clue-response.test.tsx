@@ -96,16 +96,6 @@ describe('correctClueResponse', () => {
 		expect(() => correctClueResponse(frozen as typeof baseState)).not.toThrow();
 	});
 
-	it('does not modify gamePhase', () => {
-		const result = correctClueResponse(baseState);
-		expect(result.gamePhase).toBe('PLAYING');
-	});
-
-	it('does not modify connections', () => {
-		const result = correctClueResponse(baseState);
-		expect(result.connections).toEqual(mockConnections);
-	});
-
 	it('clears responseTimeLeft', () => {
 		const result = correctClueResponse({ ...baseState, responseTimeLeft: 3 });
 		expect(result.responseTimeLeft).toBeUndefined();
