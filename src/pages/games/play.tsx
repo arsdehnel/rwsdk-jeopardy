@@ -1,5 +1,5 @@
 import type { RequestInfo } from 'rwsdk/worker';
-import SetupLayout from '@/layouts/setup';
+import { DefaultLayout, PlayLayout } from '@/layouts';
 import { getCategoriesForGameStage, getGameById } from '@/repositories';
 import type { Role } from '@/types';
 import ViewGamePlay from '@/views/game-play';
@@ -36,14 +36,14 @@ export default async function Pages__Games__Play({ params, ctx }: RequestInfo): 
 
 		if (!currentUserRole) {
 			return (
-				<SetupLayout pageTitle={`Play Game ${game.id}`} ctx={ctx} currentBasePage="games">
+				<DefaultLayout pageTitle={`Play Game ${game.id}`} ctx={ctx} currentBasePage="games">
 					<p>Sorry you don't seem to be a registered contestant in this game</p>
-				</SetupLayout>
+				</DefaultLayout>
 			);
 		}
 
 		return (
-			<SetupLayout pageTitle={`Play Game ${game.id}`} ctx={ctx} currentBasePage="games">
+			<PlayLayout pageTitle={`Play Game ${game.id}`} ctx={ctx} currentBasePage="games">
 				<ViewGamePlay
 					currentUserRole={currentUserRole}
 					contestants={game.contestants}
@@ -51,7 +51,7 @@ export default async function Pages__Games__Play({ params, ctx }: RequestInfo): 
 					sessionId={sessionId}
 					categories={categories}
 				/>
-			</SetupLayout>
+			</PlayLayout>
 		);
 	} catch (err) {
 		ctx.logger.error('Unexpected error in Pages__Games__Play', { err: err instanceof Error ? err : new Error(String(err)) });

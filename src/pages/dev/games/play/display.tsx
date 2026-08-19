@@ -1,7 +1,7 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import { Board, ClueOverlay, Scoreboard } from '@/components/play';
 import type { GamePhasePlayState } from '@/hooks/use-game-phase-play-state';
-import SetupLayout from '@/layouts/setup';
+import { DefaultLayout } from '@/layouts';
 import { createNoopLogger } from '@/logger';
 import type { CategoryInGame, GameWithEverything } from '@/types';
 import { caughtError } from '../../../utils';
@@ -69,7 +69,7 @@ export default async function Pages__dev__games__play__display({ ctx }: RequestI
 
 	try {
 		return (
-			<SetupLayout pageTitle="Dev Games Play Display" currentBasePage="dev" ctx={mockCtx}>
+			<DefaultLayout pageTitle="Dev Games Play Display" currentBasePage="dev" ctx={mockCtx}>
 				<div className="view-display">
 					<Scoreboard
 						contestants={mockDBGame.contestants}
@@ -80,7 +80,7 @@ export default async function Pages__dev__games__play__display({ ctx }: RequestI
 					<ClueOverlay selectedClue={mockSyncState.selectedClue} />
 					<Board categories={categories} usedClueIds={mockSyncState.usedClueIds} />
 				</div>
-			</SetupLayout>
+			</DefaultLayout>
 		);
 	} catch (err) {
 		return caughtError(err, ctx.logger);

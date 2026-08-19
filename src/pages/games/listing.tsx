@@ -1,6 +1,6 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import KADTable from '@/components/design-system/table/kad-table';
-import SetupLayout from '@/layouts/setup';
+import { DefaultLayout } from '@/layouts';
 import { getGamesByOwnerId } from '@/repositories';
 import type { KADTableColumn } from '@/types/kad-table';
 
@@ -32,8 +32,8 @@ export default async function Pages__Games__Listing({ ctx }: RequestInfo): Promi
 	}));
 
 	return (
-		<SetupLayout pageTitle="My Games" ctx={ctx} currentBasePage="games">
+		<DefaultLayout pageTitle="My Games" ctx={ctx} currentBasePage="games">
 			<KADTable userPermissions={ctx.permissions} columns={columns} data={rows} />
-		</SetupLayout>
+		</DefaultLayout>
 	);
 }

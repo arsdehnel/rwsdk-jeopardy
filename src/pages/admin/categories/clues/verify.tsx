@@ -1,7 +1,7 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import { KADLink, KADTable } from '@/components/design-system';
 import VerificationForm from '@/forms/verification';
-import SetupLayout from '@/layouts/setup';
+import { DefaultLayout } from '@/layouts';
 import { getClueById } from '@/repositories';
 import type { KADTableColumn } from '@/types';
 
@@ -14,7 +14,7 @@ export default async function Pages__admin__categories__clues__verify({ ctx, par
 	const clue = await getClueById(params.clueId, ctx.logger);
 
 	return (
-		<SetupLayout ctx={ctx} currentBasePage="categories" pageTitle={`Verifications for ${clue.text}`}>
+		<DefaultLayout ctx={ctx} currentBasePage="categories" pageTitle={`Verifications for ${clue.text}`}>
 			<KADLink
 				href={`/admin/categories/${clue.categoryId}/clues`}
 				userPermissions={ctx.permissions}
@@ -23,6 +23,6 @@ export default async function Pages__admin__categories__clues__verify({ ctx, par
 			/>
 			<KADTable userPermissions={ctx.permissions} columns={columns} data={clue.verifications} />
 			<VerificationForm verification={{ clueId: clue.id }} userPermissions={ctx.permissions} />
-		</SetupLayout>
+		</DefaultLayout>
 	);
 }

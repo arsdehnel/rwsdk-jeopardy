@@ -1,7 +1,7 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import { KADLink } from '@/components/design-system';
 import ClueForm from '@/forms/clue';
-import SetupLayout from '@/layouts/setup';
+import { DefaultLayout } from '@/layouts';
 import { getClueById } from '@/repositories';
 import type { ClueFormInput } from '@/types';
 
@@ -15,7 +15,7 @@ export default async function Pages__admin__categories__clues__edit({ ctx, param
 	const pageTitle = clueId ? `Edit ${clue.text}` : 'New Clue';
 
 	return (
-		<SetupLayout ctx={ctx} currentBasePage="categories" pageTitle={pageTitle}>
+		<DefaultLayout ctx={ctx} currentBasePage="categories" pageTitle={pageTitle}>
 			<KADLink
 				href={`/admin/categories/${clue.categoryId}/clues`}
 				userPermissions={ctx.permissions}
@@ -23,6 +23,6 @@ export default async function Pages__admin__categories__clues__edit({ ctx, param
 				label="Back to Clues"
 			/>
 			<ClueForm clue={clue} userPermissions={ctx.permissions} />
-		</SetupLayout>
+		</DefaultLayout>
 	);
 }
