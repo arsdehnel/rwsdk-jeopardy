@@ -2,8 +2,6 @@ export * from './action-state';
 export * from './app-context';
 export * from './categories';
 export * from './clues';
-export * from './connection';
-export * from './connections';
 export * from './contestant';
 export * from './credentials';
 export * from './game-contestants';

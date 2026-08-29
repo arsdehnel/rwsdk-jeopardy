@@ -56,7 +56,3 @@ export const flattenedPermissions: Array<{ permission: Permission; roles: string
 			roles: roles as string[],
 		})),
 );
-
-export const permissionValues = Object.entries(permissions).flatMap(([resource, actions]) =>
-	Object.keys(actions).map(action => `${resource}:${action}`),
-) as [Permission, ...Permission[]];

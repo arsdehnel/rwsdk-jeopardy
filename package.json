@@ -7,7 +7,7 @@
 	"license": "MIT",
 	"author": "",
 	"type": "module",
-	"main": "index.js",
+	"main": "src/worker.tsx",
 	"scripts": {
 		"biome:check": "biome check",
 		"biome:fix": "biome check --write .",
@@ -31,7 +31,8 @@
 		"test:run": "vitest run --coverage",
 		"test:ui": "vitest --ui",
 		"types:check": "tsc",
-		"worker:run": "rw-scripts worker-run"
+		"worker:run": "rw-scripts worker-run",
+		"knip": "knip"
 	},
 	"lint-staged": {
 		"*": [
@@ -92,6 +93,7 @@
 		"drizzle-kit": "1.0.0-rc.4",
 		"husky": "^9.1.7",
 		"jsdom": "^28.1.0",
+		"knip": "^6.32.2",
 		"less": "^4.5.1",
 		"lint-staged": "^16.4.0",
 		"prettier": "^3.8.1",

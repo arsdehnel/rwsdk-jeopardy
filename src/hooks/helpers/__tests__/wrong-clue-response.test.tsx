@@ -1,16 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { wrongClueResponse } from '@/hooks/helpers';
-import type { Connection, Connections, GamePhaseEnum } from '@/types';
-
-const host: Connection = { id: 'host-1', name: 'Alice', role: 'host' };
-const display: Connection = { id: 'display-1', name: 'TV', role: 'display' };
-const player1: Connection = { id: 'player-1', name: 'Bob', role: 'contestant' };
-const player2: Connection = { id: 'player-2', name: 'Carol', role: 'contestant' };
-
-const mockConnections: Connections = { host, display, contestants: [player1, player2] };
+import type { GamePhaseEnum } from '@/types';
 
 const baseState = {
-	connections: mockConnections,
 	selectedClue: { id: 'clue-1', value: 200, text: 'What is...', response: '...' },
 	gamePhase: 'PLAYING' as GamePhaseEnum,
 	buzzerQueue: ['player-1', 'player-2'],
