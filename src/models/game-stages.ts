@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import { sql } from 'drizzle-orm';
 import { type AnySQLiteColumn, index, snakeCase, text } from 'drizzle-orm/sqlite-core';
-import { gameStageEnum } from './enums';
+import { gameStageEnum } from '../data/enums';
 import { games } from './games';
 import { users } from './users';
 

@@ -2,7 +2,7 @@
 import { Form } from 'radix-ui';
 import { useState } from 'react';
 import { saveGame } from '@/actions/games';
-import { gamePhaseEnum, gameStageEnum } from '@/models';
+import { gamePhaseEnum, gameStageEnum } from '@/data/enums';
 import { gamesSchemas } from '@/schemas';
 import type { ActionState, GameFormInput, GameWithEverything, Permission } from '@/types';
 import { useAppForm } from './setup/context';

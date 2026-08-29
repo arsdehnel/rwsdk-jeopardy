@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { navigate } from 'rwsdk/client';
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
-import { gamePhaseEnum } from '@/models';
+import { gamePhaseEnum } from '@/data/enums';
 import type { GamePhaseEnum } from '@/types';
 
 type GamePhaseHookState = {
