@@ -10,8 +10,8 @@ import adminRoutes from '@/pages/admin/routes';
 import authRoutes from '@/pages/auth/routes';
 import devRoutes from '@/pages/dev/routes';
 import gamesRoutes from '@/pages/games/routes';
-import Pages__Home from '@/pages/home';
 import profileRoutes from '@/pages/profile/routes';
+import Pages__root from '@/pages/root';
 import botMiddleware from './middleware/bot';
 import loggerMiddleware from './middleware/logger';
 import permissionsMiddleware from './middleware/permissions';
@@ -31,12 +31,12 @@ export default defineApp([
 	...syncedStateRoutes(() => env.GAME_STATE_SYNC_DURABLE_OBJECT),
 	render(Document, [
 		except<RequestInfo<DefaultAppContext>>(handlePageError),
-		route('/', Pages__Home),
-		prefix('/admin', adminRoutes),
-		prefix('/auth', authRoutes),
-		prefix('/dev', devRoutes),
-		prefix('/games', gamesRoutes),
-		prefix('/profile', profileRoutes),
+		route('/', Pages__root),
+		prefix('/admin', adminRoutes.admin),
+		prefix('/auth', authRoutes.app),
+		prefix('/dev', devRoutes.app),
+		prefix('/games', gamesRoutes.app),
+		prefix('/profile', profileRoutes.app),
 		route('*', Pages__not_found),
 	]),
 ]);

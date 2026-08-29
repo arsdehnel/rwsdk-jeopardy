@@ -3,7 +3,7 @@ import { RegisterLayout } from '@/layouts';
 import { getGameById } from '@/repositories';
 import ViewGameRegister from '@/views/game-register';
 
-export default async function Pages__Games__Register({ params, ctx, request }: RequestInfo): Promise<React.JSX.Element> {
+export default async function Pages__games__register({ params, ctx, request }: RequestInfo): Promise<React.JSX.Element> {
 	try {
 		const gameId = params.gameId;
 		if (!gameId) {

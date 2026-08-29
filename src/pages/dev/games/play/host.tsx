@@ -6,7 +6,7 @@ import { DefaultLayout } from '@/layouts';
 import { createNoopLogger } from '@/logger';
 import { caughtError } from '../../../utils';
 
-export default async function Pages__dev__games__play__display({ ctx }: RequestInfo): Promise<React.JSX.Element> {
+export default async function Pages__dev__games__play__host({ ctx }: RequestInfo): Promise<React.JSX.Element> {
 	const gameId: string = crypto.randomUUID();
 	const contestants = ['Abc', 'Def', 'Ghi'].map(name => ({
 		id: crypto.randomUUID(),

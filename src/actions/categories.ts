@@ -1,7 +1,7 @@
 'use server';
 import { env } from 'cloudflare:workers';
 import { requestInfo, serverAction } from 'rwsdk/worker';
-import { requireAuthentication } from '@/interrupters';
+import { requireAuthentication, requirePermissions } from '@/interrupters';
 import { createCategory, createClue, getCategories } from '@/repositories';
 import type { ActionState, CategoryWithClues, GeneratedCategory } from '@/types';
 import { errorResponse, successResponse } from './utils';
@@ -28,8 +28,12 @@ function getPrompt(existingCategoryNames: string[]): string {
 `;
 }
 
-export const generateCategory = serverAction([requireAuthentication, _generateCategory]);
-export const saveCategory = serverAction([requireAuthentication, _saveCategory]);
+export const generateCategory = serverAction([
+	requireAuthentication,
+	requirePermissions('categories:generate'),
+	_generateCategory,
+]);
+export const saveCategory = serverAction([requireAuthentication, requirePermissions('categories:update'), _saveCategory]);
 
 export async function _generateCategory(): Promise<ActionState<GeneratedCategory>> {
 	try {

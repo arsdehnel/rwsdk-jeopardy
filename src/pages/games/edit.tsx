@@ -1,12 +1,12 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import { KADLink } from '@/components/design-system';
-import { CategorySelector } from '@/components/setup/category-selector';
+import { CategorySelector } from '@/components/setup';
 import GameForm from '@/forms/game';
 import { DefaultLayout } from '@/layouts';
 import { getCategories, getGameById } from '@/repositories';
 import { caughtError } from '../utils';
 
-export default async function Pages__Games__Edit({ ctx, params }: RequestInfo): Promise<React.JSX.Element> {
+export default async function Pages__games__edit({ ctx, params }: RequestInfo): Promise<React.JSX.Element> {
 	try {
 		const gameId = params.gameId;
 		const game = await getGameById(gameId, ctx.logger);
