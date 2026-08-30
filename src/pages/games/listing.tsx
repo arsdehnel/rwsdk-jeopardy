@@ -1,5 +1,5 @@
 import type { RequestInfo } from 'rwsdk/worker';
-import KADTable from '@/components/design-system/table/kad-table';
+import { KADTable } from '@/components/design-system';
 import { DefaultLayout } from '@/layouts';
 import { getGamesByOwnerId } from '@/repositories';
 import type { KADTableColumn } from '@/types/kad-table';
@@ -19,7 +19,7 @@ const columns: KADTableColumn[] = [
 	},
 ];
 
-export default async function Pages__Games__Listing({ ctx }: RequestInfo): Promise<React.JSX.Element> {
+export default async function Pages__games__listing({ ctx }: RequestInfo): Promise<React.JSX.Element> {
 	// biome-ignore lint/style/noNonNullAssertion: guaranteed by requireAuthentication in serverAction chain
 	const userId = ctx.user!.id;
 

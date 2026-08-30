@@ -32,6 +32,18 @@ describe('updateGame', () => {
 		);
 	});
 
+	it('throws when userId is not a valid UUID', async () => {
+		await expect(updateGame(crypto.randomUUID(), {}, 'not-a-uuid', logger)).rejects.toThrow(
+			'The value "not-a-uuid" is not a valid ID for a User ID',
+		);
+	});
+
+	it('throws when hostUserId is present but not a valid UUID', async () => {
+		await expect(updateGame(crypto.randomUUID(), { hostUserId: 'not-a-uuid' }, crypto.randomUUID(), logger)).rejects.toThrow(
+			'The value "not-a-uuid" is not a valid ID for a Host',
+		);
+	});
+
 	it('throws when game is not found in the DB', async () => {
 		const user = await createUser('testuser', null, logger);
 		const nonExistentId = crypto.randomUUID();

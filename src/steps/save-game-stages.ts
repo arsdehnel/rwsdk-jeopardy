@@ -1,4 +1,4 @@
-import { createGameStage, updateGameStage } from '@/repositories/game-stages';
+import { createGameStage, updateGameStage } from '@/repositories';
 import type { GameStageDBRead, GameStageRepoInput, KADLogger } from '@/types';
 
 export async function saveGameStages(

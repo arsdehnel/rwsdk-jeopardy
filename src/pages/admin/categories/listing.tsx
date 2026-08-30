@@ -1,5 +1,5 @@
 import type { RequestInfo } from 'rwsdk/worker';
-import KADTable from '@/components/design-system/table/kad-table';
+import { KADTable } from '@/components/design-system';
 import { DefaultLayout } from '@/layouts';
 import { getCategories } from '@/repositories';
 import type { KADTableColumn } from '@/types/kad-table';
@@ -20,7 +20,7 @@ const columns: KADTableColumn[] = [
 	},
 ];
 
-export default async function Pages__Admin__Categories__Listing({ ctx }: RequestInfo): Promise<React.JSX.Element> {
+export default async function Pages__admin__categories__listing({ ctx }: RequestInfo): Promise<React.JSX.Element> {
 	const categories = await getCategories(ctx.logger);
 
 	const rows = categories.map(ctgry => ({

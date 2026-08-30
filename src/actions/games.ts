@@ -5,7 +5,7 @@ import { requireAuthentication, requirePermissions } from '@/interrupters';
 import { getGameById, saveGameContestants, saveGameStageCategories, updateGame } from '@/repositories';
 import { gamesSchemas } from '@/schemas';
 import { saveGameStages, saveGame as saveGameStep } from '@/steps';
-import type { ActionState, Contestant, GameDBRead, GameFormInput, GameWithEverything } from '@/types';
+import type { ActionState, ContestantRegistration, GameDBRead, GameFormInput, GameWithEverything } from '@/types';
 import { errorResponse, successResponse } from './utils';
 
 export const saveGame = serverAction([requireAuthentication, requirePermissions('games:create', 'games:update'), _saveGame]);
@@ -49,7 +49,7 @@ export async function _saveGame(game: GameFormInput): Promise<ActionState<GameWi
 type GameRegisterState = {
 	gameId: string;
 	displaySessionId: string;
-	contestants: Contestant[];
+	contestants: ContestantRegistration[];
 };
 
 export async function _startGame(registerState: GameRegisterState): Promise<ActionState<GameDBRead>> {

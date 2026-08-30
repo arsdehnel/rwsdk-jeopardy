@@ -2,12 +2,12 @@ import { and, eq, isNull, sql } from 'drizzle-orm';
 import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { gameContestants } from '@/models';
-import type { Contestant, GameContestantDBRead, KADLogger } from '@/types';
+import type { ContestantRegistration, GameContestantDBRead, KADLogger } from '@/types';
 import { streamlineError, validateUuid } from './utils';
 
 export async function saveGameContestants(
 	gameId: string,
-	contestants: Contestant[],
+	contestants: ContestantRegistration[],
 	userId: string,
 	logger: KADLogger,
 ): Promise<GameContestantDBRead[]> {

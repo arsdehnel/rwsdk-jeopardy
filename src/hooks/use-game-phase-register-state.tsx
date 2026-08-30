@@ -1,21 +1,21 @@
 'use client';
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
 import { ConnectionConflictError } from '@/errors';
-import type { Contestant, Role } from '@/types';
+import type { ContestantRegistration, DisplayRegistration, HostRegistration, Role } from '@/types';
 
 export type GamePhaseRegisterState = {
 	// display
-	display: string | undefined;
+	display: DisplayRegistration;
 	registerAsDisplay: () => void;
 	unregisterAsDisplay: () => void;
 
 	// host
-	host: string | undefined;
+	host: HostRegistration;
 	registerAsHost: () => void;
 	unregisterAsHost: () => void;
 
 	// contestants
-	contestants: Contestant[];
+	contestants: ContestantRegistration[];
 	registerAsContestant: (name: string, userId: string | undefined) => void;
 	unregisterAsContestant: () => void;
 
@@ -25,15 +25,19 @@ export type GamePhaseRegisterState = {
 	hasHost: boolean;
 };
 
-export default function useGamePhaseRegisterState(sessionId: string, gameId: string): GamePhaseRegisterState {
-	const [host, setHost] = useSyncedState<string | undefined>(undefined, 'host', gameId);
-	const [display, setDisplay] = useSyncedState<string | undefined>(undefined, 'display', gameId);
-	const [contestants, setContestants] = useSyncedState<Contestant[]>([], 'contestants', gameId);
+export default function useGamePhaseRegisterState(
+	sessionId: string,
+	userId: string | undefined,
+	gameId: string,
+): GamePhaseRegisterState {
+	const [host, setHost] = useSyncedState<HostRegistration>(undefined, `game:${gameId}:host`, gameId);
+	const [display, setDisplay] = useSyncedState<DisplayRegistration>(undefined, `game:${gameId}:display`, gameId);
+	const [contestants, setContestants] = useSyncedState<ContestantRegistration[]>([], `game:${gameId}:contestants`, gameId);
 
 	let currentUserRole: Role | undefined;
-	if (display === sessionId) {
+	if (display?.sessionId === sessionId) {
 		currentUserRole = 'display';
-	} else if (host === sessionId) {
+	} else if (host?.sessionId === sessionId) {
 		currentUserRole = 'host';
 	} else if (contestants.some(contestant => contestant.sessionId === sessionId)) {
 		currentUserRole = 'contestant';
@@ -49,8 +53,9 @@ export default function useGamePhaseRegisterState(sessionId: string, gameId: str
 		if (display) {
 			throw new ConnectionConflictError('display_exists');
 		}
-		setDisplay(sessionId);
+		setDisplay({ sessionId, userId });
 	};
+
 	const unregisterAsDisplay = (): void => {
 		if (currentUserRole !== 'display') {
 			return;
@@ -68,8 +73,12 @@ export default function useGamePhaseRegisterState(sessionId: string, gameId: str
 		if (host) {
 			throw new ConnectionConflictError('host_exists');
 		}
-		setHost(sessionId);
+		if (!userId) {
+			throw new Error(`Host must be logged in`);
+		}
+		setHost({ sessionId, userId });
 	};
+
 	const unregisterAsHost = (): void => {
 		if (currentUserRole !== 'host') {
 			return;

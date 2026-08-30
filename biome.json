@@ -41,7 +41,8 @@
 			"!**/playwright",
 			"!**/playwright-report",
 			"!**/test-results",
-			"!**/.pnpm-store"
+			"!**/.pnpm-store",
+			"!knip.ts"
 		]
 	},
 	"overrides": [

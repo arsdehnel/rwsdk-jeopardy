@@ -13,5 +13,3 @@ export function ClueOverlay({ selectedClue }: { selectedClue: ClueInGame | null 
 		</div>
 	);
 }
-
-export default ClueOverlay;

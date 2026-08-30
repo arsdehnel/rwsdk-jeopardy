@@ -15,4 +15,6 @@ async function logoutRedirect({ request }: RequestInfo): Promise<Response> {
 	});
 }
 
-export default [route('/login', [requirePermissions('auth:login'), Pages__auth__login]), route('/logout', [logoutRedirect])];
+export default {
+	app: [route('/login', [requirePermissions('auth:login'), Pages__auth__login]), route('/logout', [logoutRedirect])],
+};

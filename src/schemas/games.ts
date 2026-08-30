@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { gamePhaseEnum, gameStageEnum } from '@/models';
+import { gamePhaseEnum, gameStageEnum } from '@/data/enums';
 import { requiredUuid } from './utils';
 
 const stageSchema = z.object({

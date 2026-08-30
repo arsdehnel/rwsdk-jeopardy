@@ -28,7 +28,7 @@ export function RegisterContestant({
 					registerAsContestant(name, userId);
 				}}
 			>
-				Register this device as the host
+				Register as Consultant
 			</button>
 		</>
 	);

@@ -22,7 +22,7 @@ const columns: KADTableColumn[] = [
 	},
 ];
 
-export default async function Pages__Admin__Categories_Clues__Listing({ ctx, params }: RequestInfo): Promise<React.JSX.Element> {
+export default async function Pages__admin__categories__clues__listing({ ctx, params }: RequestInfo): Promise<React.JSX.Element> {
 	const clues = await getCluesByCategoryId(params.categoryId, ctx.logger);
 
 	const rows = clues.map(clue => ({

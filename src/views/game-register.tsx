@@ -38,7 +38,7 @@ export default function ViewGameRegister({
 		currentUserRole,
 		hasDisplay,
 		hasHost,
-	} = useGamePhaseRegisterState(sessionId, gameId);
+	} = useGamePhaseRegisterState(sessionId, userId, gameId);
 
 	if (!sessionId) {
 		return (

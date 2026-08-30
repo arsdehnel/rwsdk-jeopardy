@@ -4,7 +4,7 @@ import { getCategoriesForGameStage, getGameById } from '@/repositories';
 import type { Role } from '@/types';
 import ViewGamePlay from '@/views/game-play';
 
-export default async function Pages__Games__Play({ params, ctx }: RequestInfo): Promise<React.JSX.Element> {
+export default async function Pages__games__play({ params, ctx }: RequestInfo): Promise<React.JSX.Element> {
 	try {
 		const gameId = params.gameId;
 		if (!gameId) {

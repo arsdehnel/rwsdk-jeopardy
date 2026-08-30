@@ -1,7 +1,7 @@
 import type { RequestInfo } from 'rwsdk/worker';
 import { DefaultLayout } from '@/layouts';
 
-export default async function Pages__Home({ ctx }: RequestInfo): Promise<React.JSX.Element> {
+export default async function Pages__root({ ctx }: RequestInfo): Promise<React.JSX.Element> {
 	return (
 		<DefaultLayout pageTitle="Welcome" ctx={ctx} currentBasePage="home">
 			<p>

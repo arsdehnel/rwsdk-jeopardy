@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { navigate } from 'rwsdk/client';
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
-import { gamePhaseEnum } from '@/models';
+import { gamePhaseEnum } from '@/data/enums';
 import type { GamePhaseEnum } from '@/types';
 
 type GamePhaseHookState = {
@@ -9,7 +9,7 @@ type GamePhaseHookState = {
 };
 
 export default function useGamePhase(gameId: string, defaultPhase: GamePhaseEnum): GamePhaseHookState {
-	const [gamePhase] = useSyncedState<GamePhaseEnum>(defaultPhase, 'gamePhase', gameId);
+	const [gamePhase] = useSyncedState<GamePhaseEnum>(defaultPhase, `game:${gameId}:gamePhase`, gameId);
 
 	useEffect(() => {
 		gamePhaseEnum.forEach((phase: string) => {

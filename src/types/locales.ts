@@ -6,5 +6,3 @@ export type LocaleDefinition = {
 		timesUp: string;
 	};
 };
-
-export type Locale = 'en-us';
