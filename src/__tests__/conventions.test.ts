@@ -159,7 +159,7 @@ describe('pages', () => {
 	it('all page component files export a default function named after their path', () => {
 		// Rule: Pages__<path> where directories become __ and hyphens become _
 		// e.g. src/pages/admin/users/not-found.tsx → Pages__admin__users__not_found
-		const pageFiles = files.filter(p => p.endsWith('.tsx'));
+		const pageFiles = files.filter(p => p.endsWith('.tsx') && !p.endsWith('pages/utils.tsx'));
 		const bad: string[] = [];
 		for (const p of pageFiles) {
 			const relPath = rel(p); // e.g. "pages/admin/users/not-found.tsx"
