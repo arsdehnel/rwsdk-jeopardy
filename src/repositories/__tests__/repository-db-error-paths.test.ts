@@ -4,6 +4,7 @@ import { createNoopLogger } from '@/logger';
 vi.mock('@/db', () => ({
 	default: {
 		insert: vi.fn(),
+		update: vi.fn(),
 		query: {
 			games: {
 				findFirst: vi.fn(),
@@ -18,7 +19,7 @@ import { createCategory } from '../categories';
 import { createClue } from '../clues';
 import { createGameStageCategory } from '../game-stage-categories';
 import { createGameStage } from '../game-stages';
-import { createGame, getGameById } from '../games';
+import { createGame, getGameById, updateGame } from '../games';
 import { getUserById } from '../users';
 
 const logger = createNoopLogger();
@@ -42,6 +43,20 @@ describe('getGameById catch block', () => {
 		vi.mocked((db as any).query.games.findFirst).mockRejectedValueOnce(new Error('DB failure'));
 
 		await expect(getGameById(crypto.randomUUID(), logger)).rejects.toThrow('DB failure');
+	});
+});
+
+describe('updateGame catch block', () => {
+	it('rethrows when db.update rejects', async () => {
+		vi.mocked(db.update).mockReturnValueOnce({
+			set: vi.fn().mockReturnValue({
+				where: vi.fn().mockReturnValue({
+					returning: vi.fn().mockRejectedValue(new Error('DB failure')),
+				}),
+			}),
+		} as any);
+
+		await expect(updateGame(crypto.randomUUID(), {}, crypto.randomUUID(), logger)).rejects.toThrow('DB failure');
 	});
 });
 
