@@ -1,5 +1,5 @@
 import { startGame } from '@/actions/games';
-import type { Contestant } from '@/types';
+import type { ContestantRegistration, DisplayRegistration } from '@/types';
 
 export function HostOptions({
 	gameId,
@@ -7,8 +7,8 @@ export function HostOptions({
 	contestants,
 }: {
 	gameId: string;
-	display: string | undefined;
-	contestants: Contestant[];
+	display: DisplayRegistration;
+	contestants: ContestantRegistration[];
 }): React.ReactNode {
 	if (!display) {
 		return <p>Please register a display before starting the game</p>;
@@ -20,7 +20,7 @@ export function HostOptions({
 		<button
 			type="button"
 			onClick={(): void => {
-				startGame({ gameId, displaySessionId: display, contestants });
+				startGame({ gameId, displaySessionId: display.sessionId, contestants });
 			}}
 		>
 			Start Game

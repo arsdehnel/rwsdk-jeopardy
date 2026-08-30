@@ -9,7 +9,7 @@ type GamePhaseHookState = {
 };
 
 export default function useGamePhase(gameId: string, defaultPhase: GamePhaseEnum): GamePhaseHookState {
-	const [gamePhase] = useSyncedState<GamePhaseEnum>(defaultPhase, 'gamePhase', gameId);
+	const [gamePhase] = useSyncedState<GamePhaseEnum>(defaultPhase, `game:${gameId}:gamePhase`, gameId);
 
 	useEffect(() => {
 		gamePhaseEnum.forEach((phase: string) => {

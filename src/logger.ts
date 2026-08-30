@@ -147,12 +147,17 @@ function buildLogger(bindings: Record<string, unknown>, level: LogLevel, taskOve
 	};
 }
 
-export function createRequestLogger(request: Request): KADLogger {
-	const correlationId = request.headers.get('cf-ray') ?? crypto.randomUUID();
-	const path = new URL(request.url).pathname;
+export function createLogger(bindings: Record<string, unknown>): KADLogger {
 	const level = parseLevel(env.LOG_LEVEL, 'info');
 	const taskOverrides = parseTaskOverrides(env.LOG_LEVEL_TASK_OVERRIDE);
-	return buildLogger({ correlationId, path }, level, taskOverrides);
+	return buildLogger(bindings, level, taskOverrides);
+}
+
+export function createRequestLogger(request: Request): KADLogger {
+	return createLogger({
+		correlationId: request.headers.get('cf-ray') ?? crypto.randomUUID(),
+		path: new URL(request.url).pathname,
+	});
 }
 
 export function createNoopLogger(): KADLogger {

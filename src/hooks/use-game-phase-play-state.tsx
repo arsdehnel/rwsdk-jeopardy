@@ -41,17 +41,25 @@ export default function useGamePhasePlayState(
 	gameId: string,
 	contestants: GameContestantDBRead[],
 ): GamePhasePlayState {
-	const [selectedClue, setSelectedClue] = useSyncedState<ClueInGame | null>(null, 'selectedClue', gameId);
-	const [buzzerQueue, setBuzzerQueue] = useSyncedState<string[]>([], 'buzzerQueue', gameId);
-	const [usedClueIds, setUsedClueIds] = useSyncedState<string[]>([], 'usedClueIds', gameId);
-	const [scores, setScores] = useSyncedState<Record<string, number>>({}, 'scores', gameId);
+	const [selectedClue, setSelectedClue] = useSyncedState<ClueInGame | null>(null, `game:${gameId}:selectedClue`, gameId);
+	const [buzzerQueue, setBuzzerQueue] = useSyncedState<string[]>([], `game:${gameId}:buzzerQueue`, gameId);
+	const [usedClueIds, setUsedClueIds] = useSyncedState<string[]>([], `game:${gameId}:usedClueIds`, gameId);
+	const [scores, setScores] = useSyncedState<Record<string, number>>({}, `game:${gameId}:scores`, gameId);
 	const [activeContestantSessionId, setActiveContestantSessionId] = useSyncedState<string | undefined>(
 		undefined,
 		'activeContestantSessionId',
 		gameId,
 	);
-	const [buzzInTimeLeft, setbuzzInTimeLeft] = useSyncedState<number | undefined>(undefined, 'buzzInTimeLeft', gameId);
-	const [responseTimeLeft, setResponseTimeLeft] = useSyncedState<number | undefined>(undefined, 'responseTimeLeft', gameId);
+	const [buzzInTimeLeft, setbuzzInTimeLeft] = useSyncedState<number | undefined>(
+		undefined,
+		`game:${gameId}:buzzInTimeLeft`,
+		gameId,
+	);
+	const [responseTimeLeft, setResponseTimeLeft] = useSyncedState<number | undefined>(
+		undefined,
+		`game:${gameId}:responseTimeLeft`,
+		gameId,
+	);
 
 	const correctClueResponse = (): void => {
 		const next = helpers.correctClueResponse({
