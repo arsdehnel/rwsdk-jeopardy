@@ -3,7 +3,7 @@ import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { gameStages } from '@/models';
 import type { GameStageDBRead, GameStageRepoInput, KADLogger } from '@/types';
-import { validateUuid } from './utils';
+import { validateUuid } from '@/utils';
 
 export async function createGameStage(
 	gameStage: GameStageRepoInput,

@@ -3,7 +3,7 @@ import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { credentials } from '@/models';
 import type { CredentialDBRead, CredentialWriteInput, KADLogger } from '@/types';
-import { validateUuid } from './utils';
+import { validateUuid } from '@/utils';
 
 export async function createCredential(
 	newCredential: CredentialWriteInput,

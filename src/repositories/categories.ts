@@ -12,7 +12,7 @@ import type {
 	KADLogger,
 	VerificationDBRead,
 } from '@/types';
-import { validateUuid } from './utils';
+import { validateUuid } from '@/utils';
 
 export async function getCategoriesForGameStage(
 	gameStageCategoryIds: string[],

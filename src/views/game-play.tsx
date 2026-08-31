@@ -2,8 +2,9 @@
 import classnames from 'classnames';
 import { KADProgress } from '@/components/design-system';
 import { Board, Buzzer, ClueOverlay, ClueSelect, Scoreboard } from '@/components/play';
+import useGamePhase from '@/hooks/use-game-phase';
 import useGamePhasePlayState from '@/hooks/use-game-phase-play-state';
-import type { CategoryInGame, GameContestantDBRead, Role } from '@/types';
+import type { CategoryInGame, GameContestantDBRead, GamePhaseEnum, Role } from '@/types';
 
 export default function ViewGamePlay({
 	currentUserRole,
@@ -11,13 +12,16 @@ export default function ViewGamePlay({
 	gameId,
 	sessionId,
 	categories,
+	currentGamePhase,
 }: {
 	currentUserRole: Role;
 	contestants: GameContestantDBRead[];
 	gameId: string;
 	sessionId: string;
 	categories: CategoryInGame[];
+	currentGamePhase: GamePhaseEnum;
 }): React.ReactNode {
+	useGamePhase(gameId, currentGamePhase);
 	const {
 		selectedClue,
 		buzzerQueue,

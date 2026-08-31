@@ -19,16 +19,17 @@ export default async function Pages__games__register({ params, ctx, request }: R
 		if (!game) {
 			return <p>Game not found</p>;
 		}
-		const gameUrl = new URL(`/games/${gameId}/play`, request.url).href;
+		const gameRegistrationUrl = new URL(`/games/${gameId}/register`, request.url).href;
 
 		return (
 			<RegisterLayout pageTitle={`Setup Game ${game.id}`} ctx={ctx} currentBasePage="games">
 				<ViewGameRegister
 					gameId={gameId}
-					gameUrl={gameUrl}
+					gameRegistrationUrl={gameRegistrationUrl}
 					sessionId={sessionId}
 					userId={ctx.user?.id}
 					userPermissions={ctx.permissions}
+					currentGamePhase={game.phase}
 				/>
 			</RegisterLayout>
 		);

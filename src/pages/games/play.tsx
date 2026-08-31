@@ -50,6 +50,7 @@ export default async function Pages__games__play({ params, ctx }: RequestInfo): 
 					gameId={gameId}
 					sessionId={sessionId}
 					categories={categories}
+					currentGamePhase={game.phase}
 				/>
 			</PlayLayout>
 		);
