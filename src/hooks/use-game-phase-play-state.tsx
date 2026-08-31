@@ -47,7 +47,7 @@ export default function useGamePhasePlayState(
 	const [scores, setScores] = useSyncedState<Record<string, number>>({}, `game:${gameId}:scores`, gameId);
 	const [activeContestantSessionId, setActiveContestantSessionId] = useSyncedState<string | undefined>(
 		undefined,
-		'activeContestantSessionId',
+		`game:${gameId}:activeContestantSessionId`,
 		gameId,
 	);
 	const [buzzInTimeLeft, setbuzzInTimeLeft] = useSyncedState<number | undefined>(
