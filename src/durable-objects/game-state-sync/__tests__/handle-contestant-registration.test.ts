@@ -61,4 +61,49 @@ describe('handleContestantRegistration.set', () => {
 		expect(logger.error).toHaveBeenCalled();
 		expect(mockSaveGameContestants).not.toHaveBeenCalled();
 	});
+
+	it('calls logger.error and does not call saveGameContestants for array containing null', async () => {
+		const logger = createSpyLogger();
+
+		await handleContestantRegistration.set(gameId, [null], logger);
+
+		expect(logger.error).toHaveBeenCalled();
+		expect(mockSaveGameContestants).not.toHaveBeenCalled();
+	});
+
+	it('calls logger.error and does not call saveGameContestants for array containing a non-object primitive', async () => {
+		const logger = createSpyLogger();
+
+		await handleContestantRegistration.set(gameId, [42], logger);
+
+		expect(logger.error).toHaveBeenCalled();
+		expect(mockSaveGameContestants).not.toHaveBeenCalled();
+	});
+
+	it('calls logger.error when item has a valid sessionId but no name', async () => {
+		const logger = createSpyLogger();
+
+		await handleContestantRegistration.set(gameId, [{ sessionId: crypto.randomUUID() }], logger);
+
+		expect(logger.error).toHaveBeenCalled();
+		expect(mockSaveGameContestants).not.toHaveBeenCalled();
+	});
+
+	it('calls logger.error when item has sessionId and name but an invalid id type', async () => {
+		const logger = createSpyLogger();
+
+		await handleContestantRegistration.set(gameId, [{ sessionId: crypto.randomUUID(), name: 'Alice', id: 123 }], logger);
+
+		expect(logger.error).toHaveBeenCalled();
+		expect(mockSaveGameContestants).not.toHaveBeenCalled();
+	});
+
+	it('calls logger.error when item has sessionId and name but an invalid userId type', async () => {
+		const logger = createSpyLogger();
+
+		await handleContestantRegistration.set(gameId, [{ sessionId: crypto.randomUUID(), name: 'Alice', userId: 123 }], logger);
+
+		expect(logger.error).toHaveBeenCalled();
+		expect(mockSaveGameContestants).not.toHaveBeenCalled();
+	});
 });

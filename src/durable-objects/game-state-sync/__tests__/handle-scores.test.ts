@@ -68,4 +68,13 @@ describe('handleScores.set', () => {
 		expect(logger.error).toHaveBeenCalled();
 		expect(mockUpdateContestantScores).not.toHaveBeenCalled();
 	});
+
+	it('calls logger.error and does not call updateContestantScores for an object with non-number values', async () => {
+		const logger = createSpyLogger();
+
+		await handleScores.set(gameId, { 'session-1': 'not-a-number' }, logger);
+
+		expect(logger.error).toHaveBeenCalled();
+		expect(mockUpdateContestantScores).not.toHaveBeenCalled();
+	});
 });

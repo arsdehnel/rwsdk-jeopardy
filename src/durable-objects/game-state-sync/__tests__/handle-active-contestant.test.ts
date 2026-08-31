@@ -61,4 +61,13 @@ describe('handleActiveContestant.set', () => {
 
 		expect(mockUpdateGame).toHaveBeenCalledWith(gameId, { activeContestantSessionId: null }, SYSTEM_ID, logger);
 	});
+
+	it('logs an error and does not call updateGame when value is a non-string non-falsy value', async () => {
+		const logger = createSpyLogger();
+
+		await handleActiveContestant.set(gameId, { not: 'a-string' }, logger);
+
+		expect(logger.error).toHaveBeenCalled();
+		expect(mockUpdateGame).not.toHaveBeenCalled();
+	});
 });

@@ -59,4 +59,20 @@ describe('handleUsedClues.set', () => {
 		expect(logger.error).toHaveBeenCalled();
 		expect(mockUpdateGame).not.toHaveBeenCalled();
 	});
+
+	it('calls updateGame with usedClueIds set to null when value is null', async () => {
+		const logger = createSpyLogger();
+
+		await handleUsedClues.set(gameId, null, logger);
+
+		expect(mockUpdateGame).toHaveBeenCalledWith(gameId, { usedClueIds: null }, SYSTEM_ID, logger);
+	});
+
+	it('calls updateGame with usedClueIds set to null when value is undefined', async () => {
+		const logger = createSpyLogger();
+
+		await handleUsedClues.set(gameId, undefined, logger);
+
+		expect(mockUpdateGame).toHaveBeenCalledWith(gameId, { usedClueIds: null }, SYSTEM_ID, logger);
+	});
 });
