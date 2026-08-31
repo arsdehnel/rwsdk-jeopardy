@@ -28,7 +28,7 @@ export function RegisterContestant({
 					registerAsContestant(name, userId);
 				}}
 			>
-				Register as Consultant
+				Register as Contestant
 			</button>
 		</>
 	);
