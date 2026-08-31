@@ -3,7 +3,8 @@ import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { users } from '@/models';
 import type { KADLogger, UserDBRead, UserWriteInput } from '@/types';
-import { streamlineError, validateUuid } from './utils';
+import { validateUuid } from '@/utils';
+import { streamlineError } from './utils';
 
 export async function getUsers(logger: KADLogger, includeDeleted = false): Promise<UserDBRead[]> {
 	logger.debug('Fetching all users');

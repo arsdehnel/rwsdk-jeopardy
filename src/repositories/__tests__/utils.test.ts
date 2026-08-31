@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { streamlineError, validateUuid } from '../utils';
+import { validateUuid } from '@/utils';
+import { streamlineError } from '../utils';
 
 describe('validateUuid', () => {
 	it('returns true for a valid UUID', () => {

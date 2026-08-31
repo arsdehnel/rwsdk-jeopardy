@@ -3,7 +3,8 @@ import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { games } from '@/models';
 import type { GameDBRead, GameRepoInput, GameWithEverything, KADLogger } from '@/types';
-import { streamlineError, validateUuid } from './utils';
+import { validateUuid } from '@/utils';
+import { streamlineError } from './utils';
 
 export async function createGame(game: GameRepoInput, userId: string, logger: KADLogger): Promise<GameDBRead> {
 	logger.info(`Creating new game`);

@@ -5,7 +5,7 @@ import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { gameStageCategories } from '@/models';
 import type { GameStageCategoryDBRead, GameStageCategoryRepoInput, KADLogger } from '@/types';
-import { validateUuid } from './utils';
+import { validateUuid } from '@/utils';
 
 export async function createGameStageCategory(
 	gameStageCategory: GameStageCategoryRepoInput,

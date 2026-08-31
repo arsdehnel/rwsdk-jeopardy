@@ -4,7 +4,7 @@ import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { clues, verifications } from '@/models';
 import type { ClueDBRead, ClueRepoInput, ClueWithVerifications, KADLogger, VerificationDBRead } from '@/types';
-import { validateUuid } from './utils';
+import { validateUuid } from '@/utils';
 
 export async function createClue(clue: ClueRepoInput, userId: string, logger: KADLogger): Promise<ClueDBRead> {
 	logger.info(`Creating clue ${clue.text}`);

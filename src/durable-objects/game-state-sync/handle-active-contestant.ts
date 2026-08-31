@@ -1,5 +1,5 @@
 import { updateGame } from '@/repositories';
-import { validateUuid } from '@/repositories/utils';
+import { validateUuid } from '@/utils';
 import type { KADLogger } from '@/types';
 
 const PUBLIC_STATE_OPERATIONS_USER_ID = 'cf2ef843-8572-45d4-8cb4-4b4b8b621ceb';
