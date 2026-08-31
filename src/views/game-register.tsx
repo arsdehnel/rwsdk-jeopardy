@@ -3,22 +3,24 @@ import { QRCodeSVG } from 'qrcode.react';
 import { HostOptions, RegisterContestant, RegisterCurrent, RegisterDisplay, RegisterHost } from '@/components/register';
 import useGamePhase from '@/hooks/use-game-phase';
 import useGamePhaseRegisterState from '@/hooks/use-game-phase-register-state';
-import type { Permission } from '@/types';
+import type { GamePhaseEnum, Permission } from '@/types';
 
 export default function ViewGameRegister({
-	gameUrl,
+	gameRegistrationUrl,
 	gameId,
 	sessionId,
 	userId,
 	userPermissions,
+	currentGamePhase,
 }: {
-	gameUrl: string;
+	gameRegistrationUrl: string;
 	gameId: string;
 	sessionId: string;
 	userId?: string;
 	userPermissions: Permission[];
+	currentGamePhase: GamePhaseEnum;
 }): React.ReactNode {
-	useGamePhase(gameId, 'REGISTER');
+	useGamePhase(gameId, currentGamePhase);
 	const {
 		// host
 		registerAsHost,
@@ -73,7 +75,7 @@ export default function ViewGameRegister({
 				</div>
 			</div>
 			<div className="view-game-register-qr-code">
-				<QRCodeSVG value={gameUrl} size={400} />
+				<QRCodeSVG value={gameRegistrationUrl} size={400} />
 			</div>
 		</div>
 	);
