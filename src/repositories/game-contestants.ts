@@ -27,7 +27,7 @@ export async function saveGameContestants(
 		.from(gameContestants)
 		.where(and(eq(gameContestants.gameId, gameId), isNull(gameContestants.deletedAt)));
 
-	logger.info(`Exiting sessions for game ${gameId}: ${existingContestants.map(c => c.sessionId).join(', ')}`);
+	logger.info(`Existing sessions for game ${gameId}: ${existingContestants.map(c => c.sessionId).join(', ')}`);
 	logger.info(`Saving contestants for game ${gameId}`);
 
 	const contestantsToBeRemoved = existingContestants.filter(
@@ -88,4 +88,61 @@ export async function saveGameContestants(
 	}
 
 	return savedContestants;
+}
+
+export async function updateContestantScores(
+	gameId: string,
+	contestantScoreMap: Record<string, number>,
+	userId: string,
+	logger: KADLogger,
+): Promise<GameContestantDBRead[]> {
+	if (!validateUuid(gameId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [gameId, 'Game']);
+	}
+	Object.keys(contestantScoreMap).forEach(contestantSessionId => {
+		if (!validateUuid(contestantSessionId)) {
+			throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [contestantSessionId, 'Contestant Session ID']);
+		}
+	});
+
+	logger.info(`Looking up existing contestants for ${gameId}`);
+
+	const existingContestants = await db
+		.select()
+		.from(gameContestants)
+		.where(and(eq(gameContestants.gameId, gameId), isNull(gameContestants.deletedAt)));
+
+	logger.info(`Existing sessions for game ${gameId}: ${existingContestants.map(c => c.sessionId).join(', ')}`);
+
+	logger.info(`Updating contestant scores for game ${gameId}: ${JSON.stringify(contestantScoreMap, null, 4)}`);
+	let updatedContestants: GameContestantDBRead[] = [];
+	try {
+		updatedContestants = await Promise.all(
+			Object.keys(contestantScoreMap).map(async contestantSessionId => {
+				const existingRec = existingContestants.find(e => e.sessionId === contestantSessionId);
+				if (!existingRec) {
+					throw new Error(`No existing record found for session ID ${contestantSessionId}`);
+				}
+				const updatedContestant = await db
+					.update(gameContestants)
+					.set({
+						score: contestantScoreMap[contestantSessionId],
+						updatedAt: sql`(datetime('now', 'localtime'))`,
+						updatedBy: userId,
+					})
+					.where(eq(gameContestants.id, existingRec.id))
+					.returning();
+				logger.info(`Updated session ${contestantSessionId} in ${gameId}`);
+				return updatedContestant[0];
+			}),
+		);
+	} catch (err) {
+		const { message, error } = streamlineError(err);
+		logger.error(`Error updating contestant scores ${gameId}${message}`, { err: error });
+		throw error;
+	}
+
+	logger.info(`Contestant scores for ${gameId} updated successfully: ${JSON.stringify(updatedContestants, null, 4)}`);
+
+	return updatedContestants;
 }

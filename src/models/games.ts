@@ -16,6 +16,8 @@ export const games = snakeCase.table(
 		phase: text({ enum: gamePhaseEnum }).default('SETUP').notNull(),
 		displaySessionId: text(),
 		hostUserId: text().references((): AnySQLiteColumn => users.id),
+		activeContestantSessionId: text(),
+		usedClueIds: text({ mode: 'json' }).$type<string[]>(),
 		currentStage: text({ enum: gameStageEnum }).notNull(),
 		createdAt: text().notNull().default(sql`(datetime('now', 'localtime'))`),
 		createdBy: text()
