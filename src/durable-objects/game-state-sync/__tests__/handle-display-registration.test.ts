@@ -2,12 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const SYSTEM_ID = 'cf2ef843-8572-45d4-8cb4-4b4b8b621ceb';
 
-const { mockUpdateGame } = vi.hoisted(() => ({
+const { mockUpdateGame, mockGetGameById } = vi.hoisted(() => ({
 	mockUpdateGame: vi.fn().mockResolvedValue({}),
+	mockGetGameById: vi.fn(),
 }));
 
 vi.mock('@/repositories', () => ({
 	updateGame: mockUpdateGame,
+	getGameById: mockGetGameById,
 }));
 
 import handleDisplayRegistration from '../handle-display-registration';
@@ -67,5 +69,41 @@ describe('handleDisplayRegistration.set', () => {
 
 		expect(logger.error).toHaveBeenCalled();
 		expect(mockUpdateGame).not.toHaveBeenCalled();
+	});
+});
+
+describe('handleDisplayRegistration.get', () => {
+	const gameId = crypto.randomUUID();
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('calls getGameById with the correct gameId and logger', async () => {
+		const logger = createSpyLogger();
+		mockGetGameById.mockResolvedValue({ displaySessionId: null });
+
+		await handleDisplayRegistration.get(gameId, logger);
+
+		expect(mockGetGameById).toHaveBeenCalledWith(gameId, logger);
+	});
+
+	it('returns the displaySessionId from the game', async () => {
+		const logger = createSpyLogger();
+		const sessionId = crypto.randomUUID();
+		mockGetGameById.mockResolvedValue({ displaySessionId: sessionId });
+
+		const result = await handleDisplayRegistration.get(gameId, logger);
+
+		expect(result).toBe(sessionId);
+	});
+
+	it('returns null when displaySessionId is null', async () => {
+		const logger = createSpyLogger();
+		mockGetGameById.mockResolvedValue({ displaySessionId: null });
+
+		const result = await handleDisplayRegistration.get(gameId, logger);
+
+		expect(result).toBeNull();
 	});
 });

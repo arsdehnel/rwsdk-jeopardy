@@ -2,15 +2,17 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const SYSTEM_ID = 'cf2ef843-8572-45d4-8cb4-4b4b8b621ceb';
 
-const { mockSaveGameContestants } = vi.hoisted(() => ({
+const { mockSaveGameContestants, mockGetGameById } = vi.hoisted(() => ({
 	mockSaveGameContestants: vi.fn().mockResolvedValue([]),
+	mockGetGameById: vi.fn(),
 }));
 
 vi.mock('@/repositories', () => ({
 	saveGameContestants: mockSaveGameContestants,
+	getGameById: mockGetGameById,
 }));
 
-import handleContestantRegistration from '../handle-contestant-registration';
+import handleContestantRegistration from '../handle-contestant-registrations';
 
 function createSpyLogger() {
 	return { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn(), child: vi.fn() };
@@ -105,5 +107,44 @@ describe('handleContestantRegistration.set', () => {
 
 		expect(logger.error).toHaveBeenCalled();
 		expect(mockSaveGameContestants).not.toHaveBeenCalled();
+	});
+});
+
+describe('handleContestantRegistration.get', () => {
+	const gameId = crypto.randomUUID();
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('calls getGameById with the correct gameId and logger', async () => {
+		const logger = createSpyLogger();
+		mockGetGameById.mockResolvedValue({ contestants: [] });
+
+		await handleContestantRegistration.get(gameId, logger);
+
+		expect(mockGetGameById).toHaveBeenCalledWith(gameId, logger);
+	});
+
+	it('returns the contestants array from the game', async () => {
+		const logger = createSpyLogger();
+		const contestants = [
+			{ id: crypto.randomUUID(), sessionId: crypto.randomUUID(), name: 'Alice' },
+			{ id: crypto.randomUUID(), sessionId: crypto.randomUUID(), name: 'Bob' },
+		];
+		mockGetGameById.mockResolvedValue({ contestants });
+
+		const result = await handleContestantRegistration.get(gameId, logger);
+
+		expect(result).toEqual(contestants);
+	});
+
+	it('returns an empty array when there are no contestants', async () => {
+		const logger = createSpyLogger();
+		mockGetGameById.mockResolvedValue({ contestants: [] });
+
+		const result = await handleContestantRegistration.get(gameId, logger);
+
+		expect(result).toEqual([]);
 	});
 });

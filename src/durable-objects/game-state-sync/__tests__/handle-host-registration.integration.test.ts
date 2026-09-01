@@ -44,3 +44,24 @@ describe('handleHostRegistration.set (integration)', () => {
 		expect(updated.hostUserId).toBeNull();
 	});
 });
+
+describe('handleHostRegistration.get (integration)', () => {
+	it('returns the hostUserId from the DB', async () => {
+		const owner = await createUser('owner', null, logger);
+		const host = await createUser('host', null, logger);
+		const game = await createGame({ ownerId: owner.id, currentStage: 'SINGLE' }, owner.id, logger);
+
+		await handleHostRegistration.set(game.id, { sessionId: crypto.randomUUID(), userId: host.id }, logger);
+
+		const result = await handleHostRegistration.get(game.id, logger);
+		expect(result).toBe(host.id);
+	});
+
+	it('returns null when no host is set', async () => {
+		const owner = await createUser('owner', null, logger);
+		const game = await createGame({ ownerId: owner.id, currentStage: 'SINGLE' }, owner.id, logger);
+
+		const result = await handleHostRegistration.get(game.id, logger);
+		expect(result).toBeNull();
+	});
+});

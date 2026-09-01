@@ -1,4 +1,4 @@
-import { updateGame } from '@/repositories';
+import { getGameById, updateGame } from '@/repositories';
 import type { KADLogger } from '@/types';
 import { validateUuid } from '@/utils';
 
@@ -31,6 +31,13 @@ async function set(gameId: string, value: unknown, logger: KADLogger): Promise<v
 	}
 }
 
+async function get(gameId: string, logger: KADLogger): Promise<string | null> {
+	logger.info(`Looking for active contestant session ID initial value for game ${gameId}`);
+	const game = await getGameById(gameId, logger);
+	return game.activeContestantSessionId;
+}
+
 export default {
+	get,
 	set,
 };

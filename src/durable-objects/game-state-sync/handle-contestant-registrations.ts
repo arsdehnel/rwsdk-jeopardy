@@ -1,5 +1,5 @@
-import { saveGameContestants } from '@/repositories';
-import type { ContestantRegistration, KADLogger } from '@/types';
+import { getGameById, saveGameContestants } from '@/repositories';
+import type { ContestantRegistration, GameContestantDBRead, KADLogger } from '@/types';
 
 const PUBLIC_STATE_OPERATIONS_USER_ID = 'cf2ef843-8572-45d4-8cb4-4b4b8b621ceb';
 
@@ -25,6 +25,13 @@ async function set(gameId: string, value: unknown, logger: KADLogger): Promise<v
 	}
 }
 
+async function get(gameId: string, logger: KADLogger): Promise<GameContestantDBRead[]> {
+	logger.info(`Looking for game contestants value for game ${gameId}`);
+	const game = await getGameById(gameId, logger);
+	return game.contestants;
+}
+
 export default {
+	get,
 	set,
 };

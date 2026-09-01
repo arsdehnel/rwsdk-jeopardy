@@ -2,12 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const SYSTEM_ID = 'cf2ef843-8572-45d4-8cb4-4b4b8b621ceb';
 
-const { mockUpdateGame } = vi.hoisted(() => ({
+const { mockUpdateGame, mockGetGameById } = vi.hoisted(() => ({
 	mockUpdateGame: vi.fn().mockResolvedValue({}),
+	mockGetGameById: vi.fn(),
 }));
 
 vi.mock('@/repositories', () => ({
 	updateGame: mockUpdateGame,
+	getGameById: mockGetGameById,
 }));
 
 import handleHostRegistration from '../handle-host-registration';
@@ -66,5 +68,41 @@ describe('handleHostRegistration.set', () => {
 
 		expect(logger.error).toHaveBeenCalled();
 		expect(mockUpdateGame).not.toHaveBeenCalled();
+	});
+});
+
+describe('handleHostRegistration.get', () => {
+	const gameId = crypto.randomUUID();
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('calls getGameById with the correct gameId and logger', async () => {
+		const logger = createSpyLogger();
+		mockGetGameById.mockResolvedValue({ hostUserId: null });
+
+		await handleHostRegistration.get(gameId, logger);
+
+		expect(mockGetGameById).toHaveBeenCalledWith(gameId, logger);
+	});
+
+	it('returns the hostUserId from the game', async () => {
+		const logger = createSpyLogger();
+		const userId = crypto.randomUUID();
+		mockGetGameById.mockResolvedValue({ hostUserId: userId });
+
+		const result = await handleHostRegistration.get(gameId, logger);
+
+		expect(result).toBe(userId);
+	});
+
+	it('returns null when hostUserId is null', async () => {
+		const logger = createSpyLogger();
+		mockGetGameById.mockResolvedValue({ hostUserId: null });
+
+		const result = await handleHostRegistration.get(gameId, logger);
+
+		expect(result).toBeNull();
 	});
 });

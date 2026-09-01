@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createNoopLogger } from '@/logger';
 import { createGame, createUser, getGameById } from '@/repositories';
 import { resetDb } from '../../../../tests/mocks/db';
-import handleContestantRegistration from '../handle-contestant-registration';
+import handleContestantRegistration from '../handle-contestant-registrations';
 
 const logger = createNoopLogger();
 
@@ -72,5 +72,38 @@ describe('handleContestantRegistration.set (integration)', () => {
 
 		const updated = await getGameById(game.id, logger);
 		expect(updated.contestants).toHaveLength(0);
+	});
+});
+
+describe('handleContestantRegistration.get (integration)', () => {
+	it('returns the contestants from the DB', async () => {
+		const owner = await createUser('owner', null, logger);
+		const game = await createGame({ ownerId: owner.id, currentStage: 'SINGLE' }, owner.id, logger);
+		const sessionIdAlice = crypto.randomUUID();
+		const sessionIdBob = crypto.randomUUID();
+
+		await handleContestantRegistration.set(
+			game.id,
+			[
+				{ sessionId: sessionIdAlice, name: 'Alice' },
+				{ sessionId: sessionIdBob, name: 'Bob' },
+			],
+			logger,
+		);
+
+		const result = await handleContestantRegistration.get(game.id, logger);
+
+		expect(result).toHaveLength(2);
+		expect(result.map(c => c.sessionId)).toContain(sessionIdAlice);
+		expect(result.map(c => c.sessionId)).toContain(sessionIdBob);
+	});
+
+	it('returns an empty array when there are no contestants', async () => {
+		const owner = await createUser('owner', null, logger);
+		const game = await createGame({ ownerId: owner.id, currentStage: 'SINGLE' }, owner.id, logger);
+
+		const result = await handleContestantRegistration.get(game.id, logger);
+
+		expect(result).toEqual([]);
 	});
 });
