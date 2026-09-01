@@ -1,8 +1,9 @@
 import { SyncedStateServer } from 'rwsdk/use-synced-state/worker';
 import { createLogger } from '@/logger';
 import handleActiveContestant from './handle-active-contestant';
-import handleContestantRegistration from './handle-contestant-registration';
+import handleContestantRegistrations from './handle-contestant-registrations';
 import handleDisplayRegistration from './handle-display-registration';
+import handleGamePhase from './handle-game-phase';
 import handleHostRegistration from './handle-host-registration';
 import handleScores from './handle-scores';
 import handleUsedClues from './handle-used-clues';
@@ -15,27 +16,27 @@ GameStateSyncDurableObject.registerSetStateHandler(async (syncStateKey, value) =
 		return;
 	}
 
-	const logger = createLogger({ source: 'do-sync', gameId });
+	const logger = createLogger({ source: 'do-sync', gameId, stateKey: key });
 
 	try {
 		switch (key) {
-			case 'scores':
-				await handleScores.set(gameId, value, logger);
-				break;
 			case 'activeContestantSessionId':
 				await handleActiveContestant.set(gameId, value, logger);
 				break;
-			case 'usedClueIds':
-				await handleUsedClues.set(gameId, value, logger);
-				break;
-			case 'host':
-				await handleHostRegistration.set(gameId, value, logger);
+			case 'contestants':
+				await handleContestantRegistrations.set(gameId, value, logger);
 				break;
 			case 'display':
 				await handleDisplayRegistration.set(gameId, value, logger);
 				break;
-			case 'contestants':
-				await handleContestantRegistration.set(gameId, value, logger);
+			case 'host':
+				await handleHostRegistration.set(gameId, value, logger);
+				break;
+			case 'scores':
+				await handleScores.set(gameId, value, logger);
+				break;
+			case 'usedClueIds':
+				await handleUsedClues.set(gameId, value, logger);
 				break;
 			default:
 				// biome-ignore lint/suspicious/noConsole: short term while we do some logging
@@ -43,11 +44,57 @@ GameStateSyncDurableObject.registerSetStateHandler(async (syncStateKey, value) =
 				break;
 		}
 	} catch (err) {
-		logger.error(`Error updating DB with game state: ${err}`);
+		logger.error(`Error updating DB with game state ${syncStateKey}: ${err}`);
 	}
 });
 
-GameStateSyncDurableObject.registerGetStateHandler((key, value) => {
-	// biome-ignore lint/suspicious/noConsole: short term while we do some logging
-	console.log('State read:', key, value);
+GameStateSyncDurableObject.registerGetStateHandler(async (syncStateKey, value, stub) => {
+	if (value) {
+		return value;
+	}
+
+	const [, gameId, key] = syncStateKey.split(':');
+
+	if (!gameId) {
+		return;
+	}
+
+	const logger = createLogger({ source: 'do-sync', gameId, stateKey: key });
+
+	let stateValue: any;
+
+	try {
+		switch (key) {
+			case 'activeContestantSessionId':
+				stateValue = await handleActiveContestant.get(gameId, logger);
+				break;
+			case 'contestants':
+				stateValue = await handleContestantRegistrations.get(gameId, logger);
+				break;
+			case 'display':
+				stateValue = await handleDisplayRegistration.get(gameId, logger);
+				break;
+			case 'gamePhase':
+				stateValue = await handleGamePhase.get(gameId, logger);
+				break;
+			case 'host':
+				stateValue = await handleHostRegistration.get(gameId, logger);
+				break;
+			case 'scores':
+				stateValue = await handleScores.get(gameId, logger);
+				break;
+			case 'usedClueIds':
+				stateValue = await handleUsedClues.get(gameId, logger);
+				break;
+			default:
+				// biome-ignore lint/suspicious/noConsole: short term while we do some logging
+				console.log(`Unhandled state key lookup ${key}: ${JSON.stringify({ gameId, value }, null, 4)}`);
+				break;
+		}
+		if (stateValue) {
+			await stub.setState(stateValue, syncStateKey);
+		}
+	} catch (err) {
+		logger.error(`Error seeding state ${syncStateKey} with DB value: ${err}`);
+	}
 });

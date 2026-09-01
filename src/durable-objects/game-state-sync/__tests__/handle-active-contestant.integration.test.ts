@@ -36,3 +36,24 @@ describe('handleActiveContestant.set (integration)', () => {
 		expect(updated.activeContestantSessionId).toBeNull();
 	});
 });
+
+describe('handleActiveContestant.get (integration)', () => {
+	it('returns the active contestant session ID from the DB', async () => {
+		const owner = await createUser('owner', null, logger);
+		const game = await createGame({ ownerId: owner.id, currentStage: 'SINGLE' }, owner.id, logger);
+		const sessionId = crypto.randomUUID();
+
+		await handleActiveContestant.set(game.id, sessionId, logger);
+
+		const result = await handleActiveContestant.get(game.id, logger);
+		expect(result).toBe(sessionId);
+	});
+
+	it('returns null when no active contestant is set', async () => {
+		const owner = await createUser('owner', null, logger);
+		const game = await createGame({ ownerId: owner.id, currentStage: 'SINGLE' }, owner.id, logger);
+
+		const result = await handleActiveContestant.get(game.id, logger);
+		expect(result).toBeNull();
+	});
+});

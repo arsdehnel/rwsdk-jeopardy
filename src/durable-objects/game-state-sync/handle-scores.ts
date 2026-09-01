@@ -1,4 +1,4 @@
-import { updateContestantScores } from '@/repositories';
+import { getGameById, updateContestantScores } from '@/repositories';
 import type { KADLogger } from '@/types';
 
 const PUBLIC_STATE_OPERATIONS_USER_ID = 'cf2ef843-8572-45d4-8cb4-4b4b8b621ceb';
@@ -17,6 +17,22 @@ async function set(gameId: string, value: unknown, logger: KADLogger): Promise<v
 	}
 }
 
+async function get(gameId: string, logger: KADLogger): Promise<Record<string, number>> {
+	logger.info(`Looking for scores registration initial value for game ${gameId}`);
+	const game = await getGameById(gameId, logger);
+	const scores = game.contestants.reduce(
+		(prev, contestant) => {
+			if (contestant.score) {
+				prev[contestant.sessionId] = contestant.score;
+			}
+			return prev;
+		},
+		{} as Record<string, number>,
+	);
+	return scores;
+}
+
 export default {
+	get,
 	set,
 };

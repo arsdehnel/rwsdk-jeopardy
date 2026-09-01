@@ -4,12 +4,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const SYSTEM_ID = 'cf2ef843-8572-45d4-8cb4-4b4b8b621ceb';
 
-const { mockUpdateContestantScores } = vi.hoisted(() => ({
+const { mockUpdateContestantScores, mockGetGameById } = vi.hoisted(() => ({
 	mockUpdateContestantScores: vi.fn().mockResolvedValue(undefined),
+	mockGetGameById: vi.fn(),
 }));
 
 vi.mock('@/repositories', () => ({
 	updateContestantScores: mockUpdateContestantScores,
+	getGameById: mockGetGameById,
 }));
 
 import handleScores from '../handle-scores';
@@ -76,5 +78,80 @@ describe('handleScores.set', () => {
 
 		expect(logger.error).toHaveBeenCalled();
 		expect(mockUpdateContestantScores).not.toHaveBeenCalled();
+	});
+});
+
+// NOTE: the tests below that exercise contestants with non-null scores will fail until the
+// TDZ bug in handle-scores.ts is fixed (scores[...] should be prev[...] in the reduce callback).
+describe('handleScores.get', () => {
+	const gameId = crypto.randomUUID();
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('calls getGameById with the correct gameId and logger', async () => {
+		const logger = createSpyLogger();
+		mockGetGameById.mockResolvedValue({ contestants: [] });
+
+		await handleScores.get(gameId, logger);
+
+		expect(mockGetGameById).toHaveBeenCalledWith(gameId, logger);
+	});
+
+	it('returns an empty object when there are no contestants', async () => {
+		const logger = createSpyLogger();
+		mockGetGameById.mockResolvedValue({ contestants: [] });
+
+		const result = await handleScores.get(gameId, logger);
+
+		expect(result).toEqual({});
+	});
+
+	it('returns an empty object when all contestants have null scores', async () => {
+		const logger = createSpyLogger();
+		mockGetGameById.mockResolvedValue({
+			contestants: [
+				{ sessionId: crypto.randomUUID(), score: null },
+				{ sessionId: crypto.randomUUID(), score: null },
+			],
+		});
+
+		const result = await handleScores.get(gameId, logger);
+
+		expect(result).toEqual({});
+	});
+
+	it('returns a sessionId-to-score map for contestants with scores', async () => {
+		const logger = createSpyLogger();
+		const sessionId1 = crypto.randomUUID();
+		const sessionId2 = crypto.randomUUID();
+		mockGetGameById.mockResolvedValue({
+			contestants: [
+				{ sessionId: sessionId1, score: 200 },
+				{ sessionId: sessionId2, score: 400 },
+			],
+		});
+
+		const result = await handleScores.get(gameId, logger);
+
+		expect(result).toEqual({ [sessionId1]: 200, [sessionId2]: 400 });
+	});
+
+	it('excludes contestants with null scores from the result', async () => {
+		const logger = createSpyLogger();
+		const sessionIdWithScore = crypto.randomUUID();
+		const sessionIdNoScore = crypto.randomUUID();
+		mockGetGameById.mockResolvedValue({
+			contestants: [
+				{ sessionId: sessionIdWithScore, score: 100 },
+				{ sessionId: sessionIdNoScore, score: null },
+			],
+		});
+
+		const result = await handleScores.get(gameId, logger);
+
+		expect(result).toEqual({ [sessionIdWithScore]: 100 });
+		expect(result[sessionIdNoScore]).toBeUndefined();
 	});
 });

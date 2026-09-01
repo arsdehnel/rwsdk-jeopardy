@@ -35,3 +35,24 @@ describe('handleUsedClues.set (integration)', () => {
 		expect(!usedClueIds || usedClueIds.length === 0).toBe(true);
 	});
 });
+
+describe('handleUsedClues.get (integration)', () => {
+	it('returns the usedClueIds from the DB', async () => {
+		const owner = await createUser('owner', null, logger);
+		const game = await createGame({ ownerId: owner.id, currentStage: 'SINGLE' }, owner.id, logger);
+		const clueIds = [crypto.randomUUID(), crypto.randomUUID()];
+
+		await handleUsedClues.set(game.id, clueIds, logger);
+
+		const result = await handleUsedClues.get(game.id, logger);
+		expect(result).toEqual(clueIds);
+	});
+
+	it('returns an empty array when usedClueIds is not set', async () => {
+		const owner = await createUser('owner', null, logger);
+		const game = await createGame({ ownerId: owner.id, currentStage: 'SINGLE' }, owner.id, logger);
+
+		const result = await handleUsedClues.get(game.id, logger);
+		expect(result).toEqual([]);
+	});
+});

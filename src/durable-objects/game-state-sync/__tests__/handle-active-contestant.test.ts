@@ -4,12 +4,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const SYSTEM_ID = 'cf2ef843-8572-45d4-8cb4-4b4b8b621ceb';
 
-const { mockUpdateGame } = vi.hoisted(() => ({
+const { mockUpdateGame, mockGetGameById } = vi.hoisted(() => ({
 	mockUpdateGame: vi.fn().mockResolvedValue({}),
+	mockGetGameById: vi.fn(),
 }));
 
 vi.mock('@/repositories', () => ({
 	updateGame: mockUpdateGame,
+	getGameById: mockGetGameById,
 }));
 
 import handleActiveContestant from '../handle-active-contestant';
@@ -69,5 +71,41 @@ describe('handleActiveContestant.set', () => {
 
 		expect(logger.error).toHaveBeenCalled();
 		expect(mockUpdateGame).not.toHaveBeenCalled();
+	});
+});
+
+describe('handleActiveContestant.get', () => {
+	const gameId = crypto.randomUUID();
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('calls getGameById with the correct gameId and logger', async () => {
+		const logger = createSpyLogger();
+		mockGetGameById.mockResolvedValue({ activeContestantSessionId: null });
+
+		await handleActiveContestant.get(gameId, logger);
+
+		expect(mockGetGameById).toHaveBeenCalledWith(gameId, logger);
+	});
+
+	it('returns the activeContestantSessionId from the game', async () => {
+		const logger = createSpyLogger();
+		const sessionId = '05a2a193-343e-498a-b725-7b832296424a';
+		mockGetGameById.mockResolvedValue({ activeContestantSessionId: sessionId });
+
+		const result = await handleActiveContestant.get(gameId, logger);
+
+		expect(result).toBe(sessionId);
+	});
+
+	it('returns null when activeContestantSessionId is null', async () => {
+		const logger = createSpyLogger();
+		mockGetGameById.mockResolvedValue({ activeContestantSessionId: null });
+
+		const result = await handleActiveContestant.get(gameId, logger);
+
+		expect(result).toBeNull();
 	});
 });

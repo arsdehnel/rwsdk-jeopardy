@@ -56,3 +56,24 @@ describe('handleDisplayRegistration.set (integration)', () => {
 		expect(updated.displaySessionId).toBeNull();
 	});
 });
+
+describe('handleDisplayRegistration.get (integration)', () => {
+	it('returns the display session ID from the DB', async () => {
+		const owner = await createUser('owner', null, logger);
+		const game = await createGame({ ownerId: owner.id, currentStage: 'SINGLE' }, owner.id, logger);
+		const sessionId = crypto.randomUUID();
+
+		await handleDisplayRegistration.set(game.id, { sessionId }, logger);
+
+		const result = await handleDisplayRegistration.get(game.id, logger);
+		expect(result).toBe(sessionId);
+	});
+
+	it('returns null when no display is registered', async () => {
+		const owner = await createUser('owner', null, logger);
+		const game = await createGame({ ownerId: owner.id, currentStage: 'SINGLE' }, owner.id, logger);
+
+		const result = await handleDisplayRegistration.get(game.id, logger);
+		expect(result).toBeNull();
+	});
+});
