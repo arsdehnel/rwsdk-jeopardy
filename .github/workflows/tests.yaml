@@ -25,3 +25,4 @@ jobs:
           pnpm biome:check
           pnpm types:check
           pnpm test:run
+          pnpm test:workers
