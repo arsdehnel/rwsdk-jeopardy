@@ -11,5 +11,9 @@ export function sessionLifecycleEvent(dataPoint: AEDSessionLifecycleDataPoint): 
 	const indexes = [dataPoint.userId ? dataPoint.userId : 'unknown', dataPoint.sessionId ? dataPoint.sessionId : 'no-session'];
 	const blobs = [dataPoint.event];
 
-	env.AED_SESSION_LIFECYCLE.writeDataPoint({ indexes, blobs });
+	try {
+		env.AED_SESSION_LIFECYCLE.writeDataPoint({ indexes, blobs });
+	} catch {
+		// binding may be unavailable in test environments or local dev without analytics configured
+	}
 }
