@@ -5,7 +5,14 @@ import { requireAuthentication, requirePermissions } from '@/interrupters';
 import { getGameById, saveGameContestants, saveGameStageCategories, updateGame } from '@/repositories';
 import { gamesSchemas } from '@/schemas';
 import { saveGameStages, saveGame as saveGameStep } from '@/steps';
-import type { ActionState, ContestantRegistration, GameDBRead, GameFormInput, GameWithEverything } from '@/types';
+import type {
+	ActionState,
+	ContestantRegistration,
+	DisplayRegistration,
+	GameDBRead,
+	GameFormInput,
+	GameWithEverything,
+} from '@/types';
 import { errorResponse, successResponse } from './utils';
 
 export const saveGame = serverAction([requireAuthentication, requirePermissions('games:create', 'games:update'), _saveGame]);
@@ -57,11 +64,12 @@ export async function _startGame(registerState: GameRegisterState): Promise<Acti
 	// biome-ignore lint/style/noNonNullAssertion: guaranteed by requireAuthentication in serverAction chain
 	const userId = ctx.user!.id;
 
-	const syncDOStateStub = env.GAME_STATE_SYNC_DURABLE_OBJECT.getByName(registerState.gameId);
+	const { gameId } = registerState;
+	const syncDOStateStub = env.GAME_STATE_SYNC_DURABLE_OBJECT.getByName(gameId);
 	const syncState = {
-		contestants: await syncDOStateStub.getState('contestants'),
-		display: await syncDOStateStub.getState('display'),
-		host: await syncDOStateStub.getState('host'),
+		contestants: (await syncDOStateStub.getState(`game:${gameId}:contestants`)) as ContestantRegistration[] | undefined,
+		display: (await syncDOStateStub.getState(`game:${gameId}:display`)) as DisplayRegistration,
+		host: await syncDOStateStub.getState(`game:${gameId}:host`),
 	};
 
 	const parsed = gamesSchemas.register.safeParse(registerState);
@@ -74,18 +82,35 @@ export async function _startGame(registerState: GameRegisterState): Promise<Acti
 	}
 	const parsedGame = parsed.data;
 
+	if (parsedGame.displaySessionId !== syncState.display?.sessionId) {
+		return errorResponse<GameDBRead>(
+			`Display device mismatch: your view does not match the current game state. Please refresh and try again.`,
+		);
+	}
+
+	const syncContestantIds = new Set((syncState.contestants ?? []).map(c => c.sessionId));
+	const submittedContestantIds = new Set(parsedGame.contestants.map(c => c.sessionId));
+	const contestantsMismatch =
+		syncContestantIds.size !== submittedContestantIds.size || [...submittedContestantIds].some(id => !syncContestantIds.has(id));
+
+	if (contestantsMismatch) {
+		return errorResponse<GameDBRead>(
+			`Contestant list mismatch: your view does not match the current game state. Please refresh and try again.`,
+		);
+	}
+
 	await saveGameContestants(parsedGame.gameId, parsedGame.contestants, userId, ctx.logger);
 
 	await updateGame(
 		parsedGame.gameId,
-		{ phase: 'PLAY', displaySessionId: syncState.display, hostUserId: userId },
+		{ phase: 'PLAY', displaySessionId: syncState.display?.sessionId ?? null, hostUserId: userId },
 		userId,
 		ctx.logger,
 	);
 
-	await syncDOStateStub.setState('PLAY', 'gamePhase');
+	await syncDOStateStub.setState('PLAY', `game:${gameId}:gamePhase`);
 
-	const updatedGame = await getGameById(registerState.gameId, ctx.logger);
+	const updatedGame = await getGameById(gameId, ctx.logger);
 
 	return successResponse<GameDBRead>(updatedGame);
 }
