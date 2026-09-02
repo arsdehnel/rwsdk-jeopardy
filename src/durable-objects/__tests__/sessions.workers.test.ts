@@ -67,4 +67,24 @@ describe('sessions middleware (workers integration)', () => {
 		const tampered = btoa('legitimate-uuid:invalidsignature');
 		await expect(sessions.loadFromRequest(requestWithCookie(tampered), new Headers())).rejects.toThrow('Invalid session ID');
 	});
+
+	it('passkey auth flow: challenge and userId land in the same DO', async () => {
+		// Step 1: anonymous session created pre-auth
+		const step1Headers = new Headers();
+		const { sessionId } = await sessions.upsert(null, step1Headers, {});
+
+		// Step 2: challenge stored on the same session
+		const step2Headers = new Headers();
+		await sessions.upsert(sessionId, step2Headers, { challenge: 'abc123' });
+
+		// Step 3: auth completes, userId written to the same session
+		const step3Headers = new Headers();
+		await sessions.upsert(sessionId, step3Headers, { userId: 'user-123' });
+		const cookie = extractCookieValue(step3Headers);
+
+		// Step 4: loading the session sees userId — proves all three upserts hit the same DO
+		const result = await sessions.loadFromRequest(requestWithCookie(cookie), new Headers());
+		expect(result?.sessionId).toBe(sessionId);
+		expect(result?.userId).toBe('user-123');
+	});
 });
