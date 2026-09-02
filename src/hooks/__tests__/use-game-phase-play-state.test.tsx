@@ -512,6 +512,84 @@ describe('usedClueIds', () => {
 	});
 });
 
+describe('contestantMode: answered-wrong', () => {
+	it('is answered-wrong after the current session answers incorrectly', () => {
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn());
+		act(() => result.current.wrongClueResponse());
+		expect(result.current.contestantMode).toBe('answered-wrong');
+	});
+
+	it('is buzzer for a contestant who has not answered wrong', () => {
+		const { result, rerender } = renderHook(({ sessionId }) => useGamePhasePlayState(sessionId, GAME_ID, CONTESTANTS), {
+			initialProps: { sessionId: SESSION_A },
+		});
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn());
+		rerender({ sessionId: SESSION_B });
+		act(() => result.current.buzzIn());
+		rerender({ sessionId: SESSION_A });
+		act(() => result.current.wrongClueResponse());
+		rerender({ sessionId: SESSION_B });
+		expect(result.current.contestantMode).toBe('buzzer');
+	});
+
+	it('returns to buzzer after resetBuzzers clears answeredWrong (clue stays selected)', () => {
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn());
+		act(() => result.current.wrongClueResponse());
+		act(() => result.current.resetBuzzers());
+		expect(result.current.contestantMode).toBe('buzzer');
+	});
+
+	it('returns to clue-select after abortClue', () => {
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn());
+		act(() => result.current.wrongClueResponse());
+		act(() => result.current.abortClue());
+		expect(result.current.contestantMode).toBe('clue-select');
+	});
+
+	it('returns to clue-select after expireClue', () => {
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn());
+		act(() => result.current.wrongClueResponse());
+		act(() => result.current.expireClue());
+		expect(result.current.contestantMode).toBe('clue-select');
+	});
+
+	it('does not carry over to the next clue after abort and re-select', () => {
+		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn());
+		act(() => result.current.wrongClueResponse());
+		act(() => result.current.abortClue());
+		act(() => result.current.selectClue(clue2));
+		expect(result.current.contestantMode).toBe('buzzer');
+	});
+
+	it('both contestants are answered-wrong after each answers incorrectly', () => {
+		const { result, rerender } = renderHook(({ sessionId }) => useGamePhasePlayState(sessionId, GAME_ID, CONTESTANTS), {
+			initialProps: { sessionId: SESSION_A },
+		});
+		act(() => result.current.selectClue(clue));
+		act(() => result.current.buzzIn());
+		rerender({ sessionId: SESSION_B });
+		act(() => result.current.buzzIn());
+		rerender({ sessionId: SESSION_A });
+		act(() => result.current.wrongClueResponse());
+		rerender({ sessionId: SESSION_B });
+		act(() => result.current.wrongClueResponse());
+		expect(result.current.contestantMode).toBe('answered-wrong');
+		rerender({ sessionId: SESSION_A });
+		expect(result.current.contestantMode).toBe('answered-wrong');
+	});
+});
+
 describe('buzzInTimerIsExpired', () => {
 	it('is false when buzzInTimeLeft is greater than 0', () => {
 		const { result } = renderHook(() => useGamePhasePlayState(SESSION_A, GAME_ID, CONTESTANTS));

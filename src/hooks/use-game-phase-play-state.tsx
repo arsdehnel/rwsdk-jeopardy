@@ -149,7 +149,7 @@ export default function useGamePhasePlayState(
 	const randomlySelectedContestant = contestants[Math.floor(Math.random() * contestants.length)];
 	const activeContestant = activeContestantSessionId
 		? contestants.find(c => c.sessionId === activeContestantSessionId)
-		: contestantMode === 'buzzer'
+		: contestantMode === 'buzzer' || contestantMode === 'answered-wrong'
 			? undefined
 			: randomlySelectedContestant;
 

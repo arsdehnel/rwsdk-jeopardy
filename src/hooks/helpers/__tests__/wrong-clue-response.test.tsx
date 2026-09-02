@@ -11,6 +11,7 @@ const baseState = {
 	activeContestantSessionId: undefined,
 	buzzInTimeLeft: undefined,
 	responseTimeLeft: undefined,
+	answeredWrong: [],
 };
 
 describe('wrongClueResponse', () => {

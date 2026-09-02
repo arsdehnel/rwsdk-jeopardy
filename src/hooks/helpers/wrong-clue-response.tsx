@@ -27,7 +27,7 @@ export const wrongClueResponse = (state: WrongClueResponseGameState): WrongClueR
 	return {
 		...state,
 		buzzerQueue: state.buzzerQueue.slice(1),
-		answeredWrong: [...state.answeredWrong, state.buzzerQueue[0]],
+		answeredWrong: [...(state.answeredWrong || []), state.buzzerQueue[0]],
 		activeContestantSessionId: state.buzzerQueue[1],
 		buzzInTimeLeft,
 		responseTimeLeft,
