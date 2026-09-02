@@ -5,7 +5,7 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: 'jsdom',
-		exclude: ['**/*.ct.test.tsx', '**/node_modules/**'],
+		exclude: ['**/*.ct.test.tsx', '**/*.workers.test.ts', '**/node_modules/**'],
 		coverage: {
 			provider: 'v8', // or 'istanbul'
 			reporter: ['text', 'json-summary'],

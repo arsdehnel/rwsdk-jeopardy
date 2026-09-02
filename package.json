@@ -30,6 +30,7 @@
 		"test": "vitest",
 		"test:run": "vitest run --coverage",
 		"test:ui": "vitest --ui",
+		"test:workers": "vitest run --config vitest.workers.config.ts",
 		"types:check": "tsc",
 		"worker:run": "rw-scripts worker-run",
 		"knip": "knip"
@@ -71,6 +72,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.5",
 		"@cloudflare/vite-plugin": "1.25.1",
+		"@cloudflare/vitest-pool-workers": "0.22.0",
 		"@cloudflare/workers-types": "5.20260726.1",
 		"@commitlint/cli": "^20.4.1",
 		"@commitlint/config-conventional": "^20.4.1",
@@ -83,8 +85,8 @@
 		"@types/node": "~24.10.0",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
-		"@vitest/coverage-v8": "4.0.18",
-		"@vitest/ui": "4.0.18",
+		"@vitest/coverage-v8": "4.1.11",
+		"@vitest/ui": "4.1.11",
 		"conventional-changelog-conventionalcommits": "^9.1.0",
 		"drizzle-kit": "1.0.0-rc.4",
 		"husky": "^9.1.7",
@@ -96,7 +98,7 @@
 		"tsx": "^4.21.0",
 		"typescript": "5.9.3",
 		"vite": "7.3.1",
-		"vitest": "^4.0.18",
+		"vitest": "^4.1.11",
 		"wrangler": "4.114.0"
 	},
 	"packageManager": "pnpm@10.32.1"
