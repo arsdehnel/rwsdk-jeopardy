@@ -5,6 +5,7 @@ type WrongClueResponseGameState = Pick<
 	'selectedClue' | 'buzzerQueue' | 'buzzInTimeLeft' | 'responseTimeLeft' | 'scores'
 > & {
 	activeContestantSessionId: string | undefined;
+	answeredWrong: string[];
 };
 
 export const wrongClueResponse = (state: WrongClueResponseGameState): WrongClueResponseGameState => {
@@ -26,6 +27,7 @@ export const wrongClueResponse = (state: WrongClueResponseGameState): WrongClueR
 	return {
 		...state,
 		buzzerQueue: state.buzzerQueue.slice(1),
+		answeredWrong: [...state.answeredWrong, state.buzzerQueue[0]],
 		activeContestantSessionId: state.buzzerQueue[1],
 		buzzInTimeLeft,
 		responseTimeLeft,

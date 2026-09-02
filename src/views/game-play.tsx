@@ -1,5 +1,4 @@
 'use client';
-import classnames from 'classnames';
 import { KADProgress } from '@/components/design-system';
 import { Board, Buzzer, ClueOverlay, ClueSelect, Scoreboard } from '@/components/play';
 import useGamePhase from '@/hooks/use-game-phase';
@@ -143,22 +142,27 @@ export default function ViewGamePlay({
 	}
 
 	return (
-		<div className={classnames('view-contestant', `view-contestant--${contestantMode}`)}>
-			<ClueSelect
-				selectClue={selectClue}
-				selectedClue={selectedClue}
-				categories={categories}
-				usedClueIds={usedClueIds}
-				activeContestant={activeContestant}
-				sessionId={sessionId}
-			/>
-			<Buzzer
-				selectedClue={selectedClue}
-				buzzInTimerIsExpired={buzzInTimerIsExpired}
-				buzzIn={buzzIn}
-				buzzerQueue={buzzerQueue}
-				sessionId={sessionId}
-			/>
+		<div className="view-contestant">
+			{contestantMode === 'clue-select' && (
+				<ClueSelect
+					selectClue={selectClue}
+					selectedClue={selectedClue}
+					categories={categories}
+					usedClueIds={usedClueIds}
+					activeContestant={activeContestant}
+					sessionId={sessionId}
+				/>
+			)}
+			{contestantMode === 'buzzer' && (
+				<Buzzer
+					selectedClue={selectedClue}
+					buzzInTimerIsExpired={buzzInTimerIsExpired}
+					buzzIn={buzzIn}
+					buzzerQueue={buzzerQueue}
+					sessionId={sessionId}
+				/>
+			)}
+			{contestantMode === 'answered-wrong' && <p>You answered incorrectly, waiting for this clue to be completed</p>}
 		</div>
 	);
 }
