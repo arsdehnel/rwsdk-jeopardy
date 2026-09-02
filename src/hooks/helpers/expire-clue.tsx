@@ -3,7 +3,9 @@ import type { GamePhasePlayState } from '../use-game-phase-play-state';
 type ExpireClueGameState = Pick<
 	GamePhasePlayState,
 	'selectedClue' | 'buzzerQueue' | 'buzzInTimeLeft' | 'responseTimeLeft' | 'usedClueIds'
->;
+> & {
+	answeredWrong: string[];
+};
 
 export const expireClue = (state: ExpireClueGameState): ExpireClueGameState => {
 	if (!state.selectedClue) {
@@ -15,6 +17,7 @@ export const expireClue = (state: ExpireClueGameState): ExpireClueGameState => {
 		...state,
 		selectedClue: null,
 		buzzerQueue: [],
+		answeredWrong: [],
 		buzzInTimeLeft: undefined,
 		responseTimeLeft: undefined,
 		usedClueIds: Array.from(new Set([...state.usedClueIds, clue.id])),

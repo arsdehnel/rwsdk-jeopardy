@@ -12,6 +12,7 @@ const baseState = {
 	activeContestant: undefined,
 	buzzInTimeLeft: undefined,
 	responseTimeLeft: undefined,
+	answeredWrong: [],
 };
 
 describe('expireClue', () => {

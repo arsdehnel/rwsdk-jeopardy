@@ -158,8 +158,11 @@ describe('pages', () => {
 
 	it('all page component files export a default function named after their path', () => {
 		// Rule: Pages__<path> where directories become __ and hyphens become _
+		// exclusions:
+		//   utils for error handler methods
+		//   _-prefixed files that are helpers for dev mode, not actual page components
 		// e.g. src/pages/admin/users/not-found.tsx → Pages__admin__users__not_found
-		const pageFiles = files.filter(p => p.endsWith('.tsx') && !p.endsWith('pages/utils.tsx'));
+		const pageFiles = files.filter(p => p.endsWith('.tsx') && !p.endsWith('pages/utils.tsx') && !p.includes('/_'));
 		const bad: string[] = [];
 		for (const p of pageFiles) {
 			const relPath = rel(p); // e.g. "pages/admin/users/not-found.tsx"
@@ -187,6 +190,7 @@ describe('pages', () => {
 		// true here means the route does NOT need the interrupter
 		const allowedExceptions: Record<string, Record<string, { auth?: boolean; perms?: boolean }>> = {
 			'pages/dev/routes.ts': {
+				'/games/play/contestant': { auth: true, perms: true },
 				'/games/play/display': { auth: true, perms: true },
 				'/games/play/host': { auth: true, perms: true },
 			},

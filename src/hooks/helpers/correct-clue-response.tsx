@@ -5,6 +5,7 @@ type CorrectClueResponseGameState = Pick<
 	'selectedClue' | 'buzzerQueue' | 'usedClueIds' | 'scores' | 'buzzInTimeLeft' | 'responseTimeLeft'
 > & {
 	activeContestantSessionId: string | undefined;
+	answeredWrong: string[];
 };
 
 export const correctClueResponse = (state: CorrectClueResponseGameState): CorrectClueResponseGameState => {
@@ -16,6 +17,7 @@ export const correctClueResponse = (state: CorrectClueResponseGameState): Correc
 		...state,
 		selectedClue: null,
 		buzzerQueue: [],
+		answeredWrong: [],
 		usedClueIds: Array.from(new Set([...state.usedClueIds, clue.id])),
 		activeContestantSessionId: winner,
 		buzzInTimeLeft: undefined,

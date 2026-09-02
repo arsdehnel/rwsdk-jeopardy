@@ -12,9 +12,12 @@ export type GamePhasePlayState = {
 	buzzerQueue: string[];
 	buzzIn: () => void;
 	resetBuzzers: () => void;
+	buzzInTimerIsActive: boolean;
+	buzzInTimerIsExpired: boolean;
 
 	// responses
 	responseTimeLeft: number | undefined;
+	responseTimerIsActive: boolean;
 	correctClueResponse: () => void;
 	wrongClueResponse: () => void;
 
@@ -27,13 +30,8 @@ export type GamePhasePlayState = {
 	selectClue: (clue: ClueInGame) => void;
 	usedClueIds: string[];
 	expireClue: () => void;
-
-	// derived values
+	contestantMode: 'buzzer' | 'answered-wrong' | 'clue-select';
 	activeContestant: GameContestantDBRead | undefined;
-	contestantMode: 'buzzer' | 'clue-select';
-	buzzInTimerIsActive: boolean;
-	buzzInTimerIsExpired: boolean;
-	responseTimerIsActive: boolean;
 };
 
 export default function useGamePhasePlayState(
@@ -43,6 +41,7 @@ export default function useGamePhasePlayState(
 ): GamePhasePlayState {
 	const [selectedClue, setSelectedClue] = useSyncedState<ClueInGame | null>(null, `game:${gameId}:selectedClue`, gameId);
 	const [buzzerQueue, setBuzzerQueue] = useSyncedState<string[]>([], `game:${gameId}:buzzerQueue`, gameId);
+	const [answeredWrong, setAnsweredWrong] = useSyncedState<string[]>([], `game:${gameId}:answeredWrong`, gameId);
 	const [usedClueIds, setUsedClueIds] = useSyncedState<string[]>([], `game:${gameId}:usedClueIds`, gameId);
 	const [scores, setScores] = useSyncedState<Record<string, number>>({}, `game:${gameId}:scores`, gameId);
 	const [activeContestantSessionId, setActiveContestantSessionId] = useSyncedState<string | undefined>(
@@ -70,9 +69,11 @@ export default function useGamePhasePlayState(
 			activeContestantSessionId,
 			buzzInTimeLeft,
 			responseTimeLeft,
+			answeredWrong,
 		});
 		setSelectedClue(next.selectedClue);
 		setBuzzerQueue(next.buzzerQueue);
+		setAnsweredWrong(next.answeredWrong);
 		setUsedClueIds(next.usedClueIds);
 		setScores(next.scores);
 		setActiveContestantSessionId(next.activeContestantSessionId);
@@ -82,9 +83,10 @@ export default function useGamePhasePlayState(
 	};
 
 	const expireClue = (): void => {
-		const next = helpers.expireClue({ selectedClue, buzzerQueue, usedClueIds, buzzInTimeLeft, responseTimeLeft });
+		const next = helpers.expireClue({ selectedClue, buzzerQueue, usedClueIds, buzzInTimeLeft, responseTimeLeft, answeredWrong });
 		setSelectedClue(next.selectedClue);
 		setBuzzerQueue(next.buzzerQueue);
+		setAnsweredWrong(next.answeredWrong);
 		setUsedClueIds(next.usedClueIds);
 		setbuzzInTimeLeft(next.buzzInTimeLeft);
 		setResponseTimeLeft(next.responseTimeLeft);
@@ -102,8 +104,10 @@ export default function useGamePhasePlayState(
 			activeContestantSessionId,
 			buzzInTimeLeft,
 			responseTimeLeft,
+			answeredWrong,
 		});
 		setBuzzerQueue(next.buzzerQueue);
+		setAnsweredWrong(next.answeredWrong);
 		setScores(next.scores);
 		setActiveContestantSessionId(next.activeContestantSessionId);
 		setbuzzInTimeLeft(next.buzzInTimeLeft);
@@ -113,6 +117,7 @@ export default function useGamePhasePlayState(
 
 	const resetBuzzers = (): void => {
 		setBuzzerQueue([]);
+		setAnsweredWrong([]);
 		setbuzzInTimeLeft(5);
 		setResponseTimeLeft(undefined);
 	};
@@ -120,6 +125,7 @@ export default function useGamePhasePlayState(
 	const abortClue = (): void => {
 		setSelectedClue(null);
 		setBuzzerQueue([]);
+		setAnsweredWrong([]);
 		setbuzzInTimeLeft(undefined);
 		setResponseTimeLeft(undefined);
 	};
@@ -138,12 +144,12 @@ export default function useGamePhasePlayState(
 		setResponseTimeLeft(5);
 	};
 
-	const contestantMode = selectedClue ? 'buzzer' : 'clue-select';
+	const contestantMode = selectedClue ? (answeredWrong.includes(sessionId) ? 'answered-wrong' : 'buzzer') : 'clue-select';
 
 	const randomlySelectedContestant = contestants[Math.floor(Math.random() * contestants.length)];
 	const activeContestant = activeContestantSessionId
 		? contestants.find(c => c.sessionId === activeContestantSessionId)
-		: contestantMode === 'buzzer'
+		: contestantMode === 'buzzer' || contestantMode === 'answered-wrong'
 			? undefined
 			: randomlySelectedContestant;
 
@@ -173,9 +179,12 @@ export default function useGamePhasePlayState(
 		buzzerQueue,
 		buzzIn,
 		resetBuzzers,
+		buzzInTimerIsActive: typeof buzzInTimeLeft !== 'undefined',
+		buzzInTimerIsExpired: typeof buzzInTimeLeft !== 'undefined' ? buzzInTimeLeft <= 0 : false,
 
 		// responses
 		responseTimeLeft,
+		responseTimerIsActive: typeof responseTimeLeft !== 'undefined',
 		correctClueResponse,
 		wrongClueResponse,
 
@@ -188,12 +197,7 @@ export default function useGamePhasePlayState(
 		selectClue,
 		usedClueIds,
 		expireClue,
-
-		// derived values
 		activeContestant,
 		contestantMode,
-		buzzInTimerIsActive: typeof buzzInTimeLeft !== 'undefined',
-		buzzInTimerIsExpired: typeof buzzInTimeLeft !== 'undefined' ? buzzInTimeLeft <= 0 : false,
-		responseTimerIsActive: typeof responseTimeLeft !== 'undefined',
 	};
 }
