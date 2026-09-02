@@ -12,6 +12,7 @@ export default defineConfig({
 		include: ['src/**/*.workers.test.ts'],
 		pool: cloudflarePool({
 			main: './src/durable-objects/sessions.ts',
+			remoteBindings: false,
 			wrangler: { configPath: './wrangler.jsonc' },
 			miniflare: {
 				vars: { SESSION_SECRET_KEY: 'test-secret-key-for-workers-tests' },
