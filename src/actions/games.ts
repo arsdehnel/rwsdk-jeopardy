@@ -27,9 +27,6 @@ export async function _saveGame(game: GameFormInput): Promise<ActionState<GameWi
 	if (parsed.error) {
 		return errorResponse<GameWithEverything>(parsed.error.flatten().fieldErrors, 400);
 	}
-	if (!parsed.data) {
-		return errorResponse<GameWithEverything>(`Game could not be validated properly`);
-	}
 	const parsedGame = parsed.data;
 
 	try {
@@ -77,12 +74,9 @@ export async function _startGame(registerState: GameRegisterState): Promise<Acti
 	if (parsed.error) {
 		return errorResponse<GameDBRead>(parsed.error.flatten().fieldErrors, 400);
 	}
-	if (!parsed.data) {
-		return errorResponse<GameDBRead>(`Game register could not be validated properly`);
-	}
 	const parsedGame = parsed.data;
 
-	if (parsedGame.displaySessionId !== syncState.display?.sessionId) {
+	if (!syncState.display || parsedGame.displaySessionId !== syncState.display.sessionId) {
 		return errorResponse<GameDBRead>(
 			`Display device mismatch: your view does not match the current game state. Please refresh and try again.`,
 		);
@@ -101,13 +95,21 @@ export async function _startGame(registerState: GameRegisterState): Promise<Acti
 
 	await saveGameContestants(parsedGame.gameId, parsedGame.contestants, userId, ctx.logger);
 
+	const initialActiveContestant = parsedGame.contestants[Math.floor(Math.random() * parsedGame.contestants.length)];
+
 	await updateGame(
 		parsedGame.gameId,
-		{ phase: 'PLAY', displaySessionId: syncState.display?.sessionId ?? null, hostUserId: userId },
+		{
+			phase: 'PLAY',
+			displaySessionId: syncState.display.sessionId,
+			hostUserId: userId,
+			activeContestantSessionId: initialActiveContestant.sessionId,
+		},
 		userId,
 		ctx.logger,
 	);
 
+	await syncDOStateStub.setState(initialActiveContestant.sessionId, `game:${gameId}:activeContestantSessionId`);
 	await syncDOStateStub.setState('PLAY', `game:${gameId}:gamePhase`);
 
 	const updatedGame = await getGameById(gameId, ctx.logger);
