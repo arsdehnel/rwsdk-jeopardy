@@ -189,7 +189,7 @@ describe('_startGame', () => {
 		it('sets activeContestantSessionId in the DO when starting the game', async () => {
 			await _startGame(validRegisterState);
 
-			const activeContestantCall = mockSetState.mock.calls.find(([, key]: [unknown, string]) =>
+			const activeContestantCall = (mockSetState.mock.calls as [unknown, string][]).find(([, key]) =>
 				key.endsWith(':activeContestantSessionId'),
 			);
 			expect(activeContestantCall).toBeDefined();
@@ -198,7 +198,7 @@ describe('_startGame', () => {
 		it('sets activeContestantSessionId to one of the registered contestants', async () => {
 			await _startGame(validRegisterState);
 
-			const activeContestantCall = mockSetState.mock.calls.find(([, key]: [unknown, string]) =>
+			const activeContestantCall = (mockSetState.mock.calls as [unknown, string][]).find(([, key]) =>
 				key.endsWith(':activeContestantSessionId'),
 			);
 			const [sessionId] = activeContestantCall as [string, string];
@@ -215,7 +215,7 @@ describe('_startGame', () => {
 		it('writes the same session ID to D1 and the DO', async () => {
 			await _startGame(validRegisterState);
 
-			const activeContestantCall = mockSetState.mock.calls.find(([, key]: [unknown, string]) =>
+			const activeContestantCall = (mockSetState.mock.calls as [unknown, string][]).find(([, key]) =>
 				key.endsWith(':activeContestantSessionId'),
 			);
 			const [doSessionId] = activeContestantCall as [string, string];
@@ -226,10 +226,10 @@ describe('_startGame', () => {
 		it('sets activeContestantSessionId before gamePhase in the DO', async () => {
 			await _startGame(validRegisterState);
 
-			const activeContestantIdx = mockSetState.mock.calls.findIndex(([, key]: [unknown, string]) =>
+			const activeContestantIdx = (mockSetState.mock.calls as [unknown, string][]).findIndex(([, key]) =>
 				key.endsWith(':activeContestantSessionId'),
 			);
-			const gamePhaseIdx = mockSetState.mock.calls.findIndex(([, key]: [unknown, string]) => key.endsWith(':gamePhase'));
+			const gamePhaseIdx = (mockSetState.mock.calls as [unknown, string][]).findIndex(([, key]) => key.endsWith(':gamePhase'));
 			expect(activeContestantIdx).toBeGreaterThanOrEqual(0);
 			expect(activeContestantIdx).toBeLessThan(gamePhaseIdx);
 		});
@@ -239,7 +239,7 @@ describe('_startGame', () => {
 		it('still sets gamePhase to PLAY in the DO', async () => {
 			await _startGame(validRegisterState);
 
-			const gamePhaseCall = mockSetState.mock.calls.find(([, key]: [unknown, string]) => key.endsWith(':gamePhase'));
+			const gamePhaseCall = (mockSetState.mock.calls as [unknown, string][]).find(([, key]) => key.endsWith(':gamePhase'));
 			expect(gamePhaseCall?.[0]).toBe('PLAY');
 		});
 
