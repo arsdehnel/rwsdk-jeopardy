@@ -25,4 +25,8 @@ jobs:
           pnpm biome:check
           pnpm types:check
           pnpm test:run
-          pnpm test:workers
+
+      - name: Create .dev.vars for workers tests
+        run: echo "SESSION_SECRET_KEY=test-secret-key-for-workers-tests" > .dev.vars
+
+      - run: pnpm test:workers
