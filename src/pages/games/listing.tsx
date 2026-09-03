@@ -19,7 +19,7 @@ const columns: KADTableColumn[] = [
 		key: 'actions',
 		label: '',
 		actions: [
-			{ type: 'link', hrefProp: 'editUrl', label: 'Edit', requiredPermission: 'games:update' },
+			{ type: 'link', hrefProp: 'setupUrl', label: 'Setup', requiredPermission: 'games:update' },
 			{ type: 'link', hrefProp: 'registerUrl', label: 'Register', requiredPermission: 'games:update' },
 			{ type: 'link', hrefProp: 'playUrl', label: 'Play', requiredPermission: 'games:update' },
 		],
@@ -49,7 +49,7 @@ export default async function Pages__games__listing({ ctx }: RequestInfo): Promi
 			isRegisterableErrors: JSON.stringify(isRegisterableErrors),
 			isPlayable: isPlayable,
 			isPlayableErrors: JSON.stringify(isPlayableErrors),
-			editUrl: `/games/${g.id}/edit`,
+			setupUrl: `/games/${g.id}/setup`,
 			registerUrl: `/games/${g.id}/register`,
 			playUrl: `/games/${g.id}/play`,
 		};
