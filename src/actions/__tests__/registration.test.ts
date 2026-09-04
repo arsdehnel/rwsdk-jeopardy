@@ -303,4 +303,19 @@ describe('finishPasskeyRegistration', () => {
 		expect(result.success).toBe(true);
 		expect(result.data).toBe(true);
 	});
+
+	it('falls back to "Unknown Device" when User-Agent header is absent', async () => {
+		mockRequestInfo.request = new Request('https://example.com/');
+		mockUAGetDevice.mockReturnValueOnce({});
+		mockUAGetOS.mockReturnValueOnce({});
+		mockUAGetBrowser.mockReturnValueOnce({});
+
+		await finishPasskeyRegistration('testuser', mockRegistration as any);
+
+		expect(createCredential).toHaveBeenCalledWith(
+			expect.objectContaining({ name: 'Unknown Device' }),
+			'user-id',
+			expect.anything(),
+		);
+	});
 });

@@ -1,4 +1,4 @@
-import { and, eq, isNull, sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { KADRepositoryError, KADRepositoryErrorTypes } from '@/classes';
 import db from '@/db';
 import { games } from '@/models';
@@ -127,11 +127,32 @@ export async function deleteGame(gameId: string, userId: string, logger: KADLogg
 	return deleted[0];
 }
 
-export async function getGamesByOwnerId(ownerId: string, logger: KADLogger): Promise<GameDBRead[]> {
+export async function getGamesByOwnerId(ownerId: string, logger: KADLogger): Promise<GameWithEverything[]> {
 	logger.debug(`Fetching all games owned by ${ownerId}`);
 
-	return await db
-		.select()
-		.from(games)
-		.where(and(eq(games.ownerId, ownerId), isNull(games.deletedAt)));
+	let games: GameWithEverything[];
+
+	try {
+		games = await db.query.games.findMany({
+			where: {
+				ownerId: { eq: ownerId },
+				deletedAt: { isNull: true },
+			},
+			with: {
+				stages: {
+					with: {
+						categories: true,
+					},
+				},
+				contestants: true,
+			},
+		});
+	} catch (err) {
+		const { message, error } = streamlineError(err);
+		logger.error(`Error fetching games by owner for owner ${ownerId}${message}`, { err: error });
+		throw error;
+	}
+
+	logger.debug(`Fetched ${games.length} games for owner ${ownerId}`);
+	return games;
 }

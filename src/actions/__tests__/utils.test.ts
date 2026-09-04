@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const mockEnv = vi.hoisted(() => ({ RWSDK_JEOPARDY_ENV: 'development' as string }));
 vi.mock('cloudflare:workers', () => ({ env: mockEnv }));
 
-import { errorResponse, successResponse } from '../utils';
+import { buildDevErrorMessage, errorResponse, getWebAuthnConfig, successResponse } from '../utils';
 
 describe('errorResponse', () => {
 	beforeEach(() => {
@@ -52,5 +52,36 @@ describe('successResponse', () => {
 	it('uses provided status code', () => {
 		const result = successResponse({ id: '1' }, 201);
 		expect(result.code).toBe(201);
+	});
+});
+
+describe('buildDevErrorMessage', () => {
+	it('stringifies a non-Error value directly', () => {
+		expect(buildDevErrorMessage('raw string')).toBe('raw string');
+		expect(buildDevErrorMessage(42)).toBe('42');
+	});
+});
+
+describe('getWebAuthnConfig', () => {
+	it('uses url.origin for localhost', () => {
+		const result = getWebAuthnConfig(new Request('http://localhost:8787/'));
+		expect(result.origin).toBe('http://localhost:8787');
+	});
+
+	it('uses url.origin for 127.0.0.1', () => {
+		const result = getWebAuthnConfig(new Request('http://127.0.0.1:8787/'));
+		expect(result.origin).toBe('http://127.0.0.1:8787');
+	});
+
+	it('forces https for non-localhost hosts', () => {
+		const result = getWebAuthnConfig(new Request('http://myapp.example.com/'));
+		expect(result.origin).toBe('https://myapp.example.com');
+	});
+
+	it('uses "Development App" as rpName when VITE_IS_DEV_SERVER is set', () => {
+		vi.stubEnv('VITE_IS_DEV_SERVER', 'true');
+		const result = getWebAuthnConfig(new Request('https://example.com/'));
+		expect(result.rpName).toBe('Development App');
+		vi.unstubAllEnvs();
 	});
 });

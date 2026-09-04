@@ -46,7 +46,7 @@ const mockRequestInfo = {
 
 import { getGameById, saveGameContestants, saveGameStageCategories, updateGame } from '@/repositories';
 import { saveGameStages, saveGame as saveGameStep } from '@/steps';
-import { _saveGame, _startGame } from '../games';
+import { _openRegistration, _saveGame, _startGame } from '../games';
 
 const GAME_ID = crypto.randomUUID();
 const DISPLAY_SESSION_ID = crypto.randomUUID();
@@ -66,7 +66,11 @@ const validRegisterState = {
 	contestants,
 };
 
-const mockUpdatedGame = { id: GAME_ID, phase: 'PLAY' };
+const mockUpdatedGame = {
+	id: GAME_ID,
+	phase: 'PLAY' as const,
+	stages: [{ stage: 'SINGLE' as const, categories: Array.from({ length: 6 }, () => ({})) }],
+};
 
 const CATEGORY_ID = crypto.randomUUID();
 const STAGE_ID = crypto.randomUUID();
@@ -208,7 +212,7 @@ describe('_startGame', () => {
 		it('includes activeContestantSessionId in the D1 updateGame call', async () => {
 			await _startGame(validRegisterState);
 
-			const [, payload] = vi.mocked(updateGame).mock.calls[0];
+			const [, payload] = vi.mocked(updateGame).mock.calls[1];
 			expect([SESSION_A, SESSION_B, SESSION_C]).toContain(payload.activeContestantSessionId);
 		});
 
@@ -219,7 +223,7 @@ describe('_startGame', () => {
 				key.endsWith(':activeContestantSessionId'),
 			);
 			const [doSessionId] = activeContestantCall as [string, string];
-			const [, payload] = vi.mocked(updateGame).mock.calls[0];
+			const [, payload] = vi.mocked(updateGame).mock.calls[1];
 			expect(doSessionId).toBe(payload.activeContestantSessionId);
 		});
 
@@ -246,7 +250,7 @@ describe('_startGame', () => {
 		it('still sets phase: PLAY in D1', async () => {
 			await _startGame(validRegisterState);
 
-			const [, payload] = vi.mocked(updateGame).mock.calls[0];
+			const [, payload] = vi.mocked(updateGame).mock.calls[1];
 			expect(payload.phase).toBe('PLAY');
 		});
 	});
@@ -332,9 +336,91 @@ describe('_startGame', () => {
 		});
 	});
 
+	describe('isRegisterable validation', () => {
+		it('returns an error when the game fetched from D1 does not pass isRegisterable', async () => {
+			vi.mocked(getGameById).mockResolvedValueOnce({
+				id: GAME_ID,
+				stages: [{ stage: 'SINGLE' as const, categories: [{}] }],
+			} as never);
+
+			const result = await _startGame(validRegisterState);
+
+			expect(result.success).toBe(false);
+			expect(mockSetState).not.toHaveBeenCalled();
+		});
+	});
+
 	describe('success response', () => {
 		it('returns the updated game on success', async () => {
 			const result = await _startGame(validRegisterState);
+
+			expect(result.success).toBe(true);
+			expect(result.data).toBe(mockUpdatedGame);
+		});
+	});
+});
+
+describe('_openRegistration', () => {
+	const validSetupState = { gameId: GAME_ID };
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+		vi.mocked(getGameById).mockResolvedValue(mockUpdatedGame as never);
+		vi.mocked(updateGame).mockResolvedValue(mockUpdatedGame as never);
+	});
+
+	describe('isRegisterable validation', () => {
+		it('returns an error when the game does not pass isRegisterable', async () => {
+			vi.mocked(getGameById).mockResolvedValueOnce({
+				id: GAME_ID,
+				stages: [{ stage: 'SINGLE' as const, categories: [{}] }],
+			} as never);
+
+			const result = await _openRegistration(validSetupState);
+
+			expect(result.success).toBe(false);
+		});
+
+		it('does not call updateGame when isRegisterable fails', async () => {
+			vi.mocked(getGameById).mockResolvedValueOnce({
+				id: GAME_ID,
+				stages: [{ stage: 'SINGLE' as const, categories: [{}] }],
+			} as never);
+
+			await _openRegistration(validSetupState);
+
+			expect(updateGame).not.toHaveBeenCalled();
+		});
+
+		it('does not set DO state when isRegisterable fails', async () => {
+			vi.mocked(getGameById).mockResolvedValueOnce({
+				id: GAME_ID,
+				stages: [{ stage: 'SINGLE' as const, categories: [{}] }],
+			} as never);
+
+			await _openRegistration(validSetupState);
+
+			expect(mockSetState).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('success', () => {
+		it('sets phase: REGISTER in D1', async () => {
+			await _openRegistration(validSetupState);
+
+			const [, payload] = vi.mocked(updateGame).mock.calls[0];
+			expect(payload.phase).toBe('REGISTER');
+		});
+
+		it('sets gamePhase to REGISTER in the DO', async () => {
+			await _openRegistration(validSetupState);
+
+			const gamePhaseCall = (mockSetState.mock.calls as [unknown, string][]).find(([, key]) => key.endsWith(':gamePhase'));
+			expect(gamePhaseCall?.[0]).toBe('REGISTER');
+		});
+
+		it('returns the updated game on success', async () => {
+			const result = await _openRegistration(validSetupState);
 
 			expect(result.success).toBe(true);
 			expect(result.data).toBe(mockUpdatedGame);
