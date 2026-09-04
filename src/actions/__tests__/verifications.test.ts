@@ -146,7 +146,7 @@ describe('saveVerification', () => {
 
 			expect(result.success).toBe(true);
 			expect(verifyClue).toHaveBeenCalledTimes(1);
-			expect(verifyClue).toHaveBeenCalledWith(VALID_CLUE_ID, 'test-user-id', expect.anything());
+			expect(verifyClue).toHaveBeenCalledWith(VALID_CLUE_ID, [], 'test-user-id', expect.anything());
 		});
 
 		it('returns the verification record on success', async () => {

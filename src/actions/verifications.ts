@@ -52,7 +52,7 @@ export async function _saveVerification(formData: VerificationFormInput): Promis
 				const categoryVerification = await verifyCategory(parsed.data.categoryId, userId, requestInfo.ctx.logger);
 				return successResponse<VerificationDBRead>(categoryVerification.verification);
 			} else if (parsed.data.clueId) {
-				const clueVerification = await verifyClue(parsed.data.clueId, userId, requestInfo.ctx.logger);
+				const clueVerification = await verifyClue(parsed.data.clueId, parsed.data.referenceUrls, userId, requestInfo.ctx.logger);
 				return successResponse<VerificationDBRead>(clueVerification.verification);
 			}
 		}

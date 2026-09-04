@@ -33,7 +33,7 @@ describe('verifyClue', () => {
 	it('throws when clueId is not a valid UUID', async () => {
 		const user = await createUser('testuser', null, logger);
 
-		await expect(verifyClue('not-a-uuid', user.id, logger)).rejects.toThrow(
+		await expect(verifyClue('not-a-uuid', [], user.id, logger)).rejects.toThrow(
 			'The value "not-a-uuid" is not a valid ID for a Clue',
 		);
 	});
@@ -47,7 +47,7 @@ describe('verifyClue', () => {
 			logger,
 		);
 
-		const result = await verifyClue(clue.id, user.id, logger);
+		const result = await verifyClue(clue.id, [], user.id, logger);
 
 		expect(result.clue.id).toBe(clue.id);
 		expect(result.clue.lastVerifiedAt).not.toBeNull();
@@ -115,7 +115,7 @@ describe('getCluesByCategoryId', () => {
 		const user = await createUser('testuser', null, logger);
 		const cat = await createCategory({ name: 'Geography' }, user.id, logger);
 		const clue = await createClue({ categoryId: cat.id, text: 'Capital of France', response: 'Paris' }, user.id, logger);
-		await verifyClue(clue.id, user.id, logger);
+		await verifyClue(clue.id, [], user.id, logger);
 
 		const result = await getCluesByCategoryId(cat.id, logger);
 
@@ -147,7 +147,7 @@ describe('getClueById', () => {
 		const user = await createUser('testuser', null, logger);
 		const cat = await createCategory({ name: 'Science' }, user.id, logger);
 		const clue = await createClue({ categoryId: cat.id, text: 'Q', response: 'A' }, user.id, logger);
-		await verifyClue(clue.id, user.id, logger);
+		await verifyClue(clue.id, [], user.id, logger);
 
 		const result = await getClueById(clue.id, logger);
 
@@ -285,7 +285,7 @@ describe('deleteClue', () => {
 		await deleteClue(clue2.id, user.id, logger);
 
 		// verifyClue on the surviving clue should still work
-		const result = await verifyClue(clue1.id, user.id, logger);
+		const result = await verifyClue(clue1.id, [], user.id, logger);
 		expect(result.clue.id).toBe(clue1.id);
 	});
 });

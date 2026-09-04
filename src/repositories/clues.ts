@@ -110,6 +110,7 @@ export async function updateClue(clueId: string, clue: ClueRepoInput, userId: st
 
 export async function verifyClue(
 	clueId: string,
+	referenceUrls: string[],
 	userId: string,
 	logger: KADLogger,
 ): Promise<{ clue: ClueDBRead; verification: VerificationDBRead }> {
@@ -122,6 +123,7 @@ export async function verifyClue(
 		.insert(verifications)
 		.values({
 			clueId,
+			referenceUrls,
 			createdBy: userId,
 		})
 		.returning();
