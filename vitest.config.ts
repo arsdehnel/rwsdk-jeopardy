@@ -14,10 +14,10 @@ export default defineConfig({
 				branches: 30,
 				lines: 30, // using this to make sure we don't miss something big or have dead code
 				'src/actions/**': {
-					branches: 91,
+					branches: 100,
 				},
 				'src/classes/**': {
-					branches: 60,
+					branches: 80,
 				},
 				'src/durable-objects/**': {
 					branches: 100,
@@ -29,7 +29,7 @@ export default defineConfig({
 					branches: 100,
 				},
 				'src/schemas/**': {
-					branches: 0,
+					branches: 53,
 				},
 			},
 		},
