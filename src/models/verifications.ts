@@ -12,6 +12,7 @@ export const verifications = sqliteTable(
 			.$defaultFn(() => crypto.randomUUID()),
 		categoryId: text().references(() => categories.id, { onDelete: 'cascade' }),
 		clueId: text().references(() => clues.id, { onDelete: 'cascade' }),
+		referenceUrls: text({ mode: 'json' }).$type<string[]>(),
 		createdAt: text()
 			.notNull()
 			.$defaultFn(() => new Date().toISOString()),
