@@ -27,6 +27,8 @@ const permissions = {
 	},
 	clues: {
 		admin: ['ADMIN'],
+		research: ['ADMIN'],
+		replace: ['ADMIN'],
 	},
 	games: {
 		read: ['*'],

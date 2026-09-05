@@ -27,6 +27,25 @@ describe('createClue', () => {
 		expect(clue.response).toBe('What is Hydrogen?');
 		expect(clue.categoryId).toBe(cat.id);
 	});
+
+	it('stores referenceUrls when provided', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Science' }, user.id, logger);
+		const urls = ['https://example.com', 'https://wikipedia.org/wiki/Hydrogen'];
+
+		const clue = await createClue({ categoryId: cat.id, text: 'Q', response: 'A', referenceUrls: urls }, user.id, logger);
+
+		expect(clue.referenceUrls).toEqual(urls);
+	});
+
+	it('stores null referenceUrls when not provided', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Science' }, user.id, logger);
+
+		const clue = await createClue({ categoryId: cat.id, text: 'Q', response: 'A' }, user.id, logger);
+
+		expect(clue.referenceUrls).toBeNull();
+	});
 });
 
 describe('verifyClue', () => {
@@ -223,6 +242,41 @@ describe('updateClue', () => {
 		expect(updated.id).toBe(clue.id);
 		expect(updated.text).toBe('New text');
 		expect(updated.response).toBe('New response');
+	});
+
+	it('updates referenceUrls', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Science' }, user.id, logger);
+		const clue = await createClue({ categoryId: cat.id, text: 'Q', response: 'A' }, user.id, logger);
+		const urls = ['https://example.com'];
+
+		const updated = await updateClue(
+			clue.id,
+			{ categoryId: cat.id, text: 'Q', response: 'A', referenceUrls: urls },
+			user.id,
+			logger,
+		);
+
+		expect(updated.referenceUrls).toEqual(urls);
+	});
+
+	it('overwrites existing referenceUrls', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Science' }, user.id, logger);
+		const clue = await createClue(
+			{ categoryId: cat.id, text: 'Q', response: 'A', referenceUrls: ['https://old.example.com'] },
+			user.id,
+			logger,
+		);
+
+		const updated = await updateClue(
+			clue.id,
+			{ categoryId: cat.id, text: 'Q', response: 'A', referenceUrls: ['https://new.example.com'] },
+			user.id,
+			logger,
+		);
+
+		expect(updated.referenceUrls).toEqual(['https://new.example.com']);
 	});
 
 	it('sets updatedBy to the userId', async () => {

@@ -5,6 +5,7 @@ import db from '@/db';
 import { clues, verifications } from '@/models';
 import type { ClueDBRead, ClueRepoInput, ClueWithVerifications, KADLogger, VerificationDBRead } from '@/types';
 import { validateUuid } from '@/utils';
+import { streamlineError } from './utils';
 
 export async function createClue(clue: ClueRepoInput, userId: string, logger: KADLogger): Promise<ClueDBRead> {
 	logger.info(`Creating clue ${clue.text}`);
@@ -30,18 +31,25 @@ export async function getCluesByCategoryId(categoryId: string, logger: KADLogger
 	}
 
 	logger.debug(`Fetching clues for category ${categoryId}`);
-	const result = await db.query.clues.findMany({
-		where: {
-			categoryId: { eq: categoryId },
-			deletedAt: { isNull: true },
-		},
-		with: {
-			verifications: true,
-		},
-	});
+	let clues: ClueWithVerifications[] | undefined;
+	try {
+		clues = await db.query.clues.findMany({
+			where: {
+				categoryId: { eq: categoryId },
+				deletedAt: { isNull: true },
+			},
+			with: {
+				verifications: true,
+			},
+		});
+	} catch (err) {
+		const { message, error } = streamlineError(err);
+		logger.error(`Error fetching clues for category ${categoryId}${message}`, { err: error });
+		throw error;
+	}
 
-	logger.debug(`Fetched ${result.length} clues for category ${categoryId}`);
-	return result;
+	logger.debug(`Fetched ${clues.length} clues for category ${categoryId}`);
+	return clues;
 }
 
 export async function getClueById(clueId: string, logger: KADLogger): Promise<ClueWithVerifications> {

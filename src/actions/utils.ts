@@ -46,6 +46,41 @@ export function successResponse<T>(data: T, status: number = 200): ActionState<T
 	};
 }
 
+/**
+ * Extracts a JSON object or array from a string that may contain surrounding
+ * prose or markdown code fences. Throws if no valid JSON is found.
+ */
+export function extractJson(raw: string): string {
+	// Strip markdown code fences (```json ... ``` or ``` ... ```)
+	const stripped = raw
+		.replace(/```(?:json)?\s*/g, '')
+		.replace(/```/g, '')
+		.trim();
+
+	const firstBrace = stripped.indexOf('{');
+	const firstBracket = stripped.indexOf('[');
+
+	let start: number;
+	let closeChar: string;
+	if (firstBrace === -1 && firstBracket === -1) {
+		throw new Error('No JSON object or array found in model response');
+	}
+	if (firstBrace === -1 || (firstBracket !== -1 && firstBracket < firstBrace)) {
+		start = firstBracket;
+		closeChar = ']';
+	} else {
+		start = firstBrace;
+		closeChar = '}';
+	}
+
+	const end = stripped.lastIndexOf(closeChar);
+	if (end < start) {
+		throw new Error(`No closing '${closeChar}' found in model response`);
+	}
+
+	return stripped.slice(start, end + 1);
+}
+
 export function getWebAuthnConfig(request: Request): { rpName: string; rpID: string; origin: string } {
 	const rpID = new URL(request.url).hostname;
 	const rpName = import.meta.env.VITE_IS_DEV_SERVER ? 'Development App' : env.WEBAUTHN_APP_NAME;

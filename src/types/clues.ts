@@ -16,3 +16,8 @@ export type ClueFormInput = z.input<typeof cluesSchemas.form>;
 export type ClueWithVerifications = ClueDBRead & {
 	verifications: VerificationDBRead[];
 };
+
+export type ReplacedClue = {
+	text: string;
+	response: string;
+};
