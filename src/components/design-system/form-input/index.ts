@@ -3,6 +3,7 @@ export * from './kad-date';
 export * from './kad-number';
 export * from './kad-radio-group';
 export * from './kad-select';
+export * from './kad-string-array';
 export * from './kad-switch';
 export * from './kad-text';
 export * from './kad-textarea';

@@ -1,0 +1,45 @@
+.kad-string-array {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.kad-string-array-row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.kad-string-array-row input {
+	flex: 1;
+}
+
+.kad-string-array-remove {
+	all: unset;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border-radius: 4px;
+	cursor: pointer;
+	color: var(--mauve-11);
+	&:hover {
+		background-color: var(--mauve-3);
+		color: var(--red-9);
+	}
+}
+
+.kad-string-array-add {
+	all: unset;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 13px;
+	cursor: pointer;
+	color: var(--violet-11);
+	margin-top: 2px;
+	&:hover {
+		text-decoration: underline;
+	}
+}

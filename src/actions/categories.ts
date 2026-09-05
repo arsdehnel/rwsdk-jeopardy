@@ -4,28 +4,30 @@ import { requestInfo, serverAction } from 'rwsdk/worker';
 import { requireAuthentication, requirePermissions } from '@/interrupters';
 import { createCategory, createClue, getCategories } from '@/repositories';
 import type { ActionState, CategoryWithClues, GeneratedCategory } from '@/types';
-import { errorResponse, successResponse } from './utils';
+import { errorResponse, extractJson, successResponse } from './utils';
 
-function getPrompt(existingCategoryNames: string[]): string {
-	return `I have a jeopardy-style game and a user is requesting a new category. Some details for the request:
-	
-1. Can you provide a category title and five increasingly-difficult "answers" for which the contestants will have to provide the "question" in traditional Jeopardy style. 
-2. Can you return the data in JSON with the top-level thing being a category object like this with clues as an array? 
-3. Return it without the pretty-printed formatting and please make sure to return the full JSON and _only_ the JSON so I can parse it. 
-4. Also please double-check the accuracy to avoid hallucinations.
-5. We have existing categories named ${existingCategoryNames.join(',')} so please avoid those topics.
-6. Please avoid any extra messages about the fact that you've double-checked the answers or anything.  JUST THE JSON PLEASE.
+type Message = {
+	role: 'system' | 'user' | 'assistant';
+	content: string;
+};
 
-{ 
-	"name": "Animal Kingdom",
-	"clues": [
+function getMessages(existingCategoryNames: string[]): Message[] {
+	return [
 		{
-			"text": "This is the only mammal capable of true flight.",
-			"response": "What is a bat?"
-		}
-	]
-}
-`;
+			role: 'system',
+			content:
+				'You are a JSON API. You only ever respond with raw JSON — no markdown, no explanation, no code fences. Never include any text before or after the JSON object.',
+		},
+		{
+			role: 'user',
+			content: `Generate a new Jeopardy category with 5 clues of increasing difficulty. Avoid these existing category topics: ${existingCategoryNames.join(', ')}.
+
+Return only this JSON structure:
+{"name":"Category Name","clues":[{"text":"Clue text","response":"What is the answer?"}]}
+
+All 5 clues must be included. Verify accuracy before responding. Return only the JSON object, no other text.`,
+		},
+	];
 }
 
 export const generateCategory = serverAction([
@@ -41,10 +43,10 @@ export async function _generateCategory(): Promise<ActionState<GeneratedCategory
 
 		const existingCategories = await getCategories(requestInfo.ctx.logger);
 
-		const prompt = getPrompt(existingCategories.map(c => c.name));
+		const messages = getMessages(existingCategories.map(c => c.name));
 
 		const { response, usage } = await env.AI.run('@cf/mistral/mistral-7b-instruct-v0.2-lora', {
-			prompt,
+			messages,
 			max_tokens: 1024,
 		});
 
@@ -56,7 +58,7 @@ export async function _generateCategory(): Promise<ActionState<GeneratedCategory
 		}
 
 		try {
-			const parsedResponse = JSON.parse(response);
+			const parsedResponse = typeof response === 'string' ? JSON.parse(extractJson(response)) : response;
 			requestInfo.ctx.logger.info(`Parsed and responding with result`);
 			return successResponse(parsedResponse);
 		} catch (err) {

@@ -233,3 +233,17 @@ export function TextInput({ label, required = false }: { label: string; required
 		</FieldComponent>
 	);
 }
+
+export function StringArrayInput({ label, required = false }: { label: string; required?: boolean }): React.ReactNode {
+	const field = useFieldContext<string[]>();
+	return (
+		<FieldComponent label={label} required={required} name={field.name} meta={field.state.meta} controlGroup>
+			<KADFormInput.KADStringArray
+				name={field.name}
+				value={field.state.value ?? []}
+				onBlur={field.handleBlur}
+				onChange={(value: string[]) => field.handleChange(value)}
+			/>
+		</FieldComponent>
+	);
+}

@@ -21,7 +21,9 @@ export default async function Pages__admin__categories__clues__verify({ ctx, par
 				requiredPermission="clues:admin"
 				label="Back to Clues"
 			/>
+			<h3>Existing Verifications</h3>
 			<KADTable userPermissions={ctx.permissions} columns={columns} data={clue.verifications} />
+			<h3>New Verification</h3>
 			<VerificationForm verification={{ clueId: clue.id }} userPermissions={ctx.permissions} />
 		</DefaultLayout>
 	);

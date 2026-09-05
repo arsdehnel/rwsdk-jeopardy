@@ -10,6 +10,10 @@ const formSchema = z.object({
 	text: z.string(),
 	response: z.string(),
 	position: coercedInt(1, 50),
+	referenceUrls: z
+		.array(z.url({ protocol: /^https$/ }))
+		.nullish()
+		.transform(val => val ?? []),
 });
 
 export const cluesSchemas = {

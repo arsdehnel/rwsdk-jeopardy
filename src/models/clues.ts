@@ -16,6 +16,7 @@ export const clues = snakeCase.table(
 		text: text().notNull(),
 		response: text().notNull(),
 		position: int(),
+		referenceUrls: text({ mode: 'json' }).$type<string[]>(),
 		lastVerifiedAt: text(),
 		createdAt: text().notNull().default(sql`(datetime('now', 'localtime'))`),
 		createdBy: text()
