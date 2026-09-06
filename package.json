@@ -90,7 +90,6 @@
 		"@types/react-dom": "19.2.3",
 		"@vitest/coverage-v8": "4.1.11",
 		"@vitest/ui": "4.1.11",
-		"conventional-changelog-conventionalcommits": "^9.1.0",
 		"drizzle-kit": "1.0.0-rc.4",
 		"husky": "^9.1.7",
 		"jsdom": "^28.1.0",

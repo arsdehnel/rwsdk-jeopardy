@@ -134,9 +134,6 @@ importers:
       '@vitest/ui':
         specifier: 4.1.11
         version: 4.1.11(vitest@4.1.11)
-      conventional-changelog-conventionalcommits:
-        specifier: ^9.1.0
-        version: 9.1.0
       drizzle-kit:
         specifier: 1.0.0-rc.4
         version: 1.0.0-rc.4

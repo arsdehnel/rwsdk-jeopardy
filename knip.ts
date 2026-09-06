@@ -1,6 +1,10 @@
 export default {
-	tags: ['-lintignore'],
+	tags: ['-lintignore', '-knipTestExport'],
+	ignoreDependencies: ['cloudflare'],
+	ignoreExportsUsedInFile: true,
+	entry: ['tests/mocks/**'],
+	ignoreFiles: ['src/client.tsx'],
 	compilers: {
-		css: (text: string) => [...text.matchAll(/(?<=@)import[^;]+/g)].join('\n'),
-	}
+		css: (text: string): string => [...text.matchAll(/(?<=@)import[^;]+/g)].join('\n'),
+	},
 };
