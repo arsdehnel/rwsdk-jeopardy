@@ -42,6 +42,12 @@ export default async function Pages__admin__categories__clues__listing({ ctx, pa
 					requiredPermission="categories:admin"
 					label="Back to Categories"
 				/>
+				<KADLink
+					href={`/admin/categories/${params.categoryId}/clues/sort`}
+					userPermissions={ctx.permissions}
+					requiredPermission="categories:admin"
+					label="Sort Clues"
+				/>
 				<KADTable userPermissions={ctx.permissions} columns={columns} data={rows} />
 			</DefaultLayout>
 		);
