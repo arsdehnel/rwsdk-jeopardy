@@ -40,6 +40,7 @@ export const saveSortedClues = serverAction([requireAuthentication, requirePermi
 /**
  * @private - exported for testing only, do not use directly
  */
+/** @knipTestExport */
 export async function _saveClue(formData: ClueFormInput): Promise<ActionState<ClueDBRead>> {
 	const { ctx } = requestInfo;
 	// biome-ignore lint/style/noNonNullAssertion: guaranteed by requireAuthentication in serverAction chain
@@ -67,6 +68,7 @@ export async function _saveClue(formData: ClueFormInput): Promise<ActionState<Cl
 /**
  * @private - exported for testing only, do not use directly
  */
+/** @knipTestExport */
 export async function _replaceClue(clueId: string): Promise<ActionState<ReplacedClue>> {
 	const { ctx } = requestInfo;
 
@@ -138,6 +140,7 @@ Return only this JSON structure:
 /**
  * @private - exported for testing only, do not use directly
  */
+/** @knipTestExport */
 export async function _researchClue(clueId: string): Promise<ActionState<string[]>> {
 	const { ctx } = requestInfo;
 
@@ -169,6 +172,7 @@ export async function _researchClue(clueId: string): Promise<ActionState<string[
 /**
  * @private - exported for testing only, do not use directly
  */
+/** @knipTestExport */
 export async function _saveSortedClues(orderedClues: Pick<ClueDBRead, 'id' | 'position'>[]): Promise<ActionState<ClueDBRead[]>> {
 	const { ctx } = requestInfo;
 	// biome-ignore lint/style/noNonNullAssertion: guaranteed by requireAuthentication in serverAction chain
