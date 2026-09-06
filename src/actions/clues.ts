@@ -35,6 +35,7 @@ Return only this JSON structure:
 export const replaceClue = serverAction([requireAuthentication, requirePermissions('clues:admin'), _replaceClue]);
 export const researchClue = serverAction([requireAuthentication, requirePermissions('clues:research'), _researchClue]);
 export const saveClue = serverAction([requireAuthentication, requirePermissions('clues:admin'), _saveClue]);
+export const saveSortedClues = serverAction([requireAuthentication, requirePermissions('clues:admin'), _saveSortedClues]);
 
 /**
  * @private - exported for testing only, do not use directly
@@ -162,5 +163,23 @@ export async function _researchClue(clueId: string): Promise<ActionState<string[
 	} catch (err) {
 		requestInfo.ctx.logger.error(`Failure to parse model response: ${err}`);
 		return errorResponse<string[]>(err);
+	}
+}
+
+/**
+ * @private - exported for testing only, do not use directly
+ */
+export async function _saveSortedClues(orderedClues: Pick<ClueDBRead, 'id' | 'position'>[]): Promise<ActionState<ClueDBRead[]>> {
+	const { ctx } = requestInfo;
+	// biome-ignore lint/style/noNonNullAssertion: guaranteed by requireAuthentication in serverAction chain
+	const userId = ctx.user!.id;
+	try {
+		const updatedClues = await Promise.all(
+			orderedClues.map((clue, index) => updateClue(clue.id, { ...clue, position: index + 1 }, userId, ctx.logger)),
+		);
+		return successResponse<ClueDBRead[]>(updatedClues);
+	} catch (error) {
+		ctx.logger.error('Failed to save sorted clues', { error });
+		return errorResponse<ClueDBRead[]>(error, 500, 'Failed to save sorted clues');
 	}
 }

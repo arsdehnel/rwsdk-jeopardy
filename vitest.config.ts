@@ -22,14 +22,23 @@ export default defineConfig({
 				'src/durable-objects/**': {
 					branches: 100,
 				},
+				'src/hooks/**': {
+					branches: 95,
+				},
+				'src/interrupters/**': {
+					branches: 100,
+				},
 				'src/middleware/**': {
+					branches: 100,
+				},
+				'src/models/**': {
 					branches: 100,
 				},
 				'src/repositories/**': {
 					branches: 100,
 				},
 				'src/schemas/**': {
-					branches: 53,
+					branches: 64,
 				},
 			},
 		},

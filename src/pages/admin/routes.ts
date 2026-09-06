@@ -2,6 +2,7 @@ import { route } from 'rwsdk/router';
 import { requireAuthentication, requirePermissions } from '@/interrupters';
 import Pages__admin__categories__clues__edit from './categories/clues/edit';
 import Pages__Admin__Categories_Clues__Listing from './categories/clues/listing';
+import Pages__admin__categories__clues__sort from './categories/clues/sort';
 import Pages__admin__categories__clues__verify from './categories/clues/verify';
 import Pages__Admin__Categories__Listing from './categories/listing';
 import Pages__admin__categories__verify from './categories/verify';
@@ -18,6 +19,11 @@ export default {
 			requireAuthentication,
 			requirePermissions('clues:admin'),
 			Pages__Admin__Categories_Clues__Listing,
+		]),
+		route('/categories/:categoryId/clues/sort', [
+			requireAuthentication,
+			requirePermissions('clues:admin'),
+			Pages__admin__categories__clues__sort,
 		]),
 		route('/categories/:categoryId/clues/:clueId/edit', [
 			requireAuthentication,

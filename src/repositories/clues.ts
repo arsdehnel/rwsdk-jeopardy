@@ -96,7 +96,12 @@ export async function deleteClue(clueId: string, userId: string, logger: KADLogg
 	return deleted[0];
 }
 
-export async function updateClue(clueId: string, clue: ClueRepoInput, userId: string, logger: KADLogger): Promise<ClueDBRead> {
+export async function updateClue(
+	clueId: string,
+	clue: Partial<ClueRepoInput>,
+	userId: string,
+	logger: KADLogger,
+): Promise<ClueDBRead> {
 	if (!validateUuid(clueId)) {
 		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [clueId, 'Clue']);
 	}

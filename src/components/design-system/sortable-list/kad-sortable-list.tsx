@@ -5,35 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { DragHandleDots2Icon } from '@radix-ui/react-icons';
 import styleClasses from './kad-sortable-list.module.css';
 
-function SortableItem({ id, children }: { id: string; children: React.ReactNode }): React.ReactNode {
-	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
-
-	const style: React.CSSProperties = {
-		transform: CSS.Transform.toString(transform),
-		transition,
-	};
-
-	return (
-		<div
-			ref={setNodeRef}
-			style={style}
-			className={`${styleClasses.kadSortableItem}${isDragging ? ` ${styleClasses.kadSortableItemDragging}` : ''}`}
-		>
-			<button
-				type="button"
-				className={styleClasses.kadSortableHandle}
-				aria-label="Drag to reorder"
-				{...listeners}
-				{...attributes}
-			>
-				<DragHandleDots2Icon />
-			</button>
-			<div className={styleClasses.kadSortableContent}>{children}</div>
-		</div>
-	);
-}
-
-export function KADSortableList<T extends { id: string }>({
+export default function KADSortableList<T extends { id: string }>({
 	items,
 	renderItem,
 	onChange,
@@ -63,5 +35,33 @@ export function KADSortableList<T extends { id: string }>({
 				</div>
 			</SortableContext>
 		</DndContext>
+	);
+}
+
+function SortableItem({ id, children }: { id: string; children: React.ReactNode }): React.ReactNode {
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+
+	const style: React.CSSProperties = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+	};
+
+	return (
+		<div
+			ref={setNodeRef}
+			style={style}
+			className={`${styleClasses.kadSortableItem}${isDragging ? ` ${styleClasses.kadSortableItemDragging}` : ''}`}
+		>
+			<button
+				type="button"
+				className={styleClasses.kadSortableHandle}
+				aria-label="Drag to reorder"
+				{...listeners}
+				{...attributes}
+			>
+				<DragHandleDots2Icon />
+			</button>
+			<div className={styleClasses.kadSortableContent}>{children}</div>
+		</div>
 	);
 }
