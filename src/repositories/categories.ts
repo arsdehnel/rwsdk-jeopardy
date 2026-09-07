@@ -7,6 +7,7 @@ import type {
 	CategoryDBRead,
 	CategoryInGame,
 	CategoryRepoInput,
+	CategoryUpdateInput,
 	CategoryWithVerifications,
 	GameStageEnum,
 	KADLogger,
@@ -108,6 +109,31 @@ export async function createCategory(category: CategoryRepoInput, userId: string
 	}
 
 	return createdCategories[0];
+}
+
+export async function updateCategory(
+	categoryId: string,
+	input: CategoryUpdateInput,
+	userId: string,
+	logger: KADLogger,
+): Promise<CategoryDBRead> {
+	if (!validateUuid(categoryId)) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.InvalidUUID, [categoryId, 'Category']);
+	}
+
+	logger.debug(`Updating category ${categoryId}`);
+	const updated = await db
+		.update(categories)
+		.set({ ...input, updatedAt: sql`(datetime('now', 'localtime'))`, updatedBy: userId })
+		.where(eq(categories.id, categoryId))
+		.returning();
+
+	if (updated.length !== 1) {
+		throw new KADRepositoryError(KADRepositoryErrorTypes.UnexpectedRecordCount, [updated.length, 1, 'Category']);
+	}
+
+	logger.info(`Updated category ${categoryId}`);
+	return updated[0];
 }
 
 export async function deleteCategory(categoryId: string, userId: string, logger: KADLogger): Promise<CategoryDBRead> {

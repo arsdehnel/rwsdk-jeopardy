@@ -7,6 +7,7 @@ import {
 	getCategories,
 	getCategoriesForGameStage,
 	getCategoryById,
+	updateCategory,
 	verifyCategory,
 } from '../categories';
 import { createClue, deleteClue } from '../clues';
@@ -228,6 +229,57 @@ describe('getCategoriesForGameStage', () => {
 
 		expect(result[0].clues).toHaveLength(1);
 		expect(result[0].clues[0].text).toBe('Keep this');
+	});
+});
+
+describe('updateCategory', () => {
+	it('throws when categoryId is not a valid UUID', async () => {
+		const user = await createUser('testuser', null, logger);
+
+		await expect(updateCategory('not-a-uuid', { name: 'New Name' }, user.id, logger)).rejects.toThrow(
+			'The value "not-a-uuid" is not a valid ID for a Category',
+		);
+	});
+
+	it('throws when category does not exist', async () => {
+		const user = await createUser('testuser', null, logger);
+
+		await expect(updateCategory(crypto.randomUUID(), { name: 'New Name' }, user.id, logger)).rejects.toThrow(
+			'Expected 1 Category record(s), but found 0',
+		);
+	});
+
+	it('updates the name and returns the updated category', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Old Name' }, user.id, logger);
+
+		const updated = await updateCategory(cat.id, { name: 'New Name' }, user.id, logger);
+
+		expect(updated.id).toBe(cat.id);
+		expect(updated.name).toBe('New Name');
+		expect(updated.updatedAt).not.toBeNull();
+		expect(updated.updatedBy).toBe(user.id);
+	});
+
+	it('reflects the updated name when fetched by getCategoryById', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat = await createCategory({ name: 'Before' }, user.id, logger);
+		await updateCategory(cat.id, { name: 'After' }, user.id, logger);
+
+		const fetched = await getCategoryById(cat.id, logger);
+
+		expect(fetched.name).toBe('After');
+	});
+
+	it('does not affect other categories', async () => {
+		const user = await createUser('testuser', null, logger);
+		const cat1 = await createCategory({ name: 'Update Me' }, user.id, logger);
+		const cat2 = await createCategory({ name: 'Leave Me' }, user.id, logger);
+		await updateCategory(cat1.id, { name: 'Updated' }, user.id, logger);
+
+		const fetched = await getCategoryById(cat2.id, logger);
+
+		expect(fetched.name).toBe('Leave Me');
 	});
 });
 

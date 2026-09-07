@@ -16,6 +16,8 @@ export type CategoryRepoInput = Omit<
 	'createdAt' | 'createdBy' | 'updatedAt' | 'updatedBy' | 'deletedAt' | 'deletedBy'
 >;
 
+export type CategoryUpdateInput = Pick<CategoryRepoInput, 'name'>;
+
 export type CategoryWithClues = CategoryDBRead & {
 	clues: ClueDBRead[];
 };
