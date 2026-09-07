@@ -1,11 +1,9 @@
 import { z } from 'zod';
+import { primaryKeyUuid } from './utils';
 
 const formSchema = z.object({
-	id: z
-		.union([z.string().uuid('Must be a valid UUID'), z.literal('')])
-		.transform(val => (val === '' ? undefined : val))
-		.optional(), // Present for update, absent for create
-	name: z.string(),
+	id: primaryKeyUuid,
+	name: z.string().trim().min(1, 'Name is required').max(30, 'Name must be 30 characters or less'),
 });
 
 export const categoriesSchemas = {

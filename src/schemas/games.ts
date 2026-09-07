@@ -1,26 +1,36 @@
 import { z } from 'zod';
 import { gamePhaseEnum, gameStageEnum } from '@/data/enums';
-import { requiredUuid } from './utils';
+import { primaryKeyUuid, requiredUuid } from './utils';
 
 const stageSchema = z.object({
-	id: z.string().uuid('Must be a valid UUID').optional(), // Present for update, absent for create,
-	gameId: z.string().uuid('Must be a valid UUID').optional(), // Present for update, absent for create
+	id: primaryKeyUuid,
+	gameId: z.string().uuid('Must be a valid UUID').optional(),
 	stage: z.enum(gameStageEnum),
-	categories: z.array(requiredUuid).min(1).max(6),
+	categories: z.array(requiredUuid).min(1).max(6), // allow anything in this range while building a game, but will be validated later for registerability
 });
 
 const formSchema = z.object({
-	id: z.string().uuid('Must be a valid UUID').optional(), // Present for update, absent for create
-	ownerId: z.string().uuid('Must be a valid UUID').optional(), // Present for update, absent for create
+	id: primaryKeyUuid,
+	ownerId: z.string().uuid('Must be a valid UUID').optional(),
 	phase: z.enum(gamePhaseEnum).optional(),
 	stages: z.array(stageSchema).min(1).max(4),
 });
 
-const contestantSchema = z.object({
-	sessionId: z.string().uuid('Must be a valid UUID'),
-	userId: z.string().uuid('Must be a valid UUID').optional(),
-	name: z.string(),
-});
+const contestantSchema = z
+	.object({
+		sessionId: z.string().uuid('Must be a valid UUID'),
+		userId: z.string().uuid('Must be a valid UUID').optional(),
+		name: z.string(),
+	})
+	.superRefine(({ userId, name }, ctx) => {
+		if (!userId && name.trim().length === 0) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Name is required when no user ID is provided',
+				path: ['name'],
+			});
+		}
+	});
 
 const registerSchema = z.object({
 	gameId: z.string().uuid('Must be a valid UUID'),

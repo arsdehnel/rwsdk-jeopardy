@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+// For the `id` field on form schemas: absent/empty on create, a valid UUID on update.
+export const primaryKeyUuid = z
+	.union([z.string().uuid('Must be a valid UUID'), z.literal('')])
+	.transform(val => (val === '' ? undefined : val))
+	.optional() satisfies z.ZodType<string | undefined>;
+
 export const optionalUuid = z
 	.union([z.string().uuid('Must be a valid UUID'), z.null(), z.literal('')])
 	.transform(val => (val === '' || val === null ? undefined : val))

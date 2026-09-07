@@ -46,6 +46,12 @@ describe('verificationsSchemas.form', () => {
 			expect(result.success).toBe(true);
 			expect(result.data?.id).toBeUndefined();
 		});
+
+		it('transforms empty string id to undefined (create path)', () => {
+			const result = verificationsSchemas.form.safeParse({ id: '' });
+			expect(result.success).toBe(true);
+			expect(result.data?.id).toBeUndefined();
+		});
 	});
 
 	describe('id validation', () => {
