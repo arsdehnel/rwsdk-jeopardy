@@ -2,8 +2,9 @@
 import { env } from 'cloudflare:workers';
 import { requestInfo, serverAction } from 'rwsdk/worker';
 import { requireAuthentication, requirePermissions } from '@/interrupters';
-import { createCategory, createClue, getCategories } from '@/repositories';
-import type { ActionState, CategoryWithClues, GeneratedCategory } from '@/types';
+import { createCategory, createClue, getCategories, updateCategory } from '@/repositories';
+import { categoriesSchemas } from '@/schemas';
+import type { ActionState, CategoryDBRead, CategoryFormInput, CategoryWithClues, GeneratedCategory } from '@/types';
 import { errorResponse, extractJson, successResponse } from './utils';
 
 type Message = {
@@ -30,6 +31,7 @@ All 5 clues must be included. Verify accuracy before responding. Return only the
 	];
 }
 
+export const saveCategory = serverAction([requireAuthentication, requirePermissions('categories:admin'), _saveCategory]);
 export const generateCategory = serverAction([
 	requireAuthentication,
 	requirePermissions('categories:generate'),
@@ -76,6 +78,34 @@ export async function _generateCategory(): Promise<ActionState<GeneratedCategory
 	} catch (err) {
 		requestInfo.ctx.logger.error(`Unexpected error: ${err}${err instanceof Error && err.cause ? ` | cause: ${err.cause}` : ''}`);
 		return errorResponse(err);
+	}
+}
+
+/**
+ * @private - exported for testing only, do not use directly
+ */
+/** @knipTestExport */
+export async function _saveCategory(formData: CategoryFormInput): Promise<ActionState<CategoryDBRead>> {
+	const { ctx } = requestInfo;
+	// biome-ignore lint/style/noNonNullAssertion: guaranteed by requireAuthentication in serverAction chain
+	const userId = ctx.user!.id;
+
+	ctx.logger.debug('Category form data received', { id: formData.id });
+
+	try {
+		const parsed = categoriesSchemas.form.safeParse(formData);
+		if (!parsed.success) {
+			return errorResponse<CategoryDBRead>(parsed.error.flatten().fieldErrors, 400);
+		}
+		if (parsed.data.id) {
+			const updated = await updateCategory(parsed.data.id, parsed.data, userId, ctx.logger);
+			return successResponse<CategoryDBRead>(updated);
+		}
+		const created = await createCategory(parsed.data, userId, ctx.logger);
+		return successResponse<CategoryDBRead>(created);
+	} catch (error) {
+		ctx.logger.error('Failed to save category', { error });
+		return errorResponse<CategoryDBRead>(error, 500, 'Failed to save category');
 	}
 }
 

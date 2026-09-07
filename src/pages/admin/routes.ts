@@ -4,12 +4,19 @@ import Pages__admin__categories__clues__edit from './categories/clues/edit';
 import Pages__Admin__Categories_Clues__Listing from './categories/clues/listing';
 import Pages__admin__categories__clues__sort from './categories/clues/sort';
 import Pages__admin__categories__clues__verify from './categories/clues/verify';
+import Pages__admin__categories__edit from './categories/edit';
 import Pages__Admin__Categories__Listing from './categories/listing';
 import Pages__admin__categories__verify from './categories/verify';
 
 export default {
 	admin: [
 		route('/categories', [requireAuthentication, requirePermissions('categories:admin'), Pages__Admin__Categories__Listing]),
+		route('/categories/new', [requireAuthentication, requirePermissions('categories:admin'), Pages__admin__categories__edit]),
+		route('/categories/:categoryId/edit', [
+			requireAuthentication,
+			requirePermissions('categories:admin'),
+			Pages__admin__categories__edit,
+		]),
 		route('/categories/:categoryId/verify', [
 			requireAuthentication,
 			requirePermissions('verifications:create'),

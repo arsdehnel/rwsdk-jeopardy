@@ -1,4 +1,6 @@
+import type { z } from 'zod';
 import type { categories } from '@/models';
+import type { categoriesSchemas } from '@/schemas';
 import type { ClueDBRead, ClueInGame } from './clues';
 import type { VerificationDBRead } from './verifications';
 
@@ -15,6 +17,8 @@ export type CategoryRepoInput = Omit<
 	typeof categories.$inferInsert,
 	'createdAt' | 'createdBy' | 'updatedAt' | 'updatedBy' | 'deletedAt' | 'deletedBy'
 >;
+
+export type CategoryFormInput = z.input<typeof categoriesSchemas.form>;
 
 export type CategoryUpdateInput = Pick<CategoryRepoInput, 'name'>;
 
