@@ -20,13 +20,14 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
 
+      - name: Create .dev.vars
+        run: echo "SESSION_SECRET_KEY=test-secret-key-for-workers-tests" > .dev.vars
+
       - run: |
           pnpm install
           pnpm biome:check
+          pnpm knip:check
           pnpm types:check
           pnpm test:run
-
-      - name: Create .dev.vars for workers tests
-        run: echo "SESSION_SECRET_KEY=test-secret-key-for-workers-tests" > .dev.vars
 
       - run: pnpm test:workers
