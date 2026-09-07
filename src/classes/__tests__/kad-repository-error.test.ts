@@ -39,7 +39,6 @@ describe('KADRepositoryError', () => {
 
 	describe('unknown type (default branch)', () => {
 		it('falls back to the generic message', () => {
-			// biome-ignore lint/suspicious/noExplicitAny: exercising the runtime default branch for coverage
 			const err = new KADRepositoryError('not-a-real-type' as any, []);
 			expect(err.message).toBe('An unknown repository error occurred');
 		});

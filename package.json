@@ -21,6 +21,8 @@
 		"dev": "vite dev --host",
 		"dev:init": "rw-scripts dev-init",
 		"generate": "rw-scripts ensure-env && wrangler types --include-runtime false && tsx scripts/fix-env-types.ts",
+		"knip:check": "knip",
+		"knip:fix": "knip --fix",
 		"playwright-ct:run": "playwright test -c playwright-ct.config.ts",
 		"playwright-ct:ui": "playwright test -c playwright-ct.config.ts --ui",
 		"playwright-ct:update": "playwright test -c playwright-ct.config.ts --update-snapshots",
@@ -32,8 +34,7 @@
 		"test:ui": "vitest --ui",
 		"test:workers": "vitest run --config vitest.workers.config.ts",
 		"types:check": "tsc",
-		"worker:run": "rw-scripts worker-run",
-		"knip": "knip"
+		"worker:run": "rw-scripts worker-run"
 	},
 	"lint-staged": {
 		"*": [
