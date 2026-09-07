@@ -96,10 +96,11 @@ describe('usersSchemas.adminEdit', () => {
 	});
 
 	describe('id field', () => {
-		it('rejects when id is missing', () => {
+		it('converts missing id to undefined and passes', () => {
 			const { id: _, ...withoutId } = validAdminEdit;
 			const result = usersSchemas.adminEdit.safeParse(withoutId);
-			expect(result.success).toBe(false);
+			expect(result.success).toBe(true);
+			expect(result.data?.id).toBeUndefined();
 		});
 
 		it('rejects a non-UUID id', () => {
