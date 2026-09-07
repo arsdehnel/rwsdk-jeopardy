@@ -156,9 +156,7 @@ export default function useGamePhasePlayState(
 	useEffect(() => {
 		if (!buzzInTimeLeft) return;
 		const timer = setTimeout(() => {
-			if (buzzInTimeLeft && buzzInTimeLeft > 0) {
-				setbuzzInTimeLeft(buzzInTimeLeft - 1);
-			}
+			setbuzzInTimeLeft(buzzInTimeLeft - 1);
 		}, 1000);
 		return (): void => clearTimeout(timer);
 	}, [buzzInTimeLeft, setbuzzInTimeLeft]);
@@ -166,9 +164,7 @@ export default function useGamePhasePlayState(
 	useEffect(() => {
 		if (!responseTimeLeft) return;
 		const timer = setTimeout(() => {
-			if (responseTimeLeft && responseTimeLeft > 0) {
-				setResponseTimeLeft(responseTimeLeft - 1);
-			}
+			setResponseTimeLeft(responseTimeLeft - 1);
 		}, 1000);
 		return (): void => clearTimeout(timer);
 	}, [responseTimeLeft, setResponseTimeLeft]);

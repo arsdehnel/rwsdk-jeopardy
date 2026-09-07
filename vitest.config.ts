@@ -17,13 +17,13 @@ export default defineConfig({
 					branches: 100,
 				},
 				'src/classes/**': {
-					branches: 80,
+					branches: 100,
 				},
 				'src/durable-objects/**': {
 					branches: 100,
 				},
 				'src/hooks/**': {
-					branches: 95,
+					branches: 100,
 				},
 				'src/interrupters/**': {
 					branches: 100,

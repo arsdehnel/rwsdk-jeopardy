@@ -1,6 +1,6 @@
 'use client';
 import { useSyncedState } from 'rwsdk/use-synced-state/client';
-import { ConnectionConflictError } from '@/errors';
+import { KADRegistrationError } from '@/classes';
 import type { ContestantRegistration, DisplayRegistration, HostRegistration, Role } from '@/types';
 
 export type GamePhaseRegisterState = {
@@ -45,13 +45,13 @@ export default function useGamePhaseRegisterState(
 
 	const registerAsDisplay = (): void => {
 		if (currentUserRole === 'display') {
-			throw new ConnectionConflictError('duplicate_id');
+			throw new KADRegistrationError('duplicate_id');
 		}
 		if (currentUserRole) {
-			throw new ConnectionConflictError('role_change');
+			throw new KADRegistrationError('role_change');
 		}
 		if (display) {
-			throw new ConnectionConflictError('display_exists');
+			throw new KADRegistrationError('display_exists');
 		}
 		setDisplay({ sessionId, userId });
 	};
@@ -65,13 +65,13 @@ export default function useGamePhaseRegisterState(
 
 	const registerAsHost = (): void => {
 		if (currentUserRole === 'host') {
-			throw new ConnectionConflictError('duplicate_id');
+			throw new KADRegistrationError('duplicate_id');
 		}
 		if (currentUserRole) {
-			throw new ConnectionConflictError('role_change');
+			throw new KADRegistrationError('role_change');
 		}
 		if (host) {
-			throw new ConnectionConflictError('host_exists');
+			throw new KADRegistrationError('host_exists');
 		}
 		if (!userId) {
 			throw new Error(`Host must be logged in`);
@@ -88,10 +88,10 @@ export default function useGamePhaseRegisterState(
 
 	const registerAsContestant = (name: string, userId: string | undefined): void => {
 		if (currentUserRole === 'contestant') {
-			throw new ConnectionConflictError('duplicate_id');
+			throw new KADRegistrationError('duplicate_id');
 		}
 		if (currentUserRole) {
-			throw new ConnectionConflictError('role_change');
+			throw new KADRegistrationError('role_change');
 		}
 		setContestants(contestants => [...contestants.filter(c => c.sessionId !== sessionId), { sessionId, name, userId }]);
 	};
