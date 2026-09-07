@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { generateCategory, saveCategory } from '@/actions/categories';
+import { generateCategory, saveGeneratedCategory } from '@/actions/categories';
 import { KADButton } from '@/components/design-system';
 import type { CategoryDBRead, GeneratedCategory, Permission } from '@/types';
 import { ViewCategory } from './view-category';
@@ -27,13 +27,13 @@ export function CategorySelector({
 		setPending(false);
 	};
 
-	const saveGeneratedCategory = async (): Promise<void> => {
+	const handleSaveGeneratedCategory = async (): Promise<void> => {
 		if (!generatedCategory) {
 			setErrors(`There is no generated category, please generate a category first`);
 		}
 		setPending(true);
 		// biome-ignore lint/style/noNonNullAssertion: guaranteed by the !generatedCategory above
-		const saveResult = await saveCategory(generatedCategory!);
+		const saveResult = await saveGeneratedCategory(generatedCategory!);
 		if (saveResult.errors) {
 			setErrors(JSON.stringify(saveResult.errors));
 		}
@@ -57,7 +57,7 @@ export function CategorySelector({
 			{generatedCategory && (
 				<div className="generated-category">
 					{generatedCategory && <ViewCategory {...generatedCategory} />}
-					<button type="button" onClick={saveGeneratedCategory}>
+					<button type="button" onClick={handleSaveGeneratedCategory}>
 						Save Generated Category
 					</button>
 				</div>

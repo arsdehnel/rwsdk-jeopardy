@@ -35,7 +35,11 @@ export const generateCategory = serverAction([
 	requirePermissions('categories:generate'),
 	_generateCategory,
 ]);
-export const saveCategory = serverAction([requireAuthentication, requirePermissions('categories:update'), _saveCategory]);
+export const saveGeneratedCategory = serverAction([
+	requireAuthentication,
+	requirePermissions('categories:update'),
+	_saveGeneratedCategory,
+]);
 
 /**
  * @private - exported for testing only, do not use directly
@@ -79,7 +83,7 @@ export async function _generateCategory(): Promise<ActionState<GeneratedCategory
  * @private - exported for testing only, do not use directly
  */
 /** @knipTestExport */
-export async function _saveCategory(category: GeneratedCategory): Promise<ActionState<CategoryWithClues>> {
+export async function _saveGeneratedCategory(category: GeneratedCategory): Promise<ActionState<CategoryWithClues>> {
 	const { ctx } = requestInfo;
 	// biome-ignore lint/style/noNonNullAssertion: guaranteed by requireAuthentication in serverAction chain
 	const userId = ctx.user!.id;
