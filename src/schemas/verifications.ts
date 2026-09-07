@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { optionalUuid } from './utils';
+import { optionalUuid, primaryKeyUuid } from './utils';
 
 const formSchema = z.object({
-	id: z.string().uuid('Must be a valid UUID').optional(),
+	id: primaryKeyUuid,
 	categoryId: optionalUuid,
 	clueId: optionalUuid,
 });

@@ -1,5 +1,4 @@
 import type { RequestInfo } from 'rwsdk/worker';
-import { KADLink } from '@/components/design-system';
 import { CategorySelector } from '@/components/setup';
 import GameForm from '@/forms/game';
 import { DefaultLayout } from '@/layouts';
@@ -10,7 +9,6 @@ export default async function Pages__games__new({ ctx }: RequestInfo): Promise<R
 	return (
 		<DefaultLayout pageTitle="Setup New Game" ctx={ctx} currentBasePage="games">
 			<p>Setup a new game</p>
-			<KADLink href="/auth/login" userPermissions={ctx.permissions} requiredPermission="auth:login" label="Log In" />
 			<CategorySelector categories={categories} userPermissions={ctx.permissions} />
 			<GameForm categoryOptions={categories.map(c => ({ value: c.id, label: c.name }))} userPermissions={ctx.permissions} />
 		</DefaultLayout>

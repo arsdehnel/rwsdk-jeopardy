@@ -81,6 +81,82 @@ const validPlayable = {
 	contestants: [makeContestant('Alice'), makeContestant(null)],
 };
 
+describe('gamesSchemas.register', () => {
+	const makeRegisterContestant = (name: string, userId?: string) => ({
+		sessionId: crypto.randomUUID(),
+		...(userId ? { userId } : {}),
+		name,
+	});
+
+	const validRegister = {
+		gameId: crypto.randomUUID(),
+		displaySessionId: crypto.randomUUID(),
+		contestants: [makeRegisterContestant('Alice'), makeRegisterContestant('Bob')],
+	};
+
+	describe('valid inputs', () => {
+		it('passes with two named contestants', () => {
+			expect(gamesSchemas.register.safeParse(validRegister).success).toBe(true);
+		});
+
+		it('passes when a contestant has a userId and an empty name', () => {
+			const result = gamesSchemas.register.safeParse({
+				...validRegister,
+				contestants: [makeRegisterContestant('', crypto.randomUUID()), makeRegisterContestant('Bob')],
+			});
+			expect(result.success).toBe(true);
+		});
+
+		it('passes when a contestant has a userId and a whitespace-only name', () => {
+			const result = gamesSchemas.register.safeParse({
+				...validRegister,
+				contestants: [makeRegisterContestant('   ', crypto.randomUUID()), makeRegisterContestant('Bob')],
+			});
+			expect(result.success).toBe(true);
+		});
+	});
+
+	describe('contestant name validation', () => {
+		it('fails when a contestant has no userId and an empty name', () => {
+			const result = gamesSchemas.register.safeParse({
+				...validRegister,
+				contestants: [makeRegisterContestant(''), makeRegisterContestant('Bob')],
+			});
+			expect(result.success).toBe(false);
+			const issue = result.error?.issues.find(i => i.path.includes('name'));
+			expect(issue?.message).toContain('required');
+		});
+
+		it('fails when a contestant has no userId and a whitespace-only name', () => {
+			const result = gamesSchemas.register.safeParse({
+				...validRegister,
+				contestants: [makeRegisterContestant('   '), makeRegisterContestant('Bob')],
+			});
+			expect(result.success).toBe(false);
+		});
+	});
+
+	describe('contestant count', () => {
+		it('fails with fewer than 2 contestants', () => {
+			const result = gamesSchemas.register.safeParse({
+				...validRegister,
+				contestants: [makeRegisterContestant('Alice')],
+			});
+			expect(result.success).toBe(false);
+		});
+	});
+
+	describe('field validation', () => {
+		it('fails when gameId is not a valid UUID', () => {
+			expect(gamesSchemas.register.safeParse({ ...validRegister, gameId: 'not-a-uuid' }).success).toBe(false);
+		});
+
+		it('fails when displaySessionId is not a valid UUID', () => {
+			expect(gamesSchemas.register.safeParse({ ...validRegister, displaySessionId: 'not-a-uuid' }).success).toBe(false);
+		});
+	});
+});
+
 describe('gamesSchemas.isRegisterable', () => {
 	describe('valid games', () => {
 		it('passes for a single standard stage with 6 categories', () => {

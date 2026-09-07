@@ -122,6 +122,11 @@ describe('registerAsHost', () => {
 		rerender({ sessionId: SESSION_B });
 		expect(() => act(() => result.current.registerAsHost())).toThrow();
 	});
+
+	it('throws when there is no userId (user must be logged in to host)', () => {
+		const { result } = renderHook(() => useGamePhaseRegisterState(SESSION_A, undefined, GAME_ID));
+		expect(() => act(() => result.current.registerAsHost())).toThrow('Host must be logged in');
+	});
 });
 
 describe('unregisterAsHost', () => {
