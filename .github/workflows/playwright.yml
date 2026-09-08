@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.58.2-noble
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
     steps:
       - name: Install git-lfs
         run: apt-get update && apt-get install -y git-lfs
@@ -25,8 +25,8 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - name: Run Playwright tests
-        run: pnpm playwright:run
+      - name: Run Playwright CT tests
+        run: pnpm playwright-ct:run
         env:
           HOME: /root
       - uses: actions/upload-artifact@v4
