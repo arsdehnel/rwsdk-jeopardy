@@ -1,4 +1,4 @@
-import { EnterIcon, ExitIcon, HomeIcon, IconJarLogoIcon, InfoCircledIcon, MixIcon, PlayIcon } from '@radix-ui/react-icons';
+import { EnterIcon, ExitIcon, HomeIcon, IconJarLogoIcon, InfoCircledIcon, MixIcon } from '@radix-ui/react-icons';
 import type { NavItem, Permission } from '@/types';
 
 export const navItems: Record<string, NavItem[]> = {
