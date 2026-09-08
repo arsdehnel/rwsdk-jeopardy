@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { KADTableColumn } from '@/types';
 import KADTable from '../kad-table';
+import { KADTableWithRender } from './_fixtures';
 
 const columns: KADTableColumn[] = [
 	{ key: 'title', label: 'Title' },
@@ -23,14 +24,6 @@ test('renders empty state with no rows', async ({ mount }) => {
 });
 
 test('renders custom cell via render function', async ({ mount }) => {
-	const columnsWithRender: KADTableColumn[] = [
-		{ key: 'title', label: 'Title' },
-		{
-			key: 'status',
-			label: 'Status',
-			render: val => val.toUpperCase(),
-		},
-	];
-	const component = await mount(<KADTable userPermissions={['__controls:read']} columns={columnsWithRender} data={data} />);
+	const component = await mount(<KADTableWithRender />);
 	await expect(component).toHaveScreenshot();
 });
