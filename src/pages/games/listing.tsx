@@ -1,5 +1,5 @@
 import type { RequestInfo } from 'rwsdk/worker';
-import { KADTable } from '@/components/design-system';
+import { KADLink, KADTable } from '@/components/design-system';
 import { DefaultLayout } from '@/layouts';
 import { getGamesByOwnerId } from '@/repositories';
 import { gamesSchemas } from '@/schemas';
@@ -55,6 +55,7 @@ export default async function Pages__games__listing({ ctx }: RequestInfo): Promi
 
 	return (
 		<DefaultLayout pageTitle="My Games" ctx={ctx} currentBasePage="games">
+			<KADLink href="/games/new" label="Create New Game" userPermissions={ctx.permissions} requiredPermission="games:create" />
 			<KADTable userPermissions={ctx.permissions} columns={columns} data={rows} />
 		</DefaultLayout>
 	);
