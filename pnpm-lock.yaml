@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@playwright/experimental-ct-react>@vitejs/plugin-react': 5.0.4
+
 patchedDependencies:
   solid-js@1.9.14:
     hash: 934f90235ec0d5bc01901210535d65ca90bd73a37eeb9a0a5997f41affd7a310
@@ -3208,19 +3211,6 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
-
-  '@vitejs/plugin-react@6.0.5':
-    resolution: {integrity: sha512-BOVzne/NL162sMdResB25mUv+vWMF5NoAjNf09TeGlE7ZpszZWSD3winycicLJw72yeVsoCn/2kOhEuCvEShMA==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    peerDependencies:
-      '@rolldown/plugin-babel': ^0.1.7 || ^0.2.0
-      babel-plugin-react-compiler: ^1.0.0
-      vite: ^8.0.0
-    peerDependenciesMeta:
-      '@rolldown/plugin-babel':
-        optional: true
-      babel-plugin-react-compiler:
-        optional: true
 
   '@vitest/coverage-v8@4.1.11':
     resolution: {integrity: sha512-8MVGEFnJIcdGjcbfKmeq8z0pZHH0JlVtoVZH9Q/qwUp6wyFnEJUBMrw9DCaj+ra3vShGmhavjalMIhPNxZAUcw==}
@@ -7620,12 +7610,10 @@ snapshots:
   '@playwright/experimental-ct-react@1.62.1(@types/node@24.10.15)(esbuild@0.28.1)(jiti@2.7.0)(less@4.5.1)(terser@5.49.0)(tsx@4.23.1)(vite@7.3.1(@types/node@24.10.15)(jiti@2.7.0)(less@4.5.1)(lightningcss@1.33.0)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(yaml@2.9.0)':
     dependencies:
       '@playwright/experimental-ct-core': 1.62.1(@types/node@24.10.15)(esbuild@0.28.1)(jiti@2.7.0)(less@4.5.1)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
-      '@vitejs/plugin-react': 6.0.5(vite@7.3.1(@types/node@24.10.15)(jiti@2.7.0)(less@4.5.1)(lightningcss@1.33.0)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))
+      '@vitejs/plugin-react': 5.0.4(vite@7.3.1(@types/node@24.10.15)(jiti@2.7.0)(less@4.5.1)(lightningcss@1.33.0)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))
     transitivePeerDependencies:
-      - '@rolldown/plugin-babel'
       - '@types/node'
       - '@vitejs/devtools'
-      - babel-plugin-react-compiler
       - esbuild
       - jiti
       - less
@@ -7633,6 +7621,7 @@ snapshots:
       - sass-embedded
       - stylus
       - sugarss
+      - supports-color
       - terser
       - tsx
       - vite
@@ -8983,11 +8972,6 @@ snapshots:
       vite: 7.3.1(@types/node@24.10.15)(jiti@2.7.0)(less@4.5.1)(lightningcss@1.33.0)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
-
-  '@vitejs/plugin-react@6.0.5(vite@7.3.1(@types/node@24.10.15)(jiti@2.7.0)(less@4.5.1)(lightningcss@1.33.0)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))':
-    dependencies:
-      '@rolldown/pluginutils': 1.0.1
-      vite: 7.3.1(@types/node@24.10.15)(jiti@2.7.0)(less@4.5.1)(lightningcss@1.33.0)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
 
   '@vitest/coverage-v8@4.1.11(vitest@4.1.11)':
     dependencies:
