@@ -4,5 +4,7 @@ allowBuilds:
   less: true
   sharp: false
   workerd: true
+overrides:
+  "@playwright/experimental-ct-react>@vitejs/plugin-react": "5.0.4"
 patchedDependencies:
   solid-js@1.9.14: patches/solid-js@1.9.14.patch

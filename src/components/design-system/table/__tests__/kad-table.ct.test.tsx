@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { KADTableColumn } from '@/types';
-import KADTable from './kad-table';
+import KADTable from '../kad-table';
 
 const columns: KADTableColumn[] = [
 	{ key: 'title', label: 'Title' },

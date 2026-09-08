@@ -76,6 +76,9 @@ coverage
 /playwright/.cache/
 /playwright/.auth/
 
+# Playwright CT snapshots - darwin (use Linux for CI-compatible snapshots)
+**/*-snapshots/*-darwin.png
+
 # Terraform files
 .terraform/
 .terraform.lock.hcl

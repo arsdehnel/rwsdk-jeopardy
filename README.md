@@ -47,16 +47,18 @@ Contributions welcome. If you're familiar with RedwoodSDK and want to extend the
 
 ## Visual Tests
 
-Need to generate images on linux to avoid mismatching architectures.
+Component tests use Playwright CT (`@playwright/experimental-ct-react`). Snapshot images are stored in Git and must be generated on Linux to match the CI container. Run the following to update snapshots locally:
 
 ```sh
 docker run --rm \
   -v $(pwd):/work/ \
   -v /work/node_modules \
   -w /work/ \
-  mcr.microsoft.com/playwright:v1.58.2-noble \
-  /bin/sh -c "npm install -g pnpm && pnpm install && pnpm playwright:update"
+  mcr.microsoft.com/playwright:v1.62.1-noble \
+  /bin/sh -c "npm install -g pnpm && pnpm install && pnpm playwright-ct:update"
 ```
+
+Then commit the updated snapshots alongside your changes.
 
 ## GH Workflows
 
