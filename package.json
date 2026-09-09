@@ -1,6 +1,6 @@
 {
 	"name": "rwsdk-jeopardy",
-	"version": "1.54.0",
+	"version": "1.54.1",
 	"private": true,
 	"description": "A simple Jeopardy game built with RedwoodSDK using React Server Components and Cloudflare Workers",
 	"keywords": [],

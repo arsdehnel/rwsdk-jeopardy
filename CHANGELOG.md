@@ -1,3 +1,9 @@
+## [1.54.1](https://github.com/arsdehnel/rwsdk-jeopardy/compare/v1.54.0...v1.54.1) (2026-09-09)
+
+### Bug Fixes
+
+* noop for new workflows ([76481f1](https://github.com/arsdehnel/rwsdk-jeopardy/commit/76481f1895ea8284b46f37ebd8b80454f379d42a))
+
 ## [1.54.0](https://github.com/arsdehnel/rwsdk-jeopardy/compare/v1.53.0...v1.54.0) (2026-09-09)
 
 ### Features
