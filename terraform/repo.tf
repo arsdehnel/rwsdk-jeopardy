@@ -6,12 +6,15 @@ resource "github_repository" "repo" {
   has_discussions        = true
   has_issues             = true
   has_projects           = true
+  homepage_url           = "https://arsdehnel.github.io/rwsdk-jeopardy/"
+}
 
-  pages {
-    source {
-      branch = "gh-pages"
-      path   = "/"
-    }
-    build_type = "legacy"
+resource "github_repository_pages" "repo" {
+  repository = github_repository.repo.name
+  build_type = "legacy"
+
+  source {
+    branch = "gh-pages"
+    path   = "/"
   }
 }
