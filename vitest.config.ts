@@ -8,7 +8,7 @@ export default defineConfig({
 		exclude: ['**/*.ct.test.tsx', '**/*.workers.test.ts', '**/node_modules/**'],
 		coverage: {
 			provider: 'v8', // or 'istanbul'
-			reporter: ['text', 'json-summary'],
+			reporter: ['text', 'json-summary', 'html'],
 			exclude: ['**/*.md', '**/__tests__/**', '**/*.test.ts', '**/*.integration.test.ts'],
 			thresholds: {
 				branches: 30,
