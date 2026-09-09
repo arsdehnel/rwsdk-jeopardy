@@ -1,5 +1,6 @@
 'use client';
 import { QRCodeSVG } from 'qrcode.react';
+import { startGame } from '@/actions/games';
 import { HostOptions, RegisterContestant, RegisterCurrent, RegisterDisplay, RegisterHost } from '@/components/register';
 import useGamePhase from '@/hooks/use-game-phase';
 import useGamePhaseRegisterState from '@/hooks/use-game-phase-register-state';
@@ -59,7 +60,9 @@ export default function ViewGameRegister({
 							unregisterAsHost={unregisterAsHost}
 							unregisterAsContestant={unregisterAsContestant}
 						/>
-						{currentUserRole === 'host' && <HostOptions gameId={gameId} display={display} contestants={contestants} />}
+						{currentUserRole === 'host' && (
+							<HostOptions gameId={gameId} display={display} contestants={contestants} onStartGame={startGame} />
+						)}
 					</>
 				) : (
 					<>

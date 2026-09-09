@@ -184,7 +184,7 @@ describe('pages', () => {
 		).toStrictEqual([]);
 	});
 
-	it('all route() calls in page routes files use an array of handlers', () => {
+	it('All route() calls must include requireAuthentication and requirePermissions', () => {
 		const routeFiles = files.filter(p => p.endsWith('routes.ts'));
 		// Explicit opt-in exceptions for truly public routes — add new public routes here.
 		// true here means the route does NOT need the interrupter
@@ -193,6 +193,8 @@ describe('pages', () => {
 				'/games/play/contestant': { auth: true, perms: true },
 				'/games/play/display': { auth: true, perms: true },
 				'/games/play/host': { auth: true, perms: true },
+				'/games/register': { auth: true, perms: true },
+				'/games/register/:stateSlug': { auth: true, perms: true },
 			},
 			'pages/games/routes.ts': {
 				'/:gameId/play': { auth: true },
