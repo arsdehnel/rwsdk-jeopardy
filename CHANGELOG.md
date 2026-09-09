@@ -1,3 +1,9 @@
+## [1.55.1](https://github.com/arsdehnel/rwsdk-jeopardy/compare/v1.55.0...v1.55.1) (2026-09-09)
+
+### Bug Fixes
+
+* deploy workflow can't use just pnpm deploy ([0a01ce4](https://github.com/arsdehnel/rwsdk-jeopardy/commit/0a01ce468f681c86a4bd78ae2e564148f8616519))
+
 ## [1.55.0](https://github.com/arsdehnel/rwsdk-jeopardy/compare/v1.54.2...v1.55.0) (2026-09-09)
 
 ### Features
