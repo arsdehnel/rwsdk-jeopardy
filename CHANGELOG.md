@@ -1,3 +1,9 @@
+## [1.54.0](https://github.com/arsdehnel/rwsdk-jeopardy/compare/v1.53.0...v1.54.0) (2026-09-09)
+
+### Features
+
+* create pairing between component test and dev pages for registration phase ([b9af9ae](https://github.com/arsdehnel/rwsdk-jeopardy/commit/b9af9ae84b64dd914872a9dbfda09ba578916772))
+
 # Changelog
 
 ## [1.53.0](https://github.com/arsdehnel/rwsdk-jeopardy/compare/v1.52.0...v1.53.0) (2026-09-09)
