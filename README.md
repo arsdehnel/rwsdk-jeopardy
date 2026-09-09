@@ -22,6 +22,7 @@ This project is intended to showcase how `useSyncedState` can coordinate complex
 
 ```bash
 pnpm install
+echo "SESSION_SECRET_KEY=$(openssl rand -base64 32)" >> .dev.vars
 pnpm dev
 ```
 
