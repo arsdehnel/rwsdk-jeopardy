@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
 
 export default isDryRun() ? getDryRunConfig() : getCIConfig();
 
@@ -70,6 +70,7 @@ function getCIConfig() {
 				'@semantic-release/git',
 				{
 					assets: ['package.json', 'pnpm-lock.yaml', 'CHANGELOG.md'],
+					// biome-ignore lint/suspicious/noTemplateCurlyInString: this is how semantic-release expects the message to be formatted
 					message: 'chore(release): ${nextRelease.version}\n\n${nextRelease.notes}',
 				},
 			],
