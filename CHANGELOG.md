@@ -1,3 +1,9 @@
+## [1.55.2](https://github.com/arsdehnel/rwsdk-jeopardy/compare/v1.55.1...v1.55.2) (2026-09-09)
+
+### Bug Fixes
+
+* rerun comp tests in publish-reports to keep it simple ([6296d5f](https://github.com/arsdehnel/rwsdk-jeopardy/commit/6296d5fbdbaeb8b2fca723e528f708e00e9bffc9))
+
 ## [1.55.1](https://github.com/arsdehnel/rwsdk-jeopardy/compare/v1.55.0...v1.55.1) (2026-09-09)
 
 ### Bug Fixes
