@@ -1,3 +1,9 @@
+## [1.54.2](https://github.com/arsdehnel/rwsdk-jeopardy/compare/v1.54.1...v1.54.2) (2026-09-09)
+
+### Bug Fixes
+
+* add html reporter to unit test output ([3331e9a](https://github.com/arsdehnel/rwsdk-jeopardy/commit/3331e9a701a4a7b37587a43fe056eaa67339f57b))
+
 ## [1.54.1](https://github.com/arsdehnel/rwsdk-jeopardy/compare/v1.54.0...v1.54.1) (2026-09-09)
 
 ### Bug Fixes
