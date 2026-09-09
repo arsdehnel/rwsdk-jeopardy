@@ -1,3 +1,9 @@
+## [1.55.0](https://github.com/arsdehnel/rwsdk-jeopardy/compare/v1.54.2...v1.55.0) (2026-09-09)
+
+### Features
+
+* **infra:** move to standalone tf resource for gh pages ([5e56886](https://github.com/arsdehnel/rwsdk-jeopardy/commit/5e56886f69016bcdc1e81382766d14be5f8c86ff))
+
 ## [1.54.2](https://github.com/arsdehnel/rwsdk-jeopardy/compare/v1.54.1...v1.54.2) (2026-09-09)
 
 ### Bug Fixes
