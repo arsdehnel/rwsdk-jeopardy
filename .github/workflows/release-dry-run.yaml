@@ -1,0 +1,43 @@
+name: Release Dry Run
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  dry-run:
+    name: Release Dry Run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Full history is required for semantic-release to find the last
+          # release tag and determine what the next version would be.
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - run: pnpm install
+
+      - name: Release dry run
+        # --dry-run: skip all write operations (no tags, commits, GitHub releases)
+        # --no-ci: bypass branch validation — PRs check out a detached merge commit,
+        #   not the `main` branch, so semantic-release would otherwise refuse to run.
+        #   The output still reflects what would be released if this PR were merged.
+        run: |
+          ./scripts/semantic-release.sh --dry-run --no-ci 2>&1 | tee /tmp/release-dry-run.txt
+          echo "## Release Dry Run" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          sed 's/\x1b\[[0-9;]*m//g' /tmp/release-dry-run.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
