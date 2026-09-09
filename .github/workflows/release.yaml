@@ -82,7 +82,7 @@ jobs:
           GIT_COMMITTER_NAME: semantic-release-bot
           GIT_COMMITTER_EMAIL: semantic-release-bot@users.noreply.github.com
           HUSKY: 0
-        run: ./scripts/semantic-release.sh
+        run: pnpm release
 
       - name: Re-enable branch protection
         if: always()
